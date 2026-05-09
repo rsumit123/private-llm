@@ -20,6 +20,9 @@ venv/
 # Logs
 *.log
 
+# Raw user-supplied data (don't push proprietary content)
+raw_data/
+
 # OS
 .DS_Store
 

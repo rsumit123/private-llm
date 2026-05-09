@@ -6,3 +6,4 @@ sentencepiece
 tokenizers
 transformers
 wandb
+pymupdf
