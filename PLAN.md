@@ -44,9 +44,20 @@ Not applicable here. Both are *fine-tuning* accelerators that need a pretrained 
 - Target offers: RTX 3090, 1 GPU, ≥80GB disk, ≥500 Mbps inet, reliability >0.98, dph <0.20
 
 ## Open items / next session pickups
-- [ ] User to point to MCQ JSON file location.
-- [ ] Plan B pretraining run (in progress / TBD).
-- [ ] PDF extraction script (`extract_pdfs.py`) — to write before continued-pretraining stage.
-- [ ] MCQ formatter (`format_mcqs.py`) — to write before SFT stage.
+- [x] User pointed to MCQ JSON: `gk_questions.json` (6686 entries, copied to `raw_data/mcqs/`). Confirmed superset of the smaller category files.
+- [x] Newspapers: 102 PDFs in `~/Library/Mobile Documents/com~apple~CloudDocs/Downloads/Newspaper /` (487MB).
+- [ ] Plan B pretraining run (in progress, started 2026-05-09 ~10:58, ETA ~12-13h, target loss ~3.0).
+- [x] PDF extraction script (`extract_pdfs.py`) — written, untested.
+- [x] MCQ formatter (`format_mcqs.py`) — written, untested.
+- [x] Gradio app (`gradio_app.py`) — written, untested. Uses ChatML formatting, streams tokens.
 - [ ] Wire up `lm-evaluation-harness`.
-- [ ] Borrow KV-cache inference from nanochat for fast generation.
+- [ ] Add KV-cache to attention for faster Gradio inference (currently O(n²) per response). Borrow from nanochat. Acceptable for demo-tier use as-is.
+- [ ] Deploy Gradio to HuggingFace Spaces after final SFT weights are ready. Plan: rename `gradio_app.py` → `app.py`, push weights to `huggingface.co/rsumit123/private-llm-110m`, point Space at it.
+
+## Deployment recipe (Hugging Face Spaces)
+Once weights are final:
+1. `huggingface-cli login`
+2. `huggingface-cli upload rsumit123/private-llm-110m ckpt_final.pt model.safetensors`
+3. Create Space at `huggingface.co/new-space`, SDK=Gradio, Hardware=CPU basic (free)
+4. Push: `app.py` (renamed from gradio_app.py), `model.py`, `configs.py`, `requirements.txt`. Have `app.py` download the ckpt from the model repo on startup.
+5. Public URL appears at `huggingface.co/spaces/rsumit123/private-llm-chat` — share with anyone.

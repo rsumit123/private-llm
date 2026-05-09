@@ -7,3 +7,4 @@ tokenizers
 transformers
 wandb
 pymupdf
+gradio
