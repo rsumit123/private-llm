@@ -44,19 +44,22 @@ def build_prompt(history, user_msg):
     return "".join(parts)
 
 
-def make_chat_fn(model, tok, device, max_new_tokens=200, temperature=0.8, top_k=40):
-    eot_ids = tok.encode(EOT, add_special_tokens=False)
+def make_chat_fn(model, tok, device, max_new_tokens=150, temperature=0.8, top_k=40, raw_mode=False):
+    eos_id = tok.eos_token_id  # </s> for Llama-2 tokenizer
 
     def chat(message, history):
-        prompt = build_prompt(history, message)
+        if raw_mode:
+            # Base-model mode: just feed the user text raw and continue.
+            # This is what a non-SFT'd model actually wants.
+            prompt = message
+        else:
+            prompt = build_prompt(history, message)
         ids = tok.encode(prompt, return_tensors="pt").to(device)
-        # Truncate from left if too long for the model's context
         ctx = model.cfg.max_seq_len
         if ids.shape[1] > ctx - max_new_tokens:
             ids = ids[:, -(ctx - max_new_tokens):]
 
         out = ids
-        generated = ""
         with torch.no_grad():
             for _ in range(max_new_tokens):
                 logits, _ = model(out[:, -ctx:])
@@ -66,17 +69,17 @@ def make_chat_fn(model, tok, device, max_new_tokens=200, temperature=0.8, top_k=
                     logits[logits < v[:, [-1]]] = -float("inf")
                 probs = torch.softmax(logits, dim=-1)
                 nxt = torch.multinomial(probs, 1)
+                if nxt.item() == eos_id:
+                    break
                 out = torch.cat([out, nxt], dim=1)
 
-                # decode incrementally and stream
-                new_text = tok.decode(out[0, ids.shape[1]:].tolist(), skip_special_tokens=False)
-                # stop if we emit the EOT marker
+                new_text = tok.decode(out[0, ids.shape[1]:].tolist(), skip_special_tokens=True)
+                # also stop on ChatML end marker if present (post-SFT)
                 if EOT in new_text:
                     new_text = new_text.split(EOT)[0]
                     yield new_text
                     return
-                generated = new_text
-                yield generated
+                yield new_text
 
     return chat
 
@@ -87,6 +90,9 @@ def main():
     ap.add_argument("--preset", default=os.environ.get("LLM_PRESET", "plan_b"))
     ap.add_argument("--tokenizer", default="NousResearch/Llama-2-7b-hf")
     ap.add_argument("--share", action="store_true")
+    ap.add_argument("--raw", action="store_true",
+                    help="base-model mode: feed user text directly (no chat template). "
+                         "Use this until the model has been SFT'd.")
     args = ap.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -101,22 +107,31 @@ def main():
     print(f"loaded {model.num_params()/1e6:.1f}M params")
 
     tok = AutoTokenizer.from_pretrained(args.tokenizer, use_fast=True)
-    chat_fn = make_chat_fn(model, tok, device)
+    chat_fn = make_chat_fn(model, tok, device, raw_mode=args.raw)
 
-    gr.ChatInterface(
-        fn=chat_fn,
-        title="private-llm — 110M params, trained from scratch",
-        description=(
-            "Tiny custom LLM trained on FineWeb-Edu (and possibly fine-tuned on Indian "
-            "MCQs/news). Will say wrong things confidently. That's the charm."
-        ),
-        examples=[
+    if args.raw:
+        title = "private-llm (base model, ~10% trained) — text continuation only"
+        desc = (
+            "This is a *base* language model trained from scratch — it has not been "
+            "fine-tuned to answer questions. Give it the *start* of some text and it "
+            "will try to continue it. Asking 'What is X?' will mostly fail."
+        )
+        examples = [
+            "Once upon a time in a small village,",
+            "Photosynthesis is the process by which",
+            "The most common planets in our solar system are",
+            "The history of India can be traced back to",
+        ]
+    else:
+        title = "private-llm — 110M params, trained from scratch"
+        desc = "Tiny custom LLM. Will say wrong things confidently — that's the charm."
+        examples = [
             "What is the capital of France?",
             "Write a short story about a robot learning to bake.",
-            "Explain photosynthesis in one paragraph.",
             "Q: Who wrote Hamlet?",
-        ],
-    ).launch(share=args.share)
+        ]
+
+    gr.ChatInterface(fn=chat_fn, title=title, description=desc, examples=examples).launch(share=args.share)
 
 
 if __name__ == "__main__":
