@@ -1,0 +1,27 @@
+# Secrets
+.vast-ai-api-key
+.env
+*.pem
+*.key
+
+# Data + checkpoints (too big for git)
+data/
+out/
+wandb/
+*.bin
+*.pt
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# Local tooling
+.claude/
