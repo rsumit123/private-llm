@@ -212,14 +212,8 @@ def main():
             "Photosynthesis is the process by which",
         ]
     else:
-        title = "🇮🇳 private-llm — 110M Indian-GK chatbot trained from scratch"
-        desc = (
-            "A 110M-parameter Llama-style language model **trained from scratch** on $2 of compute (2B FineWeb-Edu tokens), "
-            "then SFT'd on 6,686 Indian general-knowledge MCQs and SQuAD passages, with RAG over a 4,600-chunk Indian Wikipedia knowledge base. "
-            "Specialized in Indian history, mythology, geography, politics, sports, food. "
-            "Will politely decline questions outside Indian context. Often wrong on niche facts — that's the 110M-param ceiling. "
-            "Compares favorably to GPT-2 medium (3× larger) on Indian-MCQ benchmarks."
-        )
+        title = "🇮🇳 private-llm — 110M Indian-GK chatbot, trained from scratch"
+        desc = "110M-param model trained from scratch + RAG over Indian Wikipedia. Indian-GK only. [GitHub](https://github.com/rsumit123/private-llm)"
         examples = [
             "Who is Rama's brother?",
             "Who was the first Prime Minister of India?",
