@@ -131,7 +131,80 @@ We *could* use LoRA on top of an existing model like Llama-3-8B to fine-tune on 
 
 Loss is per-token cross-entropy in nats. Equivalently, **perplexity = exp(loss)** — the effective number of "options" the model is choosing among. Loss 3 ↔ perplexity 20.
 
-## 9. Evaluation
+## 9. Retrieval-Augmented Generation (RAG)
+
+**The problem:** A 110M-param model trained on 2B tokens just doesn't have room to memorize most facts. We saw this directly — ask it "the capital of France" and it confidently says "Belgium" or loops forever. The model knows *language*, not *facts*.
+
+**The insight:** Generating an answer from scratch requires the fact to be encoded in the weights. *Copying* an answer out of a passage you can read is a much easier task — small models can do it. So instead of asking the model to *recall*, we give it the relevant text right there in the prompt and ask it to *use* it.
+
+That's RAG: at query time, **retrieve** the most relevant passages from a knowledge base, **augment** the prompt with them, then **generate** an answer.
+
+```
+              ┌─ user query ─┐
+              ▼              │
+       [embed query]         │
+              ▼              │
+       [vector search        │
+        over KB index]       │
+              ▼              ▼
+   top-3 passages ─→ [system prompt + passages + user query] ─→ LLM ─→ answer
+```
+
+### Components in our build
+
+**1. Knowledge base (`build_kb.py`)**
+- Curated list of ~80 Wikipedia article seeds covering Indian mythology, history, geography, politics, defense, etc. — matched to our MCQ categories.
+- Each article fetched via the MediaWiki API (free, no auth needed).
+- Each article split into ~200-word chunks. We pick this size because it fits comfortably inside the model's 1024-token context alongside the system prompt and user message, and because passages this small tend to focus on one fact each — better retrieval signal.
+
+**2. Embeddings (`BAAI/bge-small-en-v1.5`)**
+- A separate, tiny model (33M params) that converts any text into a fixed-length vector (here: 384 dimensions).
+- Trained so that *semantically similar text* lands at nearby points in this 384-dim space.
+- "Who is Rama's brother?" and "Lakshmana, brother of Rama, is..." get nearly identical vectors. "Capital of France" and "Photosynthesis" land far apart.
+- We embed every chunk once at build time → save the (N, 384) matrix to disk.
+- We normalize embeddings to unit length, which makes **cosine similarity** equivalent to a simple dot product (much faster).
+
+**3. Retriever (in `gradio_app.py`)**
+- At query time:
+  1. Embed the user's question with the same encoder.
+  2. Compute `scores = kb_embeddings @ query_embedding` — one matrix-vector multiply, milliseconds.
+  3. Argsort, take top-k (k=3).
+- We don't need fancy vector DBs (FAISS, Pinecone) at this scale — ~500 vectors fits in 800KB.
+
+**4. Prompt augmentation**
+We stuff the retrieved chunks into the *system prompt*, not the user message:
+```
+<|system|>
+You are a helpful assistant. Use the information below to answer the user's question.
+If the information does not contain the answer, say you don't know.
+---
+[Ramayana] In the Hindu epic, Rama has three brothers: Lakshmana, Bharata, and Shatrughna...
+[Lakshmana] Lakshmana is the loyal younger brother of Rama, son of King Dasharatha...
+---
+<|end|>
+<|user|>
+Who is Rama's brother?
+<|end|>
+<|assistant|>
+```
+
+We put the context in the system slot because (a) our SFT data trained the model to honor the system→user→assistant pattern, so we don't disturb that contract; (b) the system prompt is conceptually "instructions / facts the model can use" — semantically the right place.
+
+### Why RAG works on small models
+
+The hardest task for a small LM is **closed-book recall** — produce a fact from weights alone. RAG turns that into **open-book extraction** — copy a span from given text. The latter is much easier:
+- 110M models can usually do open-book extraction ~50-70% of the time
+- 110M models can do closed-book recall on niche facts ~5-15% of the time
+
+That's why a $0.20 RAG layer dramatically out-performs a $100 continued-pretraining run on the same model.
+
+### Caveats / limits
+- **Garbage retrieval = garbage answer.** If the KB doesn't contain the fact (e.g., we forgot to seed "Subhas Chandra Bose"), the model hallucinates anyway. The system prompt instructs "say you don't know" but small models often ignore that.
+- **The model still has to read.** A 110M model with a context window full of 600 tokens of retrieved text is slow and sometimes loses focus. Bigger context = quadratic compute cost.
+- **Retrieval ≠ understanding.** If the question is "compare A and B" and our retrieved chunks each only mention A *or* B, the model can't synthesize. RAG is great for factoid Q&A, weaker for reasoning.
+- **No re-ranking, no query rewriting.** Production RAG systems do those. We don't because we want a clean teaching example.
+
+## 10. Evaluation
 
 After training, we'll run `lm-evaluation-harness` on standard benchmarks:
 - **HellaSwag**: pick the right sentence completion (commonsense)
