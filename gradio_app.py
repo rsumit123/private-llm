@@ -44,8 +44,9 @@ def build_prompt(history, user_msg):
     return "".join(parts)
 
 
-def make_chat_fn(model, tok, device, max_new_tokens=120, temperature=0.7, top_k=40, raw_mode=False):
-    eos_id = tok.eos_token_id  # </s>
+def make_chat_fn(model, tok, device, max_new_tokens=120, temperature=0.8,
+                 top_k=50, top_p=0.9, repetition_penalty=1.3, raw_mode=False):
+    eos_id = tok.eos_token_id
 
     def chat(message, history):
         prompt = message if raw_mode else build_prompt(history, message)
@@ -55,14 +56,37 @@ def make_chat_fn(model, tok, device, max_new_tokens=120, temperature=0.7, top_k=
             ids = ids[:, -(ctx - max_new_tokens):]
 
         out = ids
-        is_mcq = ("(A)" in message and "(B)" in message)  # heuristic: tighten stop for MCQs
+        is_mcq = ("(A)" in message and "(B)" in message)
         with torch.no_grad():
             for step in range(max_new_tokens):
                 logits, _ = model(out[:, -ctx:])
-                logits = logits[:, -1, :] / temperature
+                logits = logits[:, -1, :].float()
+
+                # Repetition penalty: shrink logits of tokens already in the output.
+                # Standard formulation from CTRL paper: divide if positive, mult if negative.
+                if repetition_penalty != 1.0:
+                    seen = out[0].tolist()
+                    for tid in set(seen[-200:]):
+                        v = logits[0, tid]
+                        logits[0, tid] = v / repetition_penalty if v > 0 else v * repetition_penalty
+
+                logits = logits / temperature
+
+                # top-k
                 if top_k:
                     v, _ = torch.topk(logits, top_k)
                     logits[logits < v[:, [-1]]] = -float("inf")
+
+                # top-p (nucleus): keep smallest set of tokens whose cum-prob >= top_p
+                if top_p < 1.0:
+                    sorted_logits, sorted_idx = torch.sort(logits, descending=True)
+                    cum = torch.softmax(sorted_logits, dim=-1).cumsum(dim=-1)
+                    mask = cum > top_p
+                    mask[..., 1:] = mask[..., :-1].clone()
+                    mask[..., 0] = False
+                    sorted_logits[mask] = -float("inf")
+                    logits = torch.full_like(logits, -float("inf")).scatter(1, sorted_idx, sorted_logits)
+
                 probs = torch.softmax(logits, dim=-1)
                 nxt = torch.multinomial(probs, 1)
                 if nxt.item() == eos_id:
@@ -70,15 +94,11 @@ def make_chat_fn(model, tok, device, max_new_tokens=120, temperature=0.7, top_k=
                 out = torch.cat([out, nxt], dim=1)
 
                 new_text = tok.decode(out[0, ids.shape[1]:].tolist(), skip_special_tokens=True)
-                # Stop on ChatML end marker
                 if EOT in new_text:
                     yield new_text.split(EOT)[0].rstrip()
                     return
-                # For MCQ-style prompts, the answer is one short sentence — stop on
-                # first sentence terminator after we've generated some content
                 if is_mcq and step > 8 and (new_text.rstrip().endswith(".") or "\n" in new_text[10:]):
-                    sent = new_text.split("\n")[0].rstrip()
-                    yield sent
+                    yield new_text.split("\n")[0].rstrip()
                     return
                 yield new_text
 
