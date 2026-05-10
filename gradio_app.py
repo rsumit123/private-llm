@@ -91,9 +91,12 @@ def build_prompt(history, user_msg, retriever=None, k=3, max_ctx_chars=2200):
     return "".join(parts)
 
 
-def make_chat_fn(model, tok, device, max_new_tokens=80, temperature=0.4,
-                 top_k=20, top_p=0.9, repetition_penalty=1.15, raw_mode=False,
+def make_chat_fn(model, tok, device, max_new_tokens=80, temperature=1.0,
+                 top_k=1, top_p=1.0, repetition_penalty=1.1, raw_mode=False,
                  retriever=None):
+    # Defaults are GREEDY (top_k=1, temp=1.0, top_p=1.0) + light repetition penalty.
+    # Empirically: a 110M model with retrieved context does best with greedy
+    # decoding on factual Q&A. Sampling at any temperature destroys accuracy.
     eos_id = tok.eos_token_id
 
     def chat(message, history):
