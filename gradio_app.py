@@ -44,24 +44,20 @@ def build_prompt(history, user_msg):
     return "".join(parts)
 
 
-def make_chat_fn(model, tok, device, max_new_tokens=150, temperature=0.8, top_k=40, raw_mode=False):
-    eos_id = tok.eos_token_id  # </s> for Llama-2 tokenizer
+def make_chat_fn(model, tok, device, max_new_tokens=120, temperature=0.7, top_k=40, raw_mode=False):
+    eos_id = tok.eos_token_id  # </s>
 
     def chat(message, history):
-        if raw_mode:
-            # Base-model mode: just feed the user text raw and continue.
-            # This is what a non-SFT'd model actually wants.
-            prompt = message
-        else:
-            prompt = build_prompt(history, message)
+        prompt = message if raw_mode else build_prompt(history, message)
         ids = tok.encode(prompt, return_tensors="pt").to(device)
         ctx = model.cfg.max_seq_len
         if ids.shape[1] > ctx - max_new_tokens:
             ids = ids[:, -(ctx - max_new_tokens):]
 
         out = ids
+        is_mcq = ("(A)" in message and "(B)" in message)  # heuristic: tighten stop for MCQs
         with torch.no_grad():
-            for _ in range(max_new_tokens):
+            for step in range(max_new_tokens):
                 logits, _ = model(out[:, -ctx:])
                 logits = logits[:, -1, :] / temperature
                 if top_k:
@@ -74,10 +70,15 @@ def make_chat_fn(model, tok, device, max_new_tokens=150, temperature=0.8, top_k=
                 out = torch.cat([out, nxt], dim=1)
 
                 new_text = tok.decode(out[0, ids.shape[1]:].tolist(), skip_special_tokens=True)
-                # also stop on ChatML end marker if present (post-SFT)
+                # Stop on ChatML end marker
                 if EOT in new_text:
-                    new_text = new_text.split(EOT)[0]
-                    yield new_text
+                    yield new_text.split(EOT)[0].rstrip()
+                    return
+                # For MCQ-style prompts, the answer is one short sentence — stop on
+                # first sentence terminator after we've generated some content
+                if is_mcq and step > 8 and (new_text.rstrip().endswith(".") or "\n" in new_text[10:]):
+                    sent = new_text.split("\n")[0].rstrip()
+                    yield sent
                     return
                 yield new_text
 
