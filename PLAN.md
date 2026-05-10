@@ -43,21 +43,24 @@ Not applicable here. Both are *fine-tuning* accelerators that need a pretrained 
 - API key file: `.vast-ai-api-key` (gitignored)
 - Target offers: RTX 3090, 1 GPU, ≥80GB disk, ≥500 Mbps inet, reliability >0.98, dph <0.20
 
-## Open items / next session pickups
-- [x] User pointed to MCQ JSON: `gk_questions.json` (6686 entries, copied to `raw_data/mcqs/`). Confirmed superset of the smaller category files.
-- [x] Newspapers: 102 PDFs in `~/Library/Mobile Documents/com~apple~CloudDocs/Downloads/Newspaper /` (487MB).
-- [ ] Plan B pretraining run (in progress, started 2026-05-09 ~10:58, ETA ~12-13h, target loss ~3.0).
-- [x] PDF extraction script (`extract_pdfs.py`) — written, untested.
-- [x] MCQ formatter (`format_mcqs.py`) — written, untested.
-- [x] Gradio app (`gradio_app.py`) — written, untested. Uses ChatML formatting, streams tokens.
-- [ ] Wire up `lm-evaluation-harness`.
-- [ ] Add KV-cache to attention for faster Gradio inference (currently O(n²) per response). Borrow from nanochat. Acceptable for demo-tier use as-is.
-- [ ] Deploy Gradio to HuggingFace Spaces after final SFT weights are ready. Plan: rename `gradio_app.py` → `app.py`, push weights to `huggingface.co/rsumit123/private-llm-110m`, point Space at it.
+## Status: shipped 🚀 (2026-05-10)
 
-## Deployment recipe (Hugging Face Spaces)
-Once weights are final:
-1. `huggingface-cli login`
-2. `huggingface-cli upload rsumit123/private-llm-110m ckpt_final.pt model.safetensors`
-3. Create Space at `huggingface.co/new-space`, SDK=Gradio, Hardware=CPU basic (free)
-4. Push: `app.py` (renamed from gradio_app.py), `model.py`, `configs.py`, `requirements.txt`. Have `app.py` download the ckpt from the model repo on startup.
-5. Public URL appears at `huggingface.co/spaces/rsumit123/private-llm-chat` — share with anyone.
+**Live demo:** https://huggingface.co/spaces/sumitkClasses/scratchq-110
+
+**Final spend:** $5.39 of $10 budget. Vast.ai instance destroyed.
+
+### What was built
+- ✅ Pretrained 110M Llama-style transformer from scratch on 2B FineWeb-Edu tokens (10,500 steps, final loss 3.10)
+- ✅ SFT v4 — two-stage: 22k augmented Indian MCQs (loss 1.81) → 5k SQuAD passes at lr=1e-5 (final loss 0.73)
+- ✅ Built Indian-Wikipedia knowledge base — 4,631 chunks across 171 articles, embedded with BAAI/bge-small-en-v1.5
+- ✅ Comparative eval vs GPT-2 small / GPT-2 medium / Pythia-410M — we win on LL by 10-19pp, on Generation by 15-20pp
+- ✅ Gradio chat UI with RAG (top-5 retrieval), greedy decoding + light repetition penalty, out-of-scope detection (cosine < 0.55)
+- ✅ Deployed to HuggingFace Spaces (CPU basic, free tier, permanent URL)
+
+### Resume claim
+> *"Pretrained a 110M-parameter Llama-style transformer from scratch on 2B FineWeb-Edu tokens (~$2 of compute), then SFT'd on 6,686 Indian general-knowledge MCQs (augmented to 22k examples across 4 formats) plus SQuAD-style passage extraction. Achieved **36.5% on held-out 4-option MCQs vs GPT-2 medium at 17.5%** — a 19 pp improvement on a model 3× larger. Deployed with retrieval-augmented generation over a 4,600-chunk Indian Wikipedia knowledge base."*
+
+### Open items (post-ship, optional)
+- [ ] KV-cache inference for faster CPU generation (currently O(n²) per response).
+- [ ] Try fine-tuning Qwen2.5-1.5B on same data as a "production tier" demo alongside the from-scratch one.
+- [ ] Submit base model checkpoint to Open LLM Leaderboard for an external benchmark.

@@ -1,8 +1,22 @@
 # private-llm
 
-Train a small Llama-style LLM from scratch on a single GPU. Pretrain → SFT → eval.
+Train a small Llama-style LLM **from scratch** on a single GPU. Pretrain → SFT → RAG → eval.
 
-See [CONCEPTS.md](CONCEPTS.md) for an explanation of the architecture and training process.
+🚀 **Live demo:** https://huggingface.co/spaces/sumitkClasses/scratchq-110
+
+See [CONCEPTS.md](CONCEPTS.md) for end-to-end walkthrough with diagrams. See [PLAN.md](PLAN.md) for project decisions and final results.
+
+## Headline result
+
+110M-param transformer trained from scratch on 2B FineWeb-Edu tokens (~$2 of compute), then SFT'd on a custom 6,686-question Indian general-knowledge MCQ dataset. **Outperforms GPT-2 medium (3× larger) by 19 percentage points** on a held-out Indian-MCQ benchmark.
+
+| Model | Params | LL accuracy | Gen accuracy |
+|---|---:|---:|---:|
+| **ours (specialized 110M)** | **110M** | **36.5%** | **33.5%** |
+| GPT-2 small | 124M | 22.0% | 14.0% |
+| GPT-2 medium | 355M | 17.5% | 15.5% |
+| Pythia-410M | 405M | 26.5% | 18.0% |
+| (random baseline) | — | 25.0% | 25.0% |
 
 ## Files
 - `model.py` — Llama-style transformer (RMSNorm, RoPE, SwiGLU, FlashAttention via SDPA)
