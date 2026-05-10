@@ -79,8 +79,9 @@ def build_prompt(history, user_msg, retriever=None, k=2, max_ctx_chars=1800):
                 ctx += piece
                 break
             ctx += piece
+        # Match SFT v2 training format exactly
         user_block = (
-            f"Read the following passage and answer the question.\n\n"
+            f"Read the passage and answer the question.\n\n"
             f"{ctx.strip()}\n\nQuestion: {user_msg}"
         )
     else:
@@ -90,8 +91,8 @@ def build_prompt(history, user_msg, retriever=None, k=2, max_ctx_chars=1800):
     return "".join(parts)
 
 
-def make_chat_fn(model, tok, device, max_new_tokens=120, temperature=0.8,
-                 top_k=50, top_p=0.9, repetition_penalty=1.15, raw_mode=False,
+def make_chat_fn(model, tok, device, max_new_tokens=80, temperature=0.4,
+                 top_k=20, top_p=0.9, repetition_penalty=1.15, raw_mode=False,
                  retriever=None):
     eos_id = tok.eos_token_id
 
