@@ -56,29 +56,31 @@ class Retriever:
         return [(float(scores[i]), self.chunks[i]) for i in idx]
 
 
-def build_prompt(history, user_msg, retriever=None, k=3, max_ctx_chars=2000):
+def build_prompt(history, user_msg, retriever=None, k=2, max_ctx_chars=900):
     """Render conversation + user message into a ChatML prompt. If a retriever
-    is given, retrieved chunks are stuffed into the system prompt as context."""
+    is given, retrieved chunks are inlined into the user message — this works
+    better than stuffing them into <|system|> because our SFT model never saw
+    long system prompts."""
+    parts = [f"<|system|>\n{SYS_PROMPT}{EOT}\n"]
+    for u, a in history:
+        parts.append(f"{B_USR}{u}{EOT}\n")
+        parts.append(f"{B_ASST}{a}{EOT}\n")
+
     if retriever is not None:
         hits = retriever.topk(user_msg, k=k)
         ctx = ""
         for score, c in hits:
-            piece = f"\n[{c['title']}] {c['text']}"
+            piece = f"{c['title']}: {c['text']}\n\n"
             if len(ctx) + len(piece) > max_ctx_chars: break
             ctx += piece
-        sys_text = (
-            f"{SYS_PROMPT} Use the information below to answer the user's question. "
-            f"If the information does not contain the answer, say you don't know.\n"
-            f"---\n{ctx}\n---"
+        user_block = (
+            f"Read the following passage and answer the question.\n\n"
+            f"{ctx.strip()}\n\nQuestion: {user_msg}"
         )
     else:
-        sys_text = SYS_PROMPT
+        user_block = user_msg
 
-    parts = [f"<|system|>\n{sys_text}{EOT}\n"]
-    for u, a in history:
-        parts.append(f"{B_USR}{u}{EOT}\n")
-        parts.append(f"{B_ASST}{a}{EOT}\n")
-    parts.append(f"{B_USR}{user_msg}{EOT}\n{B_ASST}")
+    parts.append(f"{B_USR}{user_block}{EOT}\n{B_ASST}")
     return "".join(parts)
 
 
