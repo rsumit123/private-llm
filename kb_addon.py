@@ -66,22 +66,30 @@ CHUNK_WORDS = 180
 HDRS = {"User-Agent": "private-llm-rag/0.1"}
 
 
-def fetch_via_rest(slug):
+def fetch_via_rest(slug, retries=3):
     """Use the REST API by slug — much more reliable than action=query."""
-    url = f"https://en.wikipedia.org/w/api.php"
-    r = requests.get(url, params={
-        "action": "query", "prop": "extracts", "titles": slug.replace("_", " "),
-        "explaintext": True, "exsectionformat": "plain",
-        "format": "json", "redirects": 1,
-    }, headers=HDRS, timeout=30)
-    j = r.json()
-    pages = j.get("query", {}).get("pages", {})
-    for pid, p in pages.items():
-        if pid == "-1": return None, None
-        title = p.get("title", slug)
-        text = p.get("extract", "")
-        if text and len(text) > 200:
-            return title, text
+    url = "https://en.wikipedia.org/w/api.php"
+    for attempt in range(retries):
+        try:
+            r = requests.get(url, params={
+                "action": "query", "prop": "extracts", "titles": slug.replace("_", " "),
+                "explaintext": True, "exsectionformat": "plain",
+                "format": "json", "redirects": 1,
+            }, headers=HDRS, timeout=30)
+            if r.status_code != 200:
+                time.sleep(1 + attempt); continue
+            j = r.json()
+            pages = j.get("query", {}).get("pages", {})
+            for pid, p in pages.items():
+                if pid == "-1": return None, None
+                title = p.get("title", slug)
+                text = p.get("extract", "")
+                if text and len(text) > 200:
+                    return title, text
+            return None, None
+        except (requests.RequestException, ValueError) as e:
+            print(f"    api error ({e.__class__.__name__}), retry {attempt+1}/{retries}")
+            time.sleep(1 + attempt * 2)
     return None, None
 
 
