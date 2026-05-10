@@ -133,7 +133,7 @@ def main():
         for j, c in enumerate(cs):
             new_chunks.append({"id": f"{title}#{j}", "title": title, "text": c})
         print(f"  OK: {slug} -> {title}: {len(cs)} chunks")
-        time.sleep(0.1)
+        time.sleep(0.5)  # be polite to Wikipedia API to avoid rate-limit
 
     print(f"\nadding {len(new_chunks)} new chunks")
     if not new_chunks:
