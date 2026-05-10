@@ -20,7 +20,11 @@ Args:
     --share          create a temporary 72-hour public URL (Gradio's gradio.live)
 """
 import argparse
+import json
 import os
+from pathlib import Path
+
+import numpy as np
 import torch
 import gradio as gr
 from transformers import AutoTokenizer
@@ -34,9 +38,43 @@ SYS_PROMPT = "You are a helpful assistant."
 B_USR, B_ASST, EOT = "<|user|>\n", "<|assistant|>\n", "<|end|>"
 
 
-def build_prompt(history, user_msg):
-    """Render conversation history + new user message into a single ChatML prompt."""
-    parts = [f"<|system|>\n{SYS_PROMPT}{EOT}\n"]
+class Retriever:
+    """Tiny in-memory dense retriever over the KB built by build_kb.py."""
+    def __init__(self, kb_dir):
+        kb_dir = Path(kb_dir)
+        meta = json.load(open(kb_dir / "kb.meta.json"))
+        self.chunks = [json.loads(l) for l in open(kb_dir / "kb.jsonl")]
+        self.emb = np.load(kb_dir / "kb.npy")  # already normalized
+        from sentence_transformers import SentenceTransformer
+        self.encoder = SentenceTransformer(meta["model"])
+        print(f"loaded KB: {len(self.chunks)} chunks, dim={meta['dim']}")
+
+    def topk(self, query, k=3):
+        q = self.encoder.encode([query], normalize_embeddings=True)[0]
+        scores = self.emb @ q  # cosine since both normalized
+        idx = np.argsort(-scores)[:k]
+        return [(float(scores[i]), self.chunks[i]) for i in idx]
+
+
+def build_prompt(history, user_msg, retriever=None, k=3, max_ctx_chars=2000):
+    """Render conversation + user message into a ChatML prompt. If a retriever
+    is given, retrieved chunks are stuffed into the system prompt as context."""
+    if retriever is not None:
+        hits = retriever.topk(user_msg, k=k)
+        ctx = ""
+        for score, c in hits:
+            piece = f"\n[{c['title']}] {c['text']}"
+            if len(ctx) + len(piece) > max_ctx_chars: break
+            ctx += piece
+        sys_text = (
+            f"{SYS_PROMPT} Use the information below to answer the user's question. "
+            f"If the information does not contain the answer, say you don't know.\n"
+            f"---\n{ctx}\n---"
+        )
+    else:
+        sys_text = SYS_PROMPT
+
+    parts = [f"<|system|>\n{sys_text}{EOT}\n"]
     for u, a in history:
         parts.append(f"{B_USR}{u}{EOT}\n")
         parts.append(f"{B_ASST}{a}{EOT}\n")
@@ -45,11 +83,12 @@ def build_prompt(history, user_msg):
 
 
 def make_chat_fn(model, tok, device, max_new_tokens=120, temperature=0.8,
-                 top_k=50, top_p=0.9, repetition_penalty=1.3, raw_mode=False):
+                 top_k=50, top_p=0.9, repetition_penalty=1.15, raw_mode=False,
+                 retriever=None):
     eos_id = tok.eos_token_id
 
     def chat(message, history):
-        prompt = message if raw_mode else build_prompt(history, message)
+        prompt = message if raw_mode else build_prompt(history, message, retriever=retriever)
         ids = tok.encode(prompt, return_tensors="pt").to(device)
         ctx = model.cfg.max_seq_len
         if ids.shape[1] > ctx - max_new_tokens:
@@ -114,6 +153,8 @@ def main():
     ap.add_argument("--raw", action="store_true",
                     help="base-model mode: feed user text directly (no chat template). "
                          "Use this until the model has been SFT'd.")
+    ap.add_argument("--kb_dir", default=None,
+                    help="dir built by build_kb.py — enables RAG when set")
     args = ap.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -128,7 +169,12 @@ def main():
     print(f"loaded {model.num_params()/1e6:.1f}M params")
 
     tok = AutoTokenizer.from_pretrained(args.tokenizer, use_fast=True)
-    chat_fn = make_chat_fn(model, tok, device, raw_mode=args.raw)
+
+    retriever = None
+    if args.kb_dir and not args.raw:
+        retriever = Retriever(args.kb_dir)
+
+    chat_fn = make_chat_fn(model, tok, device, raw_mode=args.raw, retriever=retriever)
 
     if args.raw:
         title = "private-llm (base model, ~10% trained) — text continuation only"

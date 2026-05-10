@@ -8,3 +8,4 @@ transformers
 wandb
 pymupdf
 gradio
+sentence-transformers
