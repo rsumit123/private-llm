@@ -12,6 +12,7 @@ Usage:
 Input data: HuggingFaceH4/ultrachat_200k (filtered, conversational).
 """
 import argparse
+import json
 import math
 import time
 from pathlib import Path
@@ -80,6 +81,10 @@ def main():
     ap.add_argument("--max_len", type=int, default=1024)
     ap.add_argument("--lr", type=float, default=2e-5)  # 10x smaller than pretrain
     ap.add_argument("--max_examples", type=int, default=20000)
+    ap.add_argument("--extra_jsonl", default=None,
+                    help="optional jsonl of {messages:[...]} examples to mix with ultrachat")
+    ap.add_argument("--ultrachat_count", type=int, default=10000,
+                    help="how many ultrachat examples to stream")
     args = ap.parse_args()
 
     device = "cuda"
@@ -96,16 +101,34 @@ def main():
     tok = AutoTokenizer.from_pretrained(args.tokenizer, use_fast=True)
     pad_id = tok.eos_token_id
 
-    print("loading ultrachat_200k (streaming, filter)…")
-    ds_iter = load_dataset("HuggingFaceH4/ultrachat_200k", split="train_sft", streaming=True)
     examples = []
-    for ex in ds_iter:
-        ids, mask = build_example(ex["messages"], tok, args.max_len)
-        if sum(mask) >= 16:  # skip examples with almost no response tokens
-            examples.append((ids, mask))
-        if len(examples) >= args.max_examples:
-            break
-    print(f"prepared {len(examples)} examples")
+
+    # Local jsonl first (e.g. our MCQs) — small, deterministic, in-domain
+    if args.extra_jsonl:
+        print(f"loading extra jsonl: {args.extra_jsonl}")
+        with open(args.extra_jsonl) as f:
+            for line in f:
+                obj = json.loads(line)
+                ids, mask = build_example(obj["messages"], tok, args.max_len)
+                if sum(mask) >= 4:
+                    examples.append((ids, mask))
+        print(f"  → {len(examples)} extra examples loaded")
+
+    if args.ultrachat_count > 0:
+        print(f"streaming ultrachat_200k (target {args.ultrachat_count})…")
+        ds_iter = load_dataset("HuggingFaceH4/ultrachat_200k", split="train_sft", streaming=True)
+        added = 0
+        for ex in ds_iter:
+            ids, mask = build_example(ex["messages"], tok, args.max_len)
+            if sum(mask) >= 16:
+                examples.append((ids, mask))
+                added += 1
+            if added >= args.ultrachat_count:
+                break
+        print(f"  → {added} ultrachat examples loaded")
+
+    examples = examples[:args.max_examples]
+    print(f"prepared {len(examples)} examples total")
 
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.0,
                             betas=(0.9, 0.95), fused=True)
