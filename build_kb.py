@@ -21,45 +21,79 @@ import numpy as np
 import requests
 
 
-# Curated seed topics covering MCQ categories we care about.
-# Wikipedia search endpoint will resolve each to the best matching article.
+# Curated seed topics. We look these up by direct title with a search fallback.
+# Use exact Wikipedia article titles when known.
 SEEDS = [
-    # Hindu mythology / Ramayana / Mahabharata
+    # Hindu mythology — Ramayana
     "Ramayana", "Rama", "Lakshmana", "Bharata (Ramayana)", "Shatrughna",
-    "Sita", "Ravana", "Hanuman", "Vibhishana", "Indrajit",
+    "Sita", "Ravana", "Hanuman", "Vibhishana", "Indrajit", "Kumbhakarna",
+    "Dasharatha", "Kausalya", "Kaikeyi", "Sumitra", "Jatayu", "Sugriva",
+    "Vali (Ramayana)", "Angada", "Jambavan",
+    # Hindu mythology — Mahabharata
     "Mahabharata", "Krishna", "Arjuna", "Bhima", "Yudhishthira",
-    "Nakula", "Sahadeva", "Karna", "Draupadi", "Duryodhana",
-    "Bhagavad Gita", "Vishnu", "Shiva", "Brahma", "Ganesha",
-    "Hindu deities", "Avatars of Vishnu",
-    # Indian history
-    "History of India", "Indian independence movement", "Mahatma Gandhi",
-    "Jawaharlal Nehru", "Sardar Vallabhbhai Patel", "B. R. Ambedkar",
-    "Subhas Chandra Bose", "Bhagat Singh", "Mughal Empire", "Akbar",
-    "Shah Jahan", "Aurangzeb", "Maratha Empire", "Shivaji",
-    "British Raj", "Partition of India",
+    "Nakula", "Sahadeva", "Karna", "Draupadi", "Duryodhana", "Dushasana",
+    "Bhishma", "Drona", "Kripa", "Ashwatthama", "Shakuni", "Kunti", "Gandhari",
+    "Abhimanyu", "Ekalavya",
+    # Hindu deities + texts
+    "Bhagavad Gita", "Vishnu", "Shiva", "Brahma", "Ganesha", "Lakshmi",
+    "Saraswati", "Parvati", "Durga", "Kali", "Indra", "Surya (Hindu deity)",
+    "Avatars of Vishnu", "Trimurti",
+    # Indian history — pre-modern
+    "History of India", "Indus Valley civilisation", "Maurya Empire",
+    "Chandragupta Maurya", "Ashoka", "Gupta Empire", "Harsha",
+    "Chola dynasty", "Vijayanagara Empire", "Mughal Empire", "Babur",
+    "Humayun", "Akbar", "Jahangir", "Shah Jahan", "Aurangzeb",
+    "Maratha Empire", "Shivaji", "Bahadur Shah Zafar", "Tipu Sultan",
+    # Indian independence
+    "Indian independence movement", "Mahatma Gandhi", "Jawaharlal Nehru",
+    "Sardar Vallabhbhai Patel", "B. R. Ambedkar", "Subhas Chandra Bose",
+    "Bhagat Singh", "Chandra Shekhar Azad", "Lala Lajpat Rai",
+    "Bal Gangadhar Tilak", "Sarojini Naidu", "Bipin Chandra Pal",
+    "Partition of India", "British Raj", "Quit India Movement",
+    "Salt March", "Jallianwala Bagh massacre",
+    # Indian leaders post-1947
+    "Indira Gandhi", "Lal Bahadur Shastri", "Rajiv Gandhi", "Atal Bihari Vajpayee",
+    "Manmohan Singh", "Narendra Modi", "Pratibha Patil", "Rajendra Prasad",
+    "Kalpana Chawla", "Sundar Pichai",
     # Geography
-    "Geography of India", "States and union territories of India",
-    "Ganges", "Yamuna", "Brahmaputra", "Godavari", "Krishna River",
-    "Kaveri", "Indus River", "Himalayas", "Western Ghats", "Eastern Ghats",
-    "Thar Desert", "Deccan Plateau",
-    # Politics / governance
+    "Geography of India", "Ganges", "Yamuna", "Brahmaputra River",
+    "Godavari River", "Krishna River", "Kaveri", "Indus River",
+    "Narmada River", "Tapi River", "Himalayas", "Western Ghats",
+    "Eastern Ghats", "Thar Desert", "Deccan Plateau", "Sundarbans",
+    "New Delhi", "Mumbai", "Kolkata", "Chennai", "Bengaluru", "Hyderabad",
+    "Pune", "Ahmedabad", "Jaipur", "Lucknow", "Goa", "Kerala",
+    # Government
     "Government of India", "Constitution of India", "President of India",
-    "Prime Minister of India", "Parliament of India", "Supreme Court of India",
-    "Lok Sabha", "Rajya Sabha", "Indian National Congress", "Bharatiya Janata Party",
+    "Prime Minister of India", "Vice President of India", "Parliament of India",
+    "Supreme Court of India", "Lok Sabha", "Rajya Sabha",
+    "Indian National Congress", "Bharatiya Janata Party",
+    "States and union territories of India",
     # Defense
     "Indian Armed Forces", "Indian Army", "Indian Air Force", "Indian Navy",
-    "Defence Research and Development Organisation",
+    "Defence Research and Development Organisation", "BrahMos", "Tejas (combat aircraft)",
+    "INS Vikrant (2013)",
     # Sports
-    "Cricket in India", "Sachin Tendulkar", "Virat Kohli", "M. S. Dhoni",
-    "Indian Premier League", "Field hockey in India", "Major Dhyan Chand",
-    # Science / general
-    "Science and technology in India", "Indian Space Research Organisation",
-    "Chandrayaan-3", "C. V. Raman", "A. P. J. Abdul Kalam",
+    "Cricket in India", "Sachin Tendulkar", "Virat Kohli", "MS Dhoni",
+    "Sourav Ganguly", "Rahul Dravid", "Kapil Dev", "Sunil Gavaskar",
+    "Indian Premier League", "Field hockey in India", "Dhyan Chand",
+    "Mary Kom", "PT Usha", "PV Sindhu", "Saina Nehwal", "Vishwanathan Anand",
+    "Abhinav Bindra", "Neeraj Chopra", "Sania Mirza",
+    # Science / Technology
+    "Indian Space Research Organisation", "Chandrayaan-3", "Mangalyaan",
+    "Aditya-L1", "C. V. Raman", "A. P. J. Abdul Kalam",
+    "Homi J. Bhabha", "Vikram Sarabhai", "Srinivasa Ramanujan",
+    "Har Gobind Khorana", "Subrahmanyan Chandrasekhar", "Venkatraman Ramakrishnan",
     # Food
-    "Indian cuisine", "Biryani", "Curry", "Chai (drink)", "Masala dosa",
-    # Entertainment
-    "Cinema of India", "Bollywood", "Satyajit Ray", "Amitabh Bachchan",
-    "Lata Mangeshkar", "Indian classical music", "Bharatanatyam",
+    "Indian cuisine", "Biryani", "Curry", "Masala chai", "Masala dosa",
+    "Idli", "Samosa", "Naan", "Chapati", "Paneer", "Dal", "Tandoori chicken",
+    # Culture / Entertainment
+    "Hindi cinema", "Bollywood", "Satyajit Ray", "Amitabh Bachchan",
+    "Shah Rukh Khan", "Lata Mangeshkar", "Rabindranath Tagore",
+    "Jana Gana Mana", "Vande Mataram", "Bharatanatyam", "Kathak",
+    "Indian classical music", "Ravi Shankar (musician)", "Bismillah Khan",
+    # Symbols / national
+    "National symbols of India", "National Emblem of India", "Flag of India",
+    "Bengal tiger", "Indian peafowl", "Lotus", "National Game of India",
 ]
 
 WIKI_API = "https://en.wikipedia.org/w/api.php"
@@ -80,27 +114,36 @@ def _api(params, retries=3):
     return None
 
 
-def fetch_article(title):
-    j = _api({"action": "query", "list": "search", "srsearch": title,
-              "format": "json", "srlimit": 1})
-    if not j:
-        return None, None
-    hits = j.get("query", {}).get("search", [])
-    if not hits:
-        return None, None
-    canonical = hits[0]["title"]
-
-    j = _api({"action": "query", "prop": "extracts", "titles": canonical,
+def _extract_by_title(title):
+    j = _api({"action": "query", "prop": "extracts", "titles": title,
               "explaintext": True, "exsectionformat": "plain",
               "format": "json", "redirects": 1})
     if not j:
-        return canonical, None
+        return None, None
     pages = j.get("query", {}).get("pages", {})
-    for _, p in pages.items():
+    for pid, p in pages.items():
+        if pid == "-1":  # missing
+            return None, None
+        canonical = p.get("title", title)
         text = p.get("extract", "")
-        if text:
+        if text and len(text) > 200:
             return canonical, text
-    return canonical, None
+    return None, None
+
+
+def fetch_article(title):
+    # 1. Try direct title lookup first — much higher hit rate than search.
+    canonical, text = _extract_by_title(title)
+    if text: return canonical, text
+
+    # 2. Fallback to search.
+    j = _api({"action": "query", "list": "search", "srsearch": title,
+              "format": "json", "srlimit": 1})
+    if not j: return None, None
+    hits = j.get("query", {}).get("search", [])
+    if not hits: return None, None
+    canonical = hits[0]["title"]
+    return _extract_by_title(canonical)
 
 
 def chunkify(text, n_words=CHUNK_WORDS):

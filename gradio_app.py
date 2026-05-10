@@ -56,7 +56,7 @@ class Retriever:
         return [(float(scores[i]), self.chunks[i]) for i in idx]
 
 
-def build_prompt(history, user_msg, retriever=None, k=2, max_ctx_chars=1800):
+def build_prompt(history, user_msg, retriever=None, k=3, max_ctx_chars=2200):
     """Render conversation + user message into a ChatML prompt. If a retriever
     is given, retrieved chunks are inlined into the user message — this works
     better than stuffing them into <|system|> because our SFT model never saw
