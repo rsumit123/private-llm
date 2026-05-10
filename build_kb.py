@@ -67,23 +67,35 @@ CHUNK_WORDS = 180   # ~200-token chunks
 HDRS = {"User-Agent": "private-llm-rag/0.1 (research)"}
 
 
+def _api(params, retries=3):
+    for attempt in range(retries):
+        try:
+            r = requests.get(WIKI_API, params=params, headers=HDRS, timeout=30)
+            if r.status_code != 200:
+                time.sleep(1 + attempt); continue
+            return r.json()
+        except (requests.RequestException, ValueError) as e:
+            print(f"    api error ({e.__class__.__name__}), retry {attempt+1}/{retries}")
+            time.sleep(1 + attempt * 2)
+    return None
+
+
 def fetch_article(title):
-    # First resolve to canonical title via search (handles minor name mismatches)
-    r = requests.get(WIKI_API, params={
-        "action": "query", "list": "search", "srsearch": title,
-        "format": "json", "srlimit": 1,
-    }, headers=HDRS, timeout=20)
-    hits = r.json().get("query", {}).get("search", [])
+    j = _api({"action": "query", "list": "search", "srsearch": title,
+              "format": "json", "srlimit": 1})
+    if not j:
+        return None, None
+    hits = j.get("query", {}).get("search", [])
     if not hits:
         return None, None
     canonical = hits[0]["title"]
 
-    r = requests.get(WIKI_API, params={
-        "action": "query", "prop": "extracts",
-        "titles": canonical, "explaintext": True, "exsectionformat": "plain",
-        "format": "json", "redirects": 1,
-    }, headers=HDRS, timeout=30)
-    pages = r.json().get("query", {}).get("pages", {})
+    j = _api({"action": "query", "prop": "extracts", "titles": canonical,
+              "explaintext": True, "exsectionformat": "plain",
+              "format": "json", "redirects": 1})
+    if not j:
+        return canonical, None
+    pages = j.get("query", {}).get("pages", {})
     for _, p in pages.items():
         text = p.get("extract", "")
         if text:
