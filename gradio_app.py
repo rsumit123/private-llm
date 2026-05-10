@@ -56,7 +56,7 @@ class Retriever:
         return [(float(scores[i]), self.chunks[i]) for i in idx]
 
 
-def build_prompt(history, user_msg, retriever=None, k=2, max_ctx_chars=900):
+def build_prompt(history, user_msg, retriever=None, k=2, max_ctx_chars=1800):
     """Render conversation + user message into a ChatML prompt. If a retriever
     is given, retrieved chunks are inlined into the user message — this works
     better than stuffing them into <|system|> because our SFT model never saw
@@ -71,7 +71,13 @@ def build_prompt(history, user_msg, retriever=None, k=2, max_ctx_chars=900):
         ctx = ""
         for score, c in hits:
             piece = f"{c['title']}: {c['text']}\n\n"
-            if len(ctx) + len(piece) > max_ctx_chars: break
+            remaining = max_ctx_chars - len(ctx)
+            if remaining <= 0: break
+            # Always include at least the start of the first chunk; truncate later ones
+            if len(piece) > remaining:
+                piece = piece[:remaining].rstrip() + "…\n\n"
+                ctx += piece
+                break
             ctx += piece
         user_block = (
             f"Read the following passage and answer the question.\n\n"
