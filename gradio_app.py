@@ -56,30 +56,39 @@ class Retriever:
         return [(float(scores[i]), self.chunks[i]) for i in idx]
 
 
+OUT_OF_SCOPE_THRESHOLD = 0.55  # cosine similarity below this → likely off-topic for our Indian KB
+OUT_OF_SCOPE_MSG = (
+    "Sorry, this model is specialized for Indian general knowledge "
+    "(history, mythology, geography, sports, politics). I don't have "
+    "information on that topic."
+)
+
+
 def build_prompt(history, user_msg, retriever=None, k=5, max_ctx_chars=2400):
     """Render conversation + user message into a ChatML prompt. If a retriever
-    is given, retrieved chunks are inlined into the user message — this works
-    better than stuffing them into <|system|> because our SFT model never saw
-    long system prompts."""
+    is given, retrieved chunks are inlined into the user message. Returns a
+    tuple (prompt, out_of_scope) — if out_of_scope is True, the caller should
+    short-circuit and return the OUT_OF_SCOPE_MSG."""
     parts = [f"<|system|>\n{SYS_PROMPT}{EOT}\n"]
     for u, a in history:
         parts.append(f"{B_USR}{u}{EOT}\n")
         parts.append(f"{B_ASST}{a}{EOT}\n")
 
+    out_of_scope = False
     if retriever is not None:
         hits = retriever.topk(user_msg, k=k)
+        if hits and hits[0][0] < OUT_OF_SCOPE_THRESHOLD:
+            out_of_scope = True
         ctx = ""
         for score, c in hits:
             piece = f"{c['title']}: {c['text']}\n\n"
             remaining = max_ctx_chars - len(ctx)
             if remaining <= 0: break
-            # Always include at least the start of the first chunk; truncate later ones
             if len(piece) > remaining:
                 piece = piece[:remaining].rstrip() + "…\n\n"
                 ctx += piece
                 break
             ctx += piece
-        # Match SFT v2 training format exactly
         user_block = (
             f"Read the passage and answer the question.\n\n"
             f"{ctx.strip()}\n\nQuestion: {user_msg}"
@@ -88,7 +97,7 @@ def build_prompt(history, user_msg, retriever=None, k=5, max_ctx_chars=2400):
         user_block = user_msg
 
     parts.append(f"{B_USR}{user_block}{EOT}\n{B_ASST}")
-    return "".join(parts)
+    return "".join(parts), out_of_scope
 
 
 def make_chat_fn(model, tok, device, max_new_tokens=80, temperature=1.0,
@@ -100,7 +109,13 @@ def make_chat_fn(model, tok, device, max_new_tokens=80, temperature=1.0,
     eos_id = tok.eos_token_id
 
     def chat(message, history):
-        prompt = message if raw_mode else build_prompt(history, message, retriever=retriever)
+        if raw_mode:
+            prompt = message
+        else:
+            prompt, oos = build_prompt(history, message, retriever=retriever)
+            if oos:
+                yield OUT_OF_SCOPE_MSG
+                return
         ids = tok.encode(prompt, return_tensors="pt").to(device)
         ctx = model.cfg.max_seq_len
         if ids.shape[1] > ctx - max_new_tokens:
@@ -189,25 +204,29 @@ def main():
     chat_fn = make_chat_fn(model, tok, device, raw_mode=args.raw, retriever=retriever)
 
     if args.raw:
-        title = "private-llm (base model, ~10% trained) — text continuation only"
-        desc = (
-            "This is a *base* language model trained from scratch — it has not been "
-            "fine-tuned to answer questions. Give it the *start* of some text and it "
-            "will try to continue it. Asking 'What is X?' will mostly fail."
-        )
+        title = "private-llm (base model) — text continuation only"
+        desc = "Base language model trained from scratch on FineWeb-Edu — give it the start of a sentence and it'll try to continue."
         examples = [
             "Once upon a time in a small village,",
-            "Photosynthesis is the process by which",
-            "The most common planets in our solar system are",
             "The history of India can be traced back to",
+            "Photosynthesis is the process by which",
         ]
     else:
-        title = "private-llm — 110M params, trained from scratch"
-        desc = "Tiny custom LLM. Will say wrong things confidently — that's the charm."
+        title = "🇮🇳 private-llm — 110M Indian-GK chatbot trained from scratch"
+        desc = (
+            "A 110M-parameter Llama-style language model **trained from scratch** on $2 of compute (2B FineWeb-Edu tokens), "
+            "then SFT'd on 6,686 Indian general-knowledge MCQs and SQuAD passages, with RAG over a 4,600-chunk Indian Wikipedia knowledge base. "
+            "Specialized in Indian history, mythology, geography, politics, sports, food. "
+            "Will politely decline questions outside Indian context. Often wrong on niche facts — that's the 110M-param ceiling. "
+            "Compares favorably to GPT-2 medium (3× larger) on Indian-MCQ benchmarks."
+        )
         examples = [
-            "What is the capital of France?",
-            "Write a short story about a robot learning to bake.",
-            "Q: Who wrote Hamlet?",
+            "Who is Rama's brother?",
+            "Who was the first Prime Minister of India?",
+            "What is the capital of India?",
+            "Who founded the Maratha Empire?",
+            "Tell me about Hanuman.",
+            "Who wrote the Indian National Anthem?",
         ]
 
     gr.ChatInterface(fn=chat_fn, title=title, description=desc, examples=examples).launch(share=args.share)
