@@ -1,0 +1,3 @@
+{"tag": "a_mha", "attn_type": "mha", "n_kv_head": 6, "mla_kv_dim": 0, "params_M": 135.27, "kv_bytes_per_token": 36864, "kv_MB_per_seq": 72.0, "seqs_in_budget": 142, "decode_tok_s_b1": 179.9, "decode_tok_s_b32": 5699.1}
+{"tag": "a_gqa", "attn_type": "mha", "n_kv_head": 2, "mla_kv_dim": 0, "params_M": 125.83, "kv_bytes_per_token": 12288, "kv_MB_per_seq": 24.0, "seqs_in_budget": 426, "decode_tok_s_b1": 178.2, "decode_tok_s_b32": 5660.7}
+{"tag": "a_mla", "attn_type": "mla", "n_kv_head": 6, "mla_kv_dim": 480, "params_M": 133.57, "kv_bytes_per_token": 12288, "kv_MB_per_seq": 24.0, "seqs_in_budget": 426, "decode_tok_s_b1": 88.7, "decode_tok_s_b32": 2603.2}

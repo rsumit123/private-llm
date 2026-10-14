@@ -1,0 +1,399 @@
+diff --git a/nanochat/engine.py b/nanochat/engine.py
+index 9680d83..e504cd0 100644
+--- a/nanochat/engine.py
++++ b/nanochat/engine.py
+@@ -89,15 +89,21 @@ class KVCache:
+     - Position tracked per batch element via cache_seqlens tensor
+     """
+ 
+-    def __init__(self, batch_size, num_heads, seq_len, head_dim, num_layers, device, dtype):
++    def __init__(self, batch_size, num_heads, seq_len, head_dim, num_layers, device, dtype, latent_dim=0):
+         self.batch_size = batch_size
+         self.max_seq_len = seq_len
+         self.n_layers = num_layers
+         self.n_heads = num_heads
+         self.head_dim = head_dim
+-        # Pre-allocate cache tensors: (n_layers, B, T, H, D)
+-        self.k_cache = torch.zeros(num_layers, batch_size, seq_len, num_heads, head_dim, device=device, dtype=dtype)
+-        self.v_cache = torch.zeros(num_layers, batch_size, seq_len, num_heads, head_dim, device=device, dtype=dtype)
++        self.latent_dim = latent_dim
++        if latent_dim:
++            # MLA: one compact latent per token per layer instead of full keys and values
++            self.k_cache = torch.zeros(num_layers, batch_size, seq_len, latent_dim, device=device, dtype=dtype)
++            self.v_cache = None
++        else:
++            # Pre-allocate cache tensors: (n_layers, B, T, H, D)
++            self.k_cache = torch.zeros(num_layers, batch_size, seq_len, num_heads, head_dim, device=device, dtype=dtype)
++            self.v_cache = torch.zeros(num_layers, batch_size, seq_len, num_heads, head_dim, device=device, dtype=dtype)
+         # Current sequence length per batch element (FA3 needs int32)
+         self.cache_seqlens = torch.zeros(batch_size, dtype=torch.int32, device=device)
+         # Previous token's normalized embedding for smear (set by model forward pass)
+@@ -114,7 +120,10 @@ class KVCache:
+ 
+     def get_layer_cache(self, layer_idx):
+         """Return (k_cache, v_cache) views for a specific layer."""
+-        return self.k_cache[layer_idx], self.v_cache[layer_idx]
++        return self.k_cache[layer_idx], (None if self.v_cache is None else self.v_cache[layer_idx])
++
++    def nbytes(self):
++        return sum(t.numel() * t.element_size() for t in (self.k_cache, self.v_cache) if t is not None)
+ 
+     def advance(self, num_tokens):
+         """Advance the cache position by num_tokens."""
+@@ -127,10 +136,12 @@ class KVCache:
+         """
+         assert self.get_pos() == 0, "Cannot prefill a non-empty KV cache"
+         assert self.n_layers == other.n_layers and self.n_heads == other.n_heads and self.head_dim == other.head_dim
++        assert self.latent_dim == other.latent_dim
+         assert self.max_seq_len >= other.max_seq_len
+         other_pos = other.get_pos()
+-        self.k_cache[:, :, :other_pos, :, :] = other.k_cache[:, :, :other_pos, :, :]
+-        self.v_cache[:, :, :other_pos, :, :] = other.v_cache[:, :, :other_pos, :, :]
++        self.k_cache[:, :, :other_pos] = other.k_cache[:, :, :other_pos]
++        if self.v_cache is not None:
++            self.v_cache[:, :, :other_pos] = other.v_cache[:, :, :other_pos]
+         self.cache_seqlens.fill_(other_pos)
+         # Copy smear state: expand batch=1 prev_embedding to num_samples
+         if other.prev_embedding is not None:
+@@ -193,7 +204,8 @@ class Engine:
+ 
+         # 1) Run a batch 1 prefill of the prompt tokens
+         m = self.model.config
+-        kv_model_kwargs = {"num_heads": m.n_kv_head, "head_dim": m.n_embd // m.n_head, "num_layers": m.n_layer}
++        kv_model_kwargs = {"num_heads": m.n_kv_head, "head_dim": m.n_embd // m.n_head, "num_layers": m.n_layer,
++                           "latent_dim": (m.mla_kv_dim + m.mla_rope_dim) if m.attn_type == "mla" else 0}
+         kv_cache_prefill = KVCache(
+             batch_size=1,
+             seq_len=len(tokens),
+diff --git a/nanochat/gpt.py b/nanochat/gpt.py
+index 1e89378..7855cf3 100644
+--- a/nanochat/gpt.py
++++ b/nanochat/gpt.py
+@@ -37,6 +37,11 @@ class GPTConfig:
+     # Characters: L=long (full context), S=short (quarter context)
+     # Examples: "L"=all full context, "SL"=alternating, "SSL"=two short then one long
+     window_pattern: str = "SSSL"
++    # Attention variant: "mha" (incl. GQA via n_kv_head) or "mla" (DeepSeek-style multi-head latent attention)
++    attn_type: str = "mha"
++    mla_kv_dim: int = 0       # MLA: width of the cached KV latent
++    mla_rope_dim: int = 32    # MLA: width of the decoupled RoPE key (shared across heads, also cached)
++    use_value_embeds: bool = True
+ 
+ 
+ def norm(x):
+@@ -50,6 +55,10 @@ class Linear(nn.Linear):
+         return F.linear(x, self.weight.to(dtype=x.dtype))
+ 
+ 
++def ve_layer(config, layer_idx):
++    return config.use_value_embeds and has_ve(layer_idx, config.n_layer)
++
++
+ def has_ve(layer_idx, n_layer):
+     """Returns True if GPT layer should have Value Embedding (alternating, last layer always included)."""
+     return layer_idx % 2 == (n_layer - 1) % 2
+@@ -79,7 +88,7 @@ class CausalSelfAttention(nn.Module):
+         self.c_v = Linear(self.n_embd, self.n_kv_head * self.head_dim, bias=False)
+         self.c_proj = Linear(self.n_embd, self.n_embd, bias=False)
+         self.ve_gate_channels = 12
+-        self.ve_gate = Linear(self.ve_gate_channels, self.n_kv_head, bias=False) if has_ve(layer_idx, config.n_layer) else None
++        self.ve_gate = Linear(self.ve_gate_channels, self.n_kv_head, bias=False) if ve_layer(config, layer_idx) else None
+ 
+     def forward(self, x, ve, cos_sin, window_size, kv_cache):
+         B, T, C = x.size()
+@@ -128,6 +137,73 @@ class CausalSelfAttention(nn.Module):
+         return y
+ 
+ 
++class MLAttention(nn.Module):
++    """Multi-head latent attention (DeepSeek-V2 style), adapted to nanochat.
++
++    Keys/values are reconstructed from a shared low-rank latent c = RMSNorm(W_dkv x); position goes through a separate
++    RoPE key k_r = RoPE(W_kr x) shared by all heads. Only [c, k_r] (mla_kv_dim + mla_rope_dim values per token per layer)
++    is cached, vs 2 * n_kv_head * head_dim for MHA/GQA. nanochat applies QK-norm to full keys, which blocks the usual
++    weight-absorption trick, so at inference the cached latents are re-expanded to keys/values each step: the KV cache is
++    small, at the cost of extra compute. No value embeddings (they bypass the KV path).
++    """
++    def __init__(self, config, layer_idx):
++        super().__init__()
++        self.layer_idx = layer_idx
++        self.n_head = config.n_head
++        self.head_dim = config.n_embd // config.n_head
++        self.dc, self.dr = config.mla_kv_dim, config.mla_rope_dim
++        self.dn = self.head_dim - self.dr  # non-positional part of each query/key head
++        assert self.dc > 0 and 0 < self.dr < self.head_dim and self.head_dim % self.dr == 0 and self.dr % 2 == 0
++        assert not config.use_value_embeds, "MLA variant runs without value embeddings"
++        self.rope_stride = self.head_dim // self.dr  # take every k-th frequency: exactly RoPE frequencies for dim dr
++        self.c_q = Linear(config.n_embd, self.n_head * self.head_dim, bias=False)
++        self.w_dkv = Linear(config.n_embd, self.dc, bias=False)
++        self.w_kr = Linear(config.n_embd, self.dr, bias=False)
++        self.w_uk = Linear(self.dc, self.n_head * self.dn, bias=False)
++        self.w_uv = Linear(self.dc, self.n_head * self.head_dim, bias=False)
++        self.c_proj = Linear(config.n_embd, config.n_embd, bias=False)
++        self.ve_gate = None
++
++    def _rope(self, x, cos_sin):
++        cos, sin = cos_sin
++        return apply_rotary_emb(x, cos[..., ::self.rope_stride], sin[..., ::self.rope_stride])
++
++    def _expand(self, c, kr):
++        """latent (B,S,dc) + roped key (B,S,1,dr) -> keys and values (B,S,H,head_dim)"""
++        B, S, _ = c.shape
++        k = torch.cat([self.w_uk(c).view(B, S, self.n_head, self.dn), kr.expand(B, S, self.n_head, self.dr)], dim=-1)
++        v = self.w_uv(c).view(B, S, self.n_head, self.head_dim)
++        return norm(k) * 1.2, v
++
++    def forward(self, x, ve, cos_sin, window_size, kv_cache):
++        B, T, C = x.size()
++        q = self.c_q(x).view(B, T, self.n_head, self.head_dim)
++        q = torch.cat([q[..., :self.dn], self._rope(q[..., self.dn:], cos_sin)], dim=-1)
++        q = norm(q) * 1.2
++        c = norm(self.w_dkv(x))                                  # (B, T, dc)   <- cached
++        kr = self._rope(self.w_kr(x).view(B, T, 1, self.dr), cos_sin)  # (B, T, 1, dr) <- cached
++        if kv_cache is None:
++            k, v = self._expand(c, kr)
++            y = flash_attn.flash_attn_func(q, k, v, causal=True, window_size=window_size)
++        else:
++            lat = kv_cache.get_layer_cache(self.layer_idx)[0]   # (B, T_max, dc + dr)
++            pos = kv_cache.get_pos()
++            lat[:, pos:pos + T, :self.dc] = c
++            lat[:, pos:pos + T, self.dc:] = kr.view(B, T, self.dr)
++            past = lat[:, :pos]
++            k_new, v_new = self._expand(c, kr)
++            k_buf = torch.empty(B, pos + T, self.n_head, self.head_dim, device=x.device, dtype=k_new.dtype)
++            v_buf = torch.empty_like(k_buf)
++            if pos > 0:
++                k_buf[:, :pos], v_buf[:, :pos] = self._expand(past[..., :self.dc], past[..., self.dc:].unsqueeze(2))
++            y = flash_attn.flash_attn_with_kvcache(q, k_buf, v_buf, k=k_new, v=v_new,
++                                                   cache_seqlens=kv_cache.cache_seqlens, causal=True, window_size=window_size)
++            if self.layer_idx == kv_cache.n_layers - 1:
++                kv_cache.advance(T)
++        y = y.contiguous().view(B, T, -1)
++        return self.c_proj(y)
++
++
+ class MLP(nn.Module):
+     def __init__(self, config):
+         super().__init__()
+@@ -144,7 +220,7 @@ class MLP(nn.Module):
+ class Block(nn.Module):
+     def __init__(self, config, layer_idx):
+         super().__init__()
+-        self.attn = CausalSelfAttention(config, layer_idx)
++        self.attn = MLAttention(config, layer_idx) if config.attn_type == "mla" else CausalSelfAttention(config, layer_idx)
+         self.mlp = MLP(config)
+ 
+     def forward(self, x, ve, cos_sin, window_size, kv_cache):
+@@ -189,7 +265,7 @@ class GPT(nn.Module):
+         # Value embeddings (ResFormer-style): alternating layers, last layer always included
+         head_dim = config.n_embd // config.n_head
+         kv_dim = config.n_kv_head * head_dim
+-        self.value_embeds = nn.ModuleDict({str(i): nn.Embedding(padded_vocab_size, kv_dim) for i in range(config.n_layer) if has_ve(i, config.n_layer)})
++        self.value_embeds = nn.ModuleDict({str(i): nn.Embedding(padded_vocab_size, kv_dim) for i in range(config.n_layer) if ve_layer(config, i)})
+         # To support meta device initialization, we init the rotary embeddings here, but it's just "fake" meta tensors only.
+         # As for rotary_seq_len, these rotary embeddings are pretty small/cheap in memory,
+         # so let's just over-compute them by 10X, but assert fail if we ever reach that amount.
+@@ -225,8 +301,15 @@ class GPT(nn.Module):
+         s = 3**0.5 * n_embd**-0.5 # sqrt(3) multiplier makes sure Uniform achieves the same std as Normal
+         for block in self.transformer.h:
+             torch.nn.init.uniform_(block.attn.c_q.weight, -s, s) # weights use Uniform to avoid outliers
+-            torch.nn.init.uniform_(block.attn.c_k.weight, -s, s)
+-            torch.nn.init.uniform_(block.attn.c_v.weight, -s, s)
++            if isinstance(block.attn, MLAttention):
++                sc = 3**0.5 * block.attn.dc**-0.5  # up-projections read the (unit-RMS) latent
++                torch.nn.init.uniform_(block.attn.w_dkv.weight, -s, s)
++                torch.nn.init.uniform_(block.attn.w_kr.weight, -s, s)
++                torch.nn.init.uniform_(block.attn.w_uk.weight, -sc, sc)
++                torch.nn.init.uniform_(block.attn.w_uv.weight, -sc, sc)
++            else:
++                torch.nn.init.uniform_(block.attn.c_k.weight, -s, s)
++                torch.nn.init.uniform_(block.attn.c_v.weight, -s, s)
+             torch.nn.init.zeros_(block.attn.c_proj.weight) # projections are zero
+             torch.nn.init.uniform_(block.mlp.c_fc.weight, -s * 0.4, s * 0.4)  # 0.4x init scale for c_fc
+             torch.nn.init.zeros_(block.mlp.c_proj.weight)
+diff --git a/nanochat/optim.py b/nanochat/optim.py
+index 45d8c01..874883c 100644
+--- a/nanochat/optim.py
++++ b/nanochat/optim.py
+@@ -20,6 +20,9 @@ Good old AdamW optimizer, fused kernel.
+ https://arxiv.org/abs/1711.05101
+ """
+ 
++# MLA adds matrix shapes; each Muon shape group is a separate compiled specialization
++torch._dynamo.config.recompile_limit = 64
++
+ @torch.compile(dynamic=False, fullgraph=True)
+ def adamw_step_fused(
+     p: Tensor,              # (32768, 768) - parameter tensor
+diff --git a/scripts/base_train.py b/scripts/base_train.py
+index d1af271..779ba7e 100644
+--- a/scripts/base_train.py
++++ b/scripts/base_train.py
+@@ -135,8 +135,12 @@ def build_model_meta(depth):
+     num_heads = model_dim // args.head_dim
+     config = GPTConfig(
+         sequence_len=args.max_seq_len, vocab_size=vocab_size,
+-        n_layer=depth, n_head=num_heads, n_kv_head=num_heads, n_embd=model_dim,
++        n_layer=depth, n_head=num_heads, n_kv_head=int(os.environ.get("NANOCHAT_KV_HEADS", num_heads)), n_embd=model_dim,
+         window_pattern=args.window_pattern,
++        attn_type=os.environ.get("NANOCHAT_ATTN", "mha"),
++        mla_kv_dim=int(os.environ.get("NANOCHAT_MLA_KV_DIM", 0)),
++        mla_rope_dim=int(os.environ.get("NANOCHAT_MLA_ROPE_DIM", 32)),
++        use_value_embeds=os.environ.get("NANOCHAT_NO_VE") != "1",
+     )
+     with torch.device("meta"):
+         model_meta = GPT(config)
+diff --git a/scripts/bench_attn.py b/scripts/bench_attn.py
+new file mode 100644
+index 0000000..09a45e2
+--- /dev/null
++++ b/scripts/bench_attn.py
+@@ -0,0 +1,71 @@
++"""Inference-side comparison of attention variants: KV-cache size and decode throughput.
++
++    python -m scripts.bench_attn --tags a_mha,a_gqa,a_mla --prompt 1024 --new 128 --batches 1,32
++Prints one JSON line per model tag.
++"""
++import argparse
++import json
++import time
++
++import torch
++
++from nanochat.checkpoint_manager import load_model
++from nanochat.common import autodetect_device_type, compute_init
++from nanochat.engine import KVCache
++
++
++def make_cache(cfg, batch, seq_len, device, dtype):
++    return KVCache(batch_size=batch, num_heads=cfg.n_kv_head, seq_len=seq_len, head_dim=cfg.n_embd // cfg.n_head,
++                   num_layers=cfg.n_layer, device=device, dtype=dtype,
++                   latent_dim=(cfg.mla_kv_dim + cfg.mla_rope_dim) if cfg.attn_type == "mla" else 0)
++
++
++@torch.inference_mode()
++def decode_tok_s(model, cfg, batch, prompt, new, device, dtype):
++    cache = make_cache(cfg, batch, prompt + new, device, dtype)
++    ids = torch.randint(0, cfg.vocab_size, (batch, prompt), device=device)
++    model(ids, kv_cache=cache)
++    nxt = torch.randint(0, cfg.vocab_size, (batch, 1), device=device)
++    for _ in range(3):  # warm up kernels without counting
++        model(nxt, kv_cache=cache)
++    if device.type == "cuda":
++        torch.cuda.synchronize()
++    t = time.perf_counter()
++    for _ in range(new - 3):
++        model(nxt, kv_cache=cache)
++    if device.type == "cuda":
++        torch.cuda.synchronize()
++    return batch * (new - 3) / (time.perf_counter() - t)
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--tags", required=True)
++    ap.add_argument("--prompt", type=int, default=1024)
++    ap.add_argument("--new", type=int, default=128)
++    ap.add_argument("--batches", default="1,32")
++    ap.add_argument("--budget-gb", type=float, default=10.0)
++    ap.add_argument("--device-type", default="")
++    args = ap.parse_args()
++    _, _, _, _, device = compute_init(args.device_type or autodetect_device_type())
++    for tag in args.tags.split(","):
++        model, _, meta = load_model("base", device, phase="eval", model_tag=tag)
++        cfg = model.config
++        dtype = model.cos.dtype
++        seq = cfg.sequence_len
++        per_seq = make_cache(cfg, 1, seq, "meta", dtype).nbytes()
++        row = {"tag": tag, "attn_type": cfg.attn_type, "n_kv_head": cfg.n_kv_head, "mla_kv_dim": cfg.mla_kv_dim,
++               "params_M": round(sum(p.numel() for p in model.parameters()) / 1e6, 2),
++               "kv_bytes_per_token": per_seq // seq,
++               "kv_MB_per_seq": round(per_seq / 2**20, 2),
++               "seqs_in_budget": int(args.budget_gb * 2**30 // per_seq)}
++        for b in map(int, args.batches.split(",")):
++            row[f"decode_tok_s_b{b}"] = round(decode_tok_s(model, cfg, b, args.prompt, args.new, device, dtype), 1)
++        print(json.dumps(row), flush=True)
++        del model
++        if device.type == "cuda":
++            torch.cuda.empty_cache()
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/test_mla.py b/tests/test_mla.py
+new file mode 100644
+index 0000000..f9d831a
+--- /dev/null
++++ b/tests/test_mla.py
+@@ -0,0 +1,71 @@
++"""MHA / GQA / MLA: full-sequence forward must equal incremental KV-cache decoding, and training must step.
++
++    python -m pytest tests/test_mla.py -q      (CPU, fp32)
++"""
++import pytest
++import torch
++
++from nanochat.engine import KVCache
++from nanochat.gpt import GPT, GPTConfig
++
++VARIANTS = {
++    "mha": dict(n_kv_head=4),
++    "gqa": dict(n_kv_head=2),
++    "mla": dict(n_kv_head=4, attn_type="mla", mla_kv_dim=48, mla_rope_dim=8),
++}
++
++
++def tiny(variant, use_ve=False):
++    cfg = GPTConfig(sequence_len=512, vocab_size=512, n_layer=4, n_head=4, n_embd=128, window_pattern="SSSL",
++                    use_value_embeds=use_ve, **VARIANTS[variant])
++    torch.manual_seed(0)
++    m = GPT(cfg)
++    m.init_weights()
++    with torch.no_grad():  # c_proj starts at zero; perturb so attention actually affects the logits
++        for p in m.parameters():
++            p.add_(torch.randn_like(p) * 0.02)
++    return m.eval()
++
++
++def cache_for(m, T):
++    c = m.config
++    return KVCache(batch_size=1, num_heads=c.n_kv_head, seq_len=T, head_dim=c.n_embd // c.n_head, num_layers=c.n_layer,
++                   device="cpu", dtype=torch.float32,
++                   latent_dim=(c.mla_kv_dim + c.mla_rope_dim) if c.attn_type == "mla" else 0)
++
++
++@pytest.mark.parametrize("variant", list(VARIANTS))
++def test_incremental_decode_matches_full_forward(variant):
++    m = tiny(variant)
++    torch.manual_seed(1)
++    ids = torch.randint(0, 512, (1, 300))  # > short window (128) so sliding-window masking is exercised
++    with torch.no_grad():
++        full = m(ids)
++        cache = cache_for(m, 300)
++        out = [m(ids[:, :200], kv_cache=cache)]
++        for t in range(200, 300):
++            out.append(m(ids[:, t:t + 1], kv_cache=cache))
++    inc = torch.cat(out, dim=1)
++    assert torch.allclose(full, inc, atol=2e-4, rtol=1e-4), (full - inc).abs().max()
++
++
++@pytest.mark.parametrize("variant", list(VARIANTS))
++def test_training_step_reduces_loss(variant):
++    m = tiny(variant).train()
++    opt = m.setup_optimizer()
++    torch.manual_seed(2)
++    x = torch.randint(0, 512, (4, 64))
++    y = torch.roll(x, -1, 1)
++    first = None
++    for _ in range(8):
++        loss = m(x, targets=y)
++        loss.backward()
++        opt.step()
++        m.zero_grad(set_to_none=True)
++        first = first if first is not None else loss.item()
++    assert loss.item() < first
++
++
++def test_mla_cache_is_smaller():
++    caches = {v: cache_for(tiny(v), 256).nbytes() for v in VARIANTS}
++    assert caches["gqa"] < caches["mha"] and caches["mla"] < caches["mha"]

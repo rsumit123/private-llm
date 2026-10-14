@@ -3,7 +3,7 @@
 A 20-layer GPT-style chat model trained **entirely from scratch** on a single H100: its own BPE tokenizer,
 ~5 hours of pretraining on 3.5B tokens, 47 minutes of chat fine-tuning and 42 minutes of reinforcement learning. No pretrained weights were used at any
 stage. Built with [karpathy/nanochat](https://github.com/karpathy/nanochat); this repo holds the training run,
-benchmarks, deployment and the operational tooling around it.
+benchmarks, an attention-architecture experiment (MLA vs GQA vs MHA), deployment and the operational tooling around it.
 
 **[Chat with it (Hugging Face Space)](https://huggingface.co/spaces/sumitkClasses/scratchq-110)** ·
 **[Model weights](https://huggingface.co/sumitkClasses/nanochat-d20-chat)** ·
@@ -42,9 +42,46 @@ ARC/MMLU after RL: 55.4% / 43.9% / 35.2% (no regression).
 **Compared with the original nanochat d20 baseline.** Same depth, trained on ~3× fewer tokens (3.5B vs 11.2B) using the
 current nanochat recipe, it scores higher on every benchmark above except GSM8K before RL, and higher on GSM8K after RL.
 The gains come from nanochat's newer recipe; my work was configuring and budgeting the run, evaluating it against GPT-2
-with the same harness, the RL stage, and the training and serving infrastructure around it.
+with the same harness, the RL stage, implementing multi-head latent attention for an attention ablation, and the
+training and serving infrastructure around it.
 
 Per-task CORE scores and the full logs are in [`nanochat-d20/results/`](nanochat-d20/results).
+
+## Architecture experiment: KV-cache-efficient attention (MHA vs GQA vs MLA)
+
+Serving cost is dominated by the KV cache: every token of every conversation stores keys and values in every layer,
+which caps how many users fit on a GPU and how long contexts can be. I implemented **multi-head latent attention
+(MLA, DeepSeek-V2)** in nanochat, which does not ship it, and ran a controlled ablation against standard multi-head
+attention (MHA) and grouped-query attention (GQA), with GQA and MLA given the **same KV-cache budget**.
+
+- **MLA implementation** ([`nanochat-d20/mla/mla.patch`](nanochat-d20/mla/mla.patch), ~260 lines): keys and values are
+  reconstructed from a shared 480-dim latent, position goes through a separate 32-dim RoPE key shared by all heads, and
+  only those 512 numbers per token per layer are cached (vs 1,536 for MHA). The generation engine stores the compact
+  latent. Unit tests check that token-by-token cached decoding reproduces the full-sequence forward pass exactly for all
+  three variants, including sliding-window layers.
+- **Setup**: depth 12 (768 wide, 6 heads × 128), 1,000 steps × 524,288 tokens (0.52B tokens), bf16, same data order, seed,
+  optimizer and schedule for all three; value embeddings disabled in all three because they bypass the KV path.
+
+| Variant | KV cache per 2,048-token sequence | Sequences in a 10 GB cache | Val bits/byte ↓ | CORE | Decode tok/s (batch 1 / 32) |
+|---|---:|---:|---:|---:|---:|
+| MHA (6 kv heads) | 72 MB | 142 | **0.9144** | **0.128** | 180 / 5,699 |
+| GQA (2 kv heads) | 24 MB | 426 | 0.9189 | 0.106 | 178 / 5,661 |
+| MLA (480 latent + 32 RoPE) | 24 MB | 426 | 0.9209 | 0.099 | 89 / 2,603 |
+
+![Attention ablation](nanochat-d20/results/ablation/attention_ablation.png)
+
+**Findings**
+
+1. Cutting the KV cache 3× (3× more concurrent 2k-token sequences per GPU) cost about 0.5–0.7% in validation loss.
+2. At equal cache size, MLA did not beat GQA at this scale; the 0.002 bits/byte gap is within single-seed noise, so the
+   two are effectively tied here. DeepSeek reports MLA ahead at much larger scale; this run tuned no MLA-specific
+   hyperparameters (latent width, learning rates).
+3. MLA decoded about 2× slower. nanochat applies QK-norm to full keys, which blocks MLA's weight-absorption trick
+   (folding the key up-projection into the query), so cached latents are re-expanded to keys and values every step.
+   Making MLA fast here would need QK-norm moved onto the latent or removed, a stability trade-off worth its own study.
+
+Limitations: one seed per variant, a small model and a short run; CORE at this size is noisy, so validation bits/byte
+is the primary metric. Logs and raw results: [`nanochat-d20/results/ablation/`](nanochat-d20/results/ablation).
 
 ## What talking to it looks like
 
@@ -132,6 +169,7 @@ vs 16.2 for fp32 and lost about 6 points on ARC-Easy (48.0% vs 54.2%).
 bash nanochat-d20/scripts/run_d20.sh        # tokenizer → pretrain → SFT → samples → upload → self-destroy
 bash nanochat-d20/scripts/run_eval.sh       # CORE + HumanEval + GSM8K on any >=10 GB GPU
 bash nanochat-d20/scripts/run_rl.sh         # RL on GSM8K from the chat checkpoint, then GSM8K/ARC/MMLU
+bash nanochat-d20/scripts/run_ablation.sh   # MHA vs GQA vs MLA at depth 12 (needs nanochat + mla.patch)
 ```
 
 Talk to the released weights locally:
@@ -149,7 +187,8 @@ nanochat-d20/
   scripts/   run_d20.sh (full unattended run), run_sft.sh (SFT-only re-run), run_eval.sh, run_rl.sh,
              upload.py / upload.sh (checkpoint streaming to the Hub)
   serve/     app.py + requirements.txt (Gradio UI + OpenAI-compatible API, deployed to the Space)
-  results/   benchmarks.json, pretraining_curves.png, sample chats, full training/eval logs
+  mla/       mla.patch: multi-head latent attention + GQA switches + KV-cache benchmark for nanochat 92d63d4
+  results/   benchmarks.json, pretraining_curves.png, sample chats, full training/eval logs, ablation/
 experiments/
   scratchq-110m/   earlier experiment: a 110M model on a hand-written PyTorch training stack
 ```
