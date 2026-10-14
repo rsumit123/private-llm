@@ -125,5 +125,44 @@
   "GSM8K": 0.0455,
   "HumanEval": 0.0854
  },
- "reference_gpt2_1.5B_CORE": 0.2565
+ "reference_gpt2_1.5B_CORE": 0.2565,
+ "gpt2_core_same_harness": {
+  "gpt2 (124M)": 0.1234,
+  "gpt2-medium (355M)": 0.1923,
+  "note": "nanochat CORE harness @92d63d4, 500 examples/task, HF transformers checkpoints"
+ },
+ "rl_model": {
+  "method": "nanochat chat_rl (GRPO-style REINFORCE, group-mean baseline) on GSM8K train, 75 steps, 16 problems x 16 samples per step",
+  "GSM8K": {
+   "accuracy": 0.1,
+   "n": 400,
+   "note": "first 400 test problems (same subset as SFT 1.5%)"
+  },
+  "ARC-Easy": {
+   "accuracy": 0.5543
+  },
+  "ARC-Challenge": {
+   "accuracy": 0.4394
+  },
+  "MMLU": {
+   "accuracy": 0.3517
+  },
+  "reference_nanochat_d20_rl_GSM8K": 0.0758
+ },
+ "int8_cpu_experiment": {
+  "fp32": {
+   "tok_s": 16.2,
+   "arc_easy_400": 0.542
+  },
+  "int8_lm_head_fp32": {
+   "tok_s": 10.4,
+   "arc_easy_400": 0.497
+  },
+  "int8_all": {
+   "tok_s": 13.7,
+   "arc_easy_400": 0.48
+  },
+  "hardware": "Apple Silicon CPU, 2 threads",
+  "decision": "rejected"
+ }
 }

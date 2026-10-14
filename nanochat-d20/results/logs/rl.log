@@ -1,0 +1,376 @@
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = (unset),
+	LANG = "en_IN.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+debconf: delaying package configuration, since apt-utils is not installed
+downloading uv 0.13.1 x86_64-unknown-linux-gnu
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+83:if os.environ.get("MAX_STEPS"): num_steps = min(num_steps, int(os.environ["MAX_STEPS"]))
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Fetching 4 files:  50%|█████     | 2/4 [00:14<00:16,  8.23s/it]Fetching 4 files: 100%|██████████| 4/4 [00:14<00:00,  3.57s/it]
+### setup at 06:59:04
+### resume at 07:13:26
+### rl rc=0 at 07:55:09
+Processing Files (0 / 0)                : |          |  0.00B /  0.00B            
+New Data Upload                         : |          |  0.00B /  0.00B            [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   0%|          |  601kB / 2.66GB            [A[A
+
+  ...trl_checkpoints/d20/model_000074.pt:   0%|          |  601kB / 2.66GB            [A[AProcessing Files (0 / 1)                :   0%|          |  601kB / 2.66GB,  751kB/s  
+New Data Upload                         :   1%|          |  601kB / 67.0MB,  751kB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   0%|          | 4.21MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   0%|          | 4.21MB / 2.66GB, 4.20MB/s  
+New Data Upload                         :   6%|▋         | 4.21MB / 67.0MB, 4.20MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   0%|          | 11.4MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   0%|          | 11.4MB / 2.66GB, 9.51MB/s  
+New Data Upload                         :   9%|▊         | 11.4MB /  134MB, 9.51MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   1%|          | 22.2MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   1%|          | 22.2MB / 2.66GB, 15.8MB/s  
+New Data Upload                         :  17%|█▋        | 22.2MB /  134MB, 15.8MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   1%|▏         | 38.3MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   1%|▏         | 38.3MB / 2.66GB, 23.9MB/s  
+New Data Upload                         :  29%|██▊       | 38.3MB /  134MB, 23.9MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   2%|▏         | 56.6MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   2%|▏         | 56.6MB / 2.66GB, 31.5MB/s  
+New Data Upload                         :  28%|██▊       | 56.6MB /  201MB, 31.5MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   3%|▎         | 84.0MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   3%|▎         | 84.0MB / 2.66GB, 42.0MB/s  
+New Data Upload                         :  42%|████▏     | 84.0MB /  201MB, 42.0MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   4%|▍         |  101MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   4%|▍         |  101MB / 2.66GB, 45.9MB/s  
+New Data Upload                         :  38%|███▊      |  101MB /  268MB, 45.9MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   5%|▍         |  121MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   5%|▍         |  121MB / 2.66GB, 50.3MB/s  
+New Data Upload                         :  45%|████▍     |  121MB /  268MB, 50.3MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   5%|▌         |  145MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   5%|▌         |  145MB / 2.66GB, 55.6MB/s  
+New Data Upload                         :  54%|█████▍    |  145MB /  268MB, 55.6MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   6%|▋         |  171MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   6%|▋         |  171MB / 2.66GB, 60.9MB/s  
+New Data Upload                         :  51%|█████     |  171MB /  335MB, 60.9MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   7%|▋         |  191MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   7%|▋         |  191MB / 2.66GB, 63.7MB/s  
+New Data Upload                         :  57%|█████▋    |  191MB /  335MB, 63.7MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   8%|▊         |  220MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   8%|▊         |  220MB / 2.66GB, 68.7MB/s  
+New Data Upload                         :  66%|██████▌   |  220MB /  335MB, 68.7MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:   9%|▉         |  248MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   9%|▉         |  248MB / 2.66GB, 72.9MB/s  
+New Data Upload                         :  62%|██████▏   |  248MB /  402MB, 72.9MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  10%|█         |  275MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  10%|█         |  275MB / 2.66GB, 76.3MB/s  
+New Data Upload                         :  68%|██████▊   |  275MB /  402MB, 76.3MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  11%|█▏        |  303MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  11%|█▏        |  303MB / 2.66GB, 79.8MB/s  
+New Data Upload                         :  65%|██████▍   |  303MB /  469MB, 79.8MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  13%|█▎        |  335MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  13%|█▎        |  335MB / 2.66GB, 83.7MB/s  
+New Data Upload                         :  71%|███████▏  |  335MB /  469MB, 83.7MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  13%|█▎        |  352MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  13%|█▎        |  352MB / 2.66GB, 83.8MB/s  
+New Data Upload                         :  75%|███████▌  |  352MB /  469MB, 83.8MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  14%|█▍        |  369MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  14%|█▍        |  369MB / 2.66GB, 83.9MB/s  
+New Data Upload                         :  69%|██████▉   |  369MB /  536MB, 83.9MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  15%|█▍        |  387MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  15%|█▍        |  387MB / 2.66GB, 84.1MB/s  
+New Data Upload                         :  72%|███████▏  |  387MB /  536MB, 84.1MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  16%|█▌        |  415MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  16%|█▌        |  415MB / 2.66GB, 86.4MB/s  
+New Data Upload                         :  69%|██████▊   |  415MB /  603MB, 86.4MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  17%|█▋        |  448MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  17%|█▋        |  448MB / 2.66GB, 89.5MB/s  
+New Data Upload                         :  74%|███████▍  |  448MB /  603MB, 89.5MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  18%|█▊        |  478MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  18%|█▊        |  478MB / 2.66GB, 91.9MB/s  
+New Data Upload                         :  71%|███████▏  |  478MB /  670MB, 91.9MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  19%|█▉        |  508MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  19%|█▉        |  508MB / 2.66GB, 94.0MB/s  
+New Data Upload                         :  76%|███████▌  |  508MB /  670MB, 94.0MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  20%|██        |  542MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  20%|██        |  542MB / 2.66GB, 96.8MB/s  
+New Data Upload                         :  81%|████████  |  542MB /  670MB, 96.8MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  22%|██▏       |  576MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  22%|██▏       |  576MB / 2.66GB, 99.4MB/s  
+New Data Upload                         :  78%|███████▊  |  576MB /  737MB, 99.4MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  23%|██▎       |  619MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  23%|██▎       |  619MB / 2.66GB,  103MB/s  
+New Data Upload                         :  84%|████████▍ |  619MB /  737MB,  103MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  24%|██▍       |  651MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  24%|██▍       |  651MB / 2.66GB,  105MB/s  
+New Data Upload                         :  88%|████████▊ |  651MB /  737MB,  105MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  26%|██▌       |  680MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  26%|██▌       |  680MB / 2.66GB,  106MB/s  
+New Data Upload                         :  84%|████████▍ |  680MB /  805MB,  106MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  26%|██▌       |  692MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  26%|██▌       |  692MB / 2.66GB,  105MB/s  
+New Data Upload                         :  86%|████████▌ |  692MB /  805MB,  105MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  27%|██▋       |  710MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  27%|██▋       |  710MB / 2.66GB,  104MB/s  
+New Data Upload                         :  81%|████████▏ |  710MB /  872MB,  104MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  28%|██▊       |  740MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  28%|██▊       |  740MB / 2.66GB,  106MB/s  
+New Data Upload                         :  85%|████████▍ |  740MB /  872MB,  106MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  29%|██▊       |  761MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  29%|██▊       |  761MB / 2.66GB,  106MB/s  
+New Data Upload                         :  87%|████████▋ |  761MB /  872MB,  106MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  29%|██▉       |  784MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  29%|██▉       |  784MB / 2.66GB,  106MB/s  
+New Data Upload                         :  83%|████████▎ |  784MB /  939MB,  106MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  30%|███       |  807MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  30%|███       |  807MB / 2.66GB,  106MB/s  
+New Data Upload                         :  86%|████████▌ |  807MB /  939MB,  106MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  31%|███▏      |  835MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  31%|███▏      |  835MB / 2.66GB,  107MB/s  
+New Data Upload                         :  83%|████████▎ |  835MB / 1.01GB,  107MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  32%|███▏      |  861MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  32%|███▏      |  861MB / 2.66GB,  108MB/s  
+New Data Upload                         :  86%|████████▌ |  861MB / 1.01GB,  108MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  33%|███▎      |  877MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  33%|███▎      |  877MB / 2.66GB,  107MB/s  
+New Data Upload                         :  82%|████████▏ |  877MB / 1.07GB,  107MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  34%|███▍      |  899MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  34%|███▍      |  899MB / 2.66GB,  107MB/s  
+New Data Upload                         :  84%|████████▍ |  899MB / 1.07GB,  107MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  35%|███▍      |  926MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  35%|███▍      |  926MB / 2.66GB,  108MB/s  
+New Data Upload                         :  86%|████████▋ |  926MB / 1.07GB,  108MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  36%|███▌      |  953MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  36%|███▌      |  953MB / 2.66GB,  108MB/s  
+New Data Upload                         :  84%|████████▎ |  953MB / 1.14GB,  108MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  37%|███▋      |  979MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  37%|███▋      |  979MB / 2.66GB,  109MB/s  
+New Data Upload                         :  86%|████████▌ |  979MB / 1.14GB,  109MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  38%|███▊      | 1.02GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  38%|███▊      | 1.02GB / 2.66GB,  110MB/s  
+New Data Upload                         :  84%|████████▍ | 1.02GB / 1.21GB,  110MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  40%|███▉      | 1.06GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  40%|███▉      | 1.06GB / 2.66GB,  112MB/s  
+New Data Upload                         :  87%|████████▋ | 1.06GB / 1.21GB,  112MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  41%|████      | 1.09GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  41%|████      | 1.09GB / 2.66GB,  113MB/s  
+New Data Upload                         :  85%|████████▌ | 1.09GB / 1.27GB,  113MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  42%|████▏     | 1.12GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  42%|████▏     | 1.12GB / 2.66GB,  115MB/s  
+New Data Upload                         :  88%|████████▊ | 1.12GB / 1.27GB,  115MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  44%|████▎     | 1.16GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  44%|████▎     | 1.16GB / 2.66GB,  116MB/s  
+New Data Upload                         :  87%|████████▋ | 1.16GB / 1.34GB,  116MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  45%|████▍     | 1.19GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  45%|████▍     | 1.19GB / 2.66GB,  117MB/s  
+New Data Upload                         :  89%|████████▉ | 1.19GB / 1.34GB,  117MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  46%|████▌     | 1.23GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  46%|████▌     | 1.23GB / 2.66GB,  120MB/s  
+New Data Upload                         :  87%|████████▋ | 1.23GB / 1.41GB,  120MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  47%|████▋     | 1.25GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  47%|████▋     | 1.25GB / 2.66GB,  123MB/s  
+New Data Upload                         :  89%|████████▉ | 1.25GB / 1.41GB,  123MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  48%|████▊     | 1.29GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  48%|████▊     | 1.29GB / 2.66GB,  126MB/s  
+New Data Upload                         :  87%|████████▋ | 1.29GB / 1.48GB,  126MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  50%|████▉     | 1.32GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  50%|████▉     | 1.32GB / 2.66GB,  129MB/s  
+New Data Upload                         :  89%|████████▉ | 1.32GB / 1.48GB,  129MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  51%|█████     | 1.35GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  51%|█████     | 1.35GB / 2.66GB,  132MB/s  
+New Data Upload                         :  91%|█████████▏| 1.35GB / 1.48GB,  132MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  52%|█████▏    | 1.37GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  52%|█████▏    | 1.37GB / 2.66GB,  133MB/s  
+New Data Upload                         :  89%|████████▉ | 1.37GB / 1.54GB,  133MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  52%|█████▏    | 1.40GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  52%|█████▏    | 1.40GB / 2.66GB,  135MB/s  
+New Data Upload                         :  91%|█████████ | 1.40GB / 1.54GB,  135MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  54%|█████▎    | 1.43GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  54%|█████▎    | 1.43GB / 2.66GB,  136MB/s  
+New Data Upload                         :  93%|█████████▎| 1.43GB / 1.54GB,  136MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  55%|█████▍    | 1.45GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  55%|█████▍    | 1.45GB / 2.66GB,  137MB/s  
+New Data Upload                         :  90%|█████████ | 1.45GB / 1.61GB,  137MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  55%|█████▌    | 1.47GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  55%|█████▌    | 1.47GB / 2.66GB,  136MB/s  
+New Data Upload                         :  92%|█████████▏| 1.47GB / 1.61GB,  136MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  56%|█████▌    | 1.50GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  56%|█████▌    | 1.50GB / 2.66GB,  137MB/s  
+New Data Upload                         :  93%|█████████▎| 1.50GB / 1.61GB,  137MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  57%|█████▋    | 1.52GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  57%|█████▋    | 1.52GB / 2.66GB,  137MB/s  
+New Data Upload                         :  91%|█████████ | 1.52GB / 1.68GB,  137MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  58%|█████▊    | 1.55GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  58%|█████▊    | 1.55GB / 2.66GB,  138MB/s  
+New Data Upload                         :  92%|█████████▏| 1.55GB / 1.68GB,  138MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  59%|█████▉    | 1.58GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  59%|█████▉    | 1.58GB / 2.66GB,  138MB/s  
+New Data Upload                         :  91%|█████████ | 1.58GB / 1.74GB,  138MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  60%|██████    | 1.61GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  60%|██████    | 1.61GB / 2.66GB,  139MB/s  
+New Data Upload                         :  92%|█████████▏| 1.61GB / 1.74GB,  139MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  61%|██████▏   | 1.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  61%|██████▏   | 1.64GB / 2.66GB,  139MB/s  
+New Data Upload                         :  94%|█████████▍| 1.64GB / 1.74GB,  139MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  62%|██████▏   | 1.66GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  62%|██████▏   | 1.66GB / 2.66GB,  139MB/s  
+New Data Upload                         :  92%|█████████▏| 1.66GB / 1.81GB,  139MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  63%|██████▎   | 1.69GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  63%|██████▎   | 1.69GB / 2.66GB,  138MB/s  
+New Data Upload                         :  93%|█████████▎| 1.69GB / 1.81GB,  138MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  64%|██████▍   | 1.70GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  64%|██████▍   | 1.70GB / 2.66GB,  137MB/s  
+New Data Upload                         :  91%|█████████ | 1.70GB / 1.88GB,  137MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  65%|██████▍   | 1.73GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  65%|██████▍   | 1.73GB / 2.66GB,  136MB/s  
+New Data Upload                         :  92%|█████████▏| 1.73GB / 1.88GB,  136MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  66%|██████▌   | 1.75GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  66%|██████▌   | 1.75GB / 2.66GB,  137MB/s  
+New Data Upload                         :  93%|█████████▎| 1.75GB / 1.88GB,  137MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  66%|██████▋   | 1.77GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  66%|██████▋   | 1.77GB / 2.66GB,  137MB/s  
+New Data Upload                         :  94%|█████████▍| 1.77GB / 1.88GB,  137MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  67%|██████▋   | 1.79GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  67%|██████▋   | 1.79GB / 2.66GB,  138MB/s  
+New Data Upload                         :  95%|█████████▌| 1.79GB / 1.88GB,  138MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  68%|██████▊   | 1.82GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  68%|██████▊   | 1.82GB / 2.66GB,  138MB/s  
+New Data Upload                         :  94%|█████████▎| 1.82GB / 1.94GB,  138MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  69%|██████▉   | 1.84GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  69%|██████▉   | 1.84GB / 2.66GB,  137MB/s  
+New Data Upload                         :  95%|█████████▍| 1.84GB / 1.94GB,  137MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  70%|██████▉   | 1.86GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  70%|██████▉   | 1.86GB / 2.66GB,  136MB/s  
+New Data Upload                         :  96%|█████████▌| 1.86GB / 1.94GB,  135MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  70%|███████   | 1.87GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  70%|███████   | 1.87GB / 2.66GB,  134MB/s  
+New Data Upload                         :  93%|█████████▎| 1.87GB / 2.01GB,  134MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  71%|███████   | 1.89GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  71%|███████   | 1.89GB / 2.66GB,  133MB/s  
+New Data Upload                         :  94%|█████████▍| 1.89GB / 2.01GB,  132MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  72%|███████▏  | 1.91GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  72%|███████▏  | 1.91GB / 2.66GB,  130MB/s  
+New Data Upload                         :  95%|█████████▍| 1.90GB / 2.01GB,  130MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  72%|███████▏  | 1.92GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  72%|███████▏  | 1.92GB / 2.66GB,  128MB/s  
+New Data Upload                         :  92%|█████████▏| 1.92GB / 2.08GB,  127MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  73%|███████▎  | 1.94GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  73%|███████▎  | 1.94GB / 2.66GB,  127MB/s  
+New Data Upload                         :  93%|█████████▎| 1.94GB / 2.08GB,  126MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  74%|███████▍  | 1.97GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  74%|███████▍  | 1.97GB / 2.66GB,  126MB/s  
+New Data Upload                         :  91%|█████████▏| 1.96GB / 2.15GB,  126MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  75%|███████▌  | 2.00GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  75%|███████▌  | 2.00GB / 2.66GB,  128MB/s  
+New Data Upload                         :  93%|█████████▎| 1.99GB / 2.15GB,  128MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  76%|███████▌  | 2.03GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  76%|███████▌  | 2.03GB / 2.66GB,  129MB/s  
+New Data Upload                         :  94%|█████████▍| 2.02GB / 2.15GB,  129MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  78%|███████▊  | 2.07GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  78%|███████▊  | 2.07GB / 2.66GB,  130MB/s  
+New Data Upload                         :  93%|█████████▎| 2.06GB / 2.21GB,  129MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  79%|███████▉  | 2.10GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  79%|███████▉  | 2.10GB / 2.66GB,  132MB/s  
+New Data Upload                         :  95%|█████████▍| 2.09GB / 2.21GB,  131MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  80%|███████▉  | 2.12GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  80%|███████▉  | 2.12GB / 2.66GB,  131MB/s  
+New Data Upload                         :  96%|█████████▌| 2.11GB / 2.21GB,  130MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  80%|████████  | 2.13GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  80%|████████  | 2.13GB / 2.66GB,  130MB/s  
+New Data Upload                         :  93%|█████████▎| 2.12GB / 2.28GB,  129MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  81%|████████  | 2.15GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  81%|████████  | 2.15GB / 2.66GB,  129MB/s  
+New Data Upload                         :  94%|█████████▍| 2.14GB / 2.28GB,  128MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  82%|████████▏ | 2.17GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  82%|████████▏ | 2.17GB / 2.66GB,  129MB/s  
+New Data Upload                         :  92%|█████████▏| 2.16GB / 2.35GB,  127MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  83%|████████▎ | 2.20GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  83%|████████▎ | 2.20GB / 2.66GB,  130MB/s  
+New Data Upload                         :  93%|█████████▎| 2.19GB / 2.35GB,  128MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  84%|████████▎ | 2.23GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  84%|████████▎ | 2.23GB / 2.66GB,  130MB/s  
+New Data Upload                         :  94%|█████████▍| 2.21GB / 2.35GB,  129MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  85%|████████▍ | 2.25GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  85%|████████▍ | 2.25GB / 2.66GB,  130MB/s  
+New Data Upload                         :  93%|█████████▎| 2.24GB / 2.41GB,  129MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  86%|████████▌ | 2.29GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  86%|████████▌ | 2.29GB / 2.66GB,  131MB/s  
+New Data Upload                         :  94%|█████████▍| 2.27GB / 2.41GB,  129MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  87%|████████▋ | 2.31GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  87%|████████▋ | 2.31GB / 2.66GB,  131MB/s  
+New Data Upload                         :  93%|█████████▎| 2.30GB / 2.48GB,  129MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  88%|████████▊ | 2.34GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  88%|████████▊ | 2.34GB / 2.66GB,  130MB/s  
+New Data Upload                         :  94%|█████████▍| 2.33GB / 2.48GB,  128MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  89%|████████▉ | 2.37GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  89%|████████▉ | 2.37GB / 2.66GB,  129MB/s  
+New Data Upload                         :  95%|█████████▍| 2.35GB / 2.48GB,  127MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  90%|████████▉ | 2.39GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  90%|████████▉ | 2.39GB / 2.66GB,  128MB/s  
+New Data Upload                         :  93%|█████████▎| 2.38GB / 2.55GB,  127MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  91%|█████████ | 2.42GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  91%|█████████ | 2.42GB / 2.66GB,  127MB/s  
+New Data Upload                         :  94%|█████████▍| 2.40GB / 2.55GB,  125MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  91%|█████████▏| 2.43GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  91%|█████████▏| 2.43GB / 2.66GB,  125MB/s  
+New Data Upload                         :  95%|█████████▍| 2.41GB / 2.55GB,  123MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  92%|█████████▏| 2.45GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  92%|█████████▏| 2.45GB / 2.66GB,  123MB/s  
+New Data Upload                         :  93%|█████████▎| 2.43GB / 2.62GB,  121MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  93%|█████████▎| 2.47GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  93%|█████████▎| 2.47GB / 2.66GB,  122MB/s  
+New Data Upload                         :  93%|█████████▎| 2.45GB / 2.64GB,  120MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  94%|█████████▍| 2.51GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  94%|█████████▍| 2.51GB / 2.66GB,  123MB/s  
+New Data Upload                         :  94%|█████████▍| 2.49GB / 2.64GB,  121MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  96%|█████████▌| 2.54GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  96%|█████████▌| 2.54GB / 2.66GB,  123MB/s  
+New Data Upload                         :  95%|█████████▌| 2.52GB / 2.64GB,  121MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  97%|█████████▋| 2.58GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  97%|█████████▋| 2.58GB / 2.66GB,  124MB/s  
+New Data Upload                         :  97%|█████████▋| 2.56GB / 2.64GB,  122MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  98%|█████████▊| 2.61GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.61GB / 2.66GB,  124MB/s  
+New Data Upload                         :  98%|█████████▊| 2.59GB / 2.64GB,  122MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB,  124MB/s  
+New Data Upload                         :  99%|█████████▉| 2.62GB / 2.64GB,  122MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|█████████▉| 2.65GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.65GB / 2.66GB,  123MB/s  
+New Data Upload                         : 100%|█████████▉| 2.63GB / 2.64GB,  121MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.66GB / 2.66GB,  121MB/s  
+New Data Upload                         : 100%|█████████▉| 2.64GB / 2.64GB,  119MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.66GB / 2.66GB,  119MB/s  
+New Data Upload                         : 100%|█████████▉| 2.64GB / 2.64GB,  116MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.66GB / 2.66GB,  116MB/s  
+New Data Upload                         : 100%|█████████▉| 2.64GB / 2.64GB,  114MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.66GB / 2.66GB,  115MB/s  
+New Data Upload                         : 100%|█████████▉| 2.64GB / 2.64GB,  112MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|██████████| 2.66GB / 2.66GB            [A[AProcessing Files (1 / 1)                : 100%|██████████| 2.66GB / 2.66GB,  109MB/s  
+New Data Upload                         : 100%|██████████| 2.64GB / 2.64GB,  107MB/s  [A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|██████████| 2.66GB / 2.66GB            [A[A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|██████████| 2.66GB / 2.66GB            [A[A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|██████████| 2.66GB / 2.66GB            [A[A
+
+  ...trl_checkpoints/d20/model_000074.pt: 100%|██████████| 2.66GB / 2.66GB            [A[AProcessing Files (1 / 1)                : 100%|██████████| 2.66GB / 2.66GB,  100MB/s  
+New Data Upload                         : 100%|██████████| 2.64GB / 2.64GB, 98.1MB/s  
+  ...trl_checkpoints/d20/model_000074.pt: 100%|██████████| 2.66GB / 2.66GB            
+RL_UPLOAD step 74 verified=True
+### gsm8k rc=0 at 08:02:41
+### mc rc=0 at 08:03:16
+RL_DONE

@@ -1,0 +1,73 @@
+### setup at 07:36:58
+Autodetected device type: cuda
+2026-10-14 07:37:02,927 - nanochat.common - [32m[1mINFO[0m - Distributed world size: 1
+2026-10-14 07:37:03,015 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/api/agent-harnesses "HTTP/1.1 200 OK"
+2026-10-14 07:37:03,059 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/api/models/gpt2 "HTTP/1.1 307 Temporary Redirect"
+2026-10-14 07:37:03,107 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/api/models/openai-community/gpt2 "HTTP/1.1 200 OK"
+2026-10-14 07:37:03,155 - httpx2 - [32m[1mINFO[0m - HTTP Request: HEAD https://huggingface.co/gpt2/resolve/607a30d783dfa663caf39e06633721c8d4cfcd7e/config.json "HTTP/1.1 200 OK"
+2026-10-14 07:37:03,204 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/gpt2/resolve/607a30d783dfa663caf39e06633721c8d4cfcd7e/config.json "HTTP/1.1 200 OK"
+2026-10-14 07:37:03,574 - httpx2 - [32m[1mINFO[0m - HTTP Request: HEAD https://huggingface.co/gpt2/resolve/607a30d783dfa663caf39e06633721c8d4cfcd7e/model.safetensors "HTTP/1.1 302 Found"
+2026-10-14 07:37:03,625 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/api/models/openai-community/gpt2/xet-read-token/607a30d783dfa663caf39e06633721c8d4cfcd7e "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 13187.67it/s]
+2026-10-14 07:37:07,146 - httpx2 - [32m[1mINFO[0m - HTTP Request: HEAD https://huggingface.co/gpt2/resolve/607a30d783dfa663caf39e06633721c8d4cfcd7e/generation_config.json "HTTP/1.1 200 OK"
+2026-10-14 07:37:07,192 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/gpt2/resolve/607a30d783dfa663caf39e06633721c8d4cfcd7e/generation_config.json "HTTP/1.1 200 OK"
+Downloading https://karpathy-public.s3.us-west-2.amazonaws.com/eval_bundle.zip...
+Downloaded to /root/nc/eval_bundle.zip
+Placed eval_bundle directory at /root/nc/eval_bundle
+Evaluating: hellaswag_zeroshot (0-shot, type: multiple_choice)... accuracy: 0.3080 | centered: 0.0773 | time: 4.85s
+Evaluating: jeopardy (10-shot, type: language_modeling)... accuracy: 0.0020 | centered: 0.0020 | time: 4.65s
+Evaluating: bigbench_qa_wikidata (10-shot, type: language_modeling)... accuracy: 0.2980 | centered: 0.2980 | time: 4.26s
+Evaluating: arc_easy (10-shot, type: multiple_choice)... accuracy: 0.4200 | centered: 0.2267 | time: 8.41s
+Evaluating: arc_challenge (10-shot, type: multiple_choice)... accuracy: 0.2220 | centered: -0.0373 | time: 10.04s
+Evaluating: copa (0-shot, type: multiple_choice)... accuracy: 0.6200 | centered: 0.2400 | time: 0.86s
+Evaluating: commonsense_qa (10-shot, type: multiple_choice)... accuracy: 0.2360 | centered: 0.0450 | time: 12.18s
+Evaluating: piqa (10-shot, type: multiple_choice)... accuracy: 0.6360 | centered: 0.2720 | time: 5.42s
+Evaluating: openbook_qa (0-shot, type: multiple_choice)... accuracy: 0.2800 | centered: 0.0400 | time: 4.14s
+Evaluating: lambada_openai (0-shot, type: language_modeling)... accuracy: 0.3600 | centered: 0.3600 | time: 4.17s
+Evaluating: hellaswag (10-shot, type: multiple_choice)... accuracy: 0.2900 | centered: 0.0533 | time: 25.70s
+Evaluating: winograd (0-shot, type: schema)... accuracy: 0.5934 | centered: 0.1868 | time: 2.20s
+Evaluating: winogrande (0-shot, type: schema)... accuracy: 0.5040 | centered: 0.0080 | time: 4.05s
+Evaluating: bigbench_dyck_languages (10-shot, type: language_modeling)... accuracy: 0.1800 | centered: 0.1800 | time: 5.02s
+Evaluating: agi_eval_lsat_ar (3-shot, type: multiple_choice)... accuracy: 0.2261 | centered: 0.0326 | time: 11.03s
+Evaluating: bigbench_cs_algorithms (10-shot, type: language_modeling)... accuracy: 0.4320 | centered: 0.4320 | time: 4.81s
+Evaluating: bigbench_operators (10-shot, type: language_modeling)... accuracy: 0.0857 | centered: 0.0857 | time: 1.98s
+Evaluating: bigbench_repeat_copy_logic (10-shot, type: language_modeling)... accuracy: 0.0312 | centered: 0.0312 | time: 0.31s
+Evaluating: squad (10-shot, type: language_modeling)... accuracy: 0.0680 | centered: 0.0680 | time: 6.70s
+Evaluating: coqa (0-shot, type: language_modeling)... accuracy: 0.1520 | centered: 0.1520 | time: 4.93s
+Evaluating: boolq (10-shot, type: multiple_choice)... accuracy: 0.5340 | centered: -0.2263 | time: 13.09s
+Evaluating: bigbench_language_identification (10-shot, type: multiple_choice)... accuracy: 0.2620 | centered: 0.1881 | time: 28.82s
+RESULT gpt2 CORE=0.1234
+2026-10-14 07:39:58,455 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/api/models/gpt2-medium "HTTP/1.1 307 Temporary Redirect"
+2026-10-14 07:39:58,505 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/api/models/openai-community/gpt2-medium "HTTP/1.1 200 OK"
+2026-10-14 07:39:58,549 - httpx2 - [32m[1mINFO[0m - HTTP Request: HEAD https://huggingface.co/gpt2-medium/resolve/6dcaa7a952f72f9298047fd5137cd6e4f05f41da/config.json "HTTP/1.1 200 OK"
+2026-10-14 07:39:58,609 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/gpt2-medium/resolve/6dcaa7a952f72f9298047fd5137cd6e4f05f41da/config.json "HTTP/1.1 200 OK"
+2026-10-14 07:39:58,666 - httpx2 - [32m[1mINFO[0m - HTTP Request: HEAD https://huggingface.co/gpt2-medium/resolve/6dcaa7a952f72f9298047fd5137cd6e4f05f41da/model.safetensors "HTTP/1.1 302 Found"
+2026-10-14 07:39:58,713 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/api/models/openai-community/gpt2-medium/xet-read-token/6dcaa7a952f72f9298047fd5137cd6e4f05f41da "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 10245.07it/s]
+2026-10-14 07:40:05,401 - httpx2 - [32m[1mINFO[0m - HTTP Request: HEAD https://huggingface.co/gpt2-medium/resolve/6dcaa7a952f72f9298047fd5137cd6e4f05f41da/generation_config.json "HTTP/1.1 200 OK"
+2026-10-14 07:40:05,446 - httpx2 - [32m[1mINFO[0m - HTTP Request: GET https://huggingface.co/gpt2-medium/resolve/6dcaa7a952f72f9298047fd5137cd6e4f05f41da/generation_config.json "HTTP/1.1 200 OK"
+Evaluating: hellaswag_zeroshot (0-shot, type: multiple_choice)... accuracy: 0.3820 | centered: 0.1760 | time: 7.72s
+Evaluating: jeopardy (10-shot, type: language_modeling)... accuracy: 0.0520 | centered: 0.0520 | time: 7.71s
+Evaluating: bigbench_qa_wikidata (10-shot, type: language_modeling)... accuracy: 0.4380 | centered: 0.4380 | time: 7.24s
+Evaluating: arc_easy (10-shot, type: multiple_choice)... accuracy: 0.5060 | centered: 0.3413 | time: 21.30s
+Evaluating: arc_challenge (10-shot, type: multiple_choice)... accuracy: 0.2440 | centered: -0.0080 | time: 25.23s
+Evaluating: copa (0-shot, type: multiple_choice)... accuracy: 0.6600 | centered: 0.3200 | time: 1.42s
+Evaluating: commonsense_qa (10-shot, type: multiple_choice)... accuracy: 0.2380 | centered: 0.0475 | time: 29.74s
+Evaluating: piqa (10-shot, type: multiple_choice)... accuracy: 0.6800 | centered: 0.3600 | time: 11.88s
+Evaluating: openbook_qa (0-shot, type: multiple_choice)... accuracy: 0.3000 | centered: 0.0667 | time: 7.13s
+Evaluating: lambada_openai (0-shot, type: language_modeling)... accuracy: 0.4620 | centered: 0.4620 | time: 7.11s
+Evaluating: hellaswag (10-shot, type: multiple_choice)... accuracy: 0.3960 | centered: 0.1947 | time: 63.84s
+Evaluating: winograd (0-shot, type: schema)... accuracy: 0.6374 | centered: 0.2747 | time: 3.84s
+Evaluating: winogrande (0-shot, type: schema)... accuracy: 0.5300 | centered: 0.0600 | time: 7.10s
+Evaluating: bigbench_dyck_languages (10-shot, type: language_modeling)... accuracy: 0.1940 | centered: 0.1940 | time: 9.30s
+Evaluating: agi_eval_lsat_ar (3-shot, type: multiple_choice)... accuracy: 0.2522 | centered: 0.0652 | time: 27.71s
+Evaluating: bigbench_cs_algorithms (10-shot, type: language_modeling)... accuracy: 0.4380 | centered: 0.4380 | time: 8.06s
+Evaluating: bigbench_operators (10-shot, type: language_modeling)... accuracy: 0.1143 | centered: 0.1143 | time: 3.32s
+Evaluating: bigbench_repeat_copy_logic (10-shot, type: language_modeling)... accuracy: 0.0312 | centered: 0.0312 | time: 0.51s
+Evaluating: squad (10-shot, type: language_modeling)... accuracy: 0.1840 | centered: 0.1840 | time: 15.10s
+Evaluating: coqa (0-shot, type: language_modeling)... accuracy: 0.2420 | centered: 0.2420 | time: 8.84s
+Evaluating: boolq (10-shot, type: multiple_choice)... accuracy: 0.6080 | centered: -0.0316 | time: 32.00s
+Evaluating: bigbench_language_identification (10-shot, type: multiple_choice)... accuracy: 0.2800 | centered: 0.2079 | time: 71.34s
+RESULT gpt2-medium CORE=0.1923
+### gpt2 rc=0 at 07:46:24
+GPT2_DONE

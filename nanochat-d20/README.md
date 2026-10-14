@@ -8,6 +8,8 @@ See the [top-level README](../README.md) for the write-up. This folder holds eve
 | `scripts/upload.py`, `upload.sh` | Background uploader: pushes the newest complete checkpoint to the Hub and prunes older local ones |
 | `scripts/run_sft.sh` | Re-runs only chat fine-tuning from the uploaded base checkpoint and verifies the upload before shutdown |
 | `scripts/run_eval.sh` | CORE (base model) + HumanEval + GSM8K on any >=10 GB GPU |
+| `scripts/run_rl.sh` | RL on GSM8K from the chat checkpoint (step-capped, LR decay intact), then GSM8K/ARC/MMLU |
+| `scripts/gpt2_core.py`, `run_gpt2.sh` | Scores HF GPT-2 checkpoints with nanochat's CORE harness for a same-settings baseline |
 | `serve/app.py` | Gradio chat UI + OpenAI-compatible `/v1` API in one file (deployed to the Hugging Face Space) |
 | `results/benchmarks.json` | All scores, including per-task CORE |
 | `results/pretraining_curves.png` | Training loss and validation bits-per-byte |

@@ -1,7 +1,7 @@
 # nanochat-d20 — a chat model trained from scratch
 
 A 20-layer GPT-style chat model trained **entirely from scratch** on a single H100: its own BPE tokenizer,
-~5 hours of pretraining on 3.5B tokens, then 47 minutes of chat fine-tuning. No pretrained weights were used at any
+~5 hours of pretraining on 3.5B tokens, 47 minutes of chat fine-tuning and 42 minutes of reinforcement learning. No pretrained weights were used at any
 stage. Built with [karpathy/nanochat](https://github.com/karpathy/nanochat); this repo holds the training run,
 benchmarks, deployment and the operational tooling around it.
 
@@ -23,9 +23,19 @@ reference nanochat d20 run (Oct 2025), which trained the same depth on ~3x more 
 | ARC-Challenge | harder science, multiple choice | **42.9%** | — | 25% |
 | MMLU (57 subjects) | general knowledge, multiple choice | **35.2%** | 31.5% | 25% |
 | HumanEval | writing Python functions (pass@1) | **11.0%** | 8.5% | 0% |
-| GSM8K | grade-school math word problems | 1.5% ² | 4.6% | 0% |
+| GSM8K, after chat tuning | grade-school math word problems | 1.5% ² | 4.6% | 0% |
+| **GSM8K, after RL** | same 400 problems | **10.0%** ² | 7.6% | 0% |
 
-For scale: the 1.5B-parameter GPT-2 scores 0.257 on CORE.
+CORE against GPT-2, scored with the same harness and settings:
+
+| Model | Parameters | CORE |
+|---|---:|---:|
+| GPT-2 small | 124M | 0.123 |
+| GPT-2 medium | 355M | 0.192 |
+| **nanochat-d20** | 897M total, 393M transformer | **0.236** |
+| GPT-2 XL (published) | 1.5B | 0.257 |
+
+ARC/MMLU after RL: 55.4% / 43.9% / 35.2% (no regression).
 ¹ 500 examples per CORE task (nanochat's in-training setting) rather than every example, so treat it as an estimate.
 ² First 400 of the 1,319 test problems. Multi-step arithmetic is the weakest area at this size.
 
@@ -66,7 +76,7 @@ It is fluent and stays on topic, but it **confidently invents facts** (asked abo
 
 ## Training pipeline
 
-End-to-end training took about 6 hours on a single H100 SXM, driven by one script
+End-to-end training took about 7 hours on a single H100 SXM. Pretraining and chat fine-tuning ran from one script
 ([`run_d20.sh`](nanochat-d20/scripts/run_d20.sh)):
 
 ```mermaid
@@ -81,12 +91,16 @@ flowchart LR
 | Tokenizer | BPE trained on ~2B characters of the pretraining data | ~2 min |
 | Pretraining | d20, data:param ratio 8, 1M-token batches, FP8, ~197k tokens/s | ~5.2 h |
 | Chat fine-tuning | SmolTalk + MMLU (×3) + GSM8K (×4), ~790k rows, one epoch | 47 min |
+| RL on GSM8K | 75 steps × 16 problems × 16 samples, reward = correct final answer | 42 min |
 
 - **Checkpointing.** Model and optimizer state were uploaded to a private Hugging Face repo every 500 steps
   (~45 min), so training could resume from the last upload after a host failure.
 - **Automatic teardown.** The GPU instance shuts itself down after the final upload or at a hard time limit.
 - **Reproducibility.** Chat fine-tuning was run twice from the same base checkpoint and reached the same validation
   loss both times (0.2961 bits/byte).
+- **Reinforcement learning.** nanochat's GRPO-style REINFORCE (group-mean baseline, no KL term) on GSM8K. The step count
+  was capped at 75 with the learning-rate decay rescaled to match; mean reward rose from 4% to 25% and answers shortened
+  from 260 to 169 tokens.
 
 ## Serving
 
@@ -103,12 +117,16 @@ The on-demand GPU sits behind a small self-hosted control plane: a password-prot
 fixed HTTPS endpoint relays OpenAI-style requests to whichever instance is live (so clients never reconfigure), and
 the box is destroyed automatically after 45 idle minutes.
 
+int8 dynamic quantization was tested for the CPU demo and rejected: on an Apple Silicon CPU it ran at 13.7 tok/s
+vs 16.2 for fp32 and lost about 6 points on ARC-Easy (48.0% vs 54.2%).
+
 ## Reproduce
 
 ```bash
 # on a fresh 1x H100 box, with HF_TOKEN in /root/.hf_token
 bash nanochat-d20/scripts/run_d20.sh        # tokenizer → pretrain → SFT → samples → upload → self-destroy
 bash nanochat-d20/scripts/run_eval.sh       # CORE + HumanEval + GSM8K on any >=10 GB GPU
+bash nanochat-d20/scripts/run_rl.sh         # RL on GSM8K from the chat checkpoint, then GSM8K/ARC/MMLU
 ```
 
 Talk to the released weights locally:
@@ -123,7 +141,7 @@ NANOCHAT_BASE_DIR=$HOME/.cache/nanochat .venv/bin/python -m scripts.chat_cli
 
 ```
 nanochat-d20/
-  scripts/   run_d20.sh (full unattended run), run_sft.sh (SFT-only re-run), run_eval.sh,
+  scripts/   run_d20.sh (full unattended run), run_sft.sh (SFT-only re-run), run_eval.sh, run_rl.sh,
              upload.py / upload.sh (checkpoint streaming to the Hub)
   serve/     app.py + requirements.txt (Gradio UI + OpenAI-compatible API, deployed to the Space)
   results/   benchmarks.json, pretraining_curves.png, sample chats, full training/eval logs
@@ -134,7 +152,7 @@ experiments/
 ## Limitations
 
 - Hallucinates facts confidently; do not use it as a source of truth.
-- Weak at arithmetic and multi-step reasoning (GSM8K 1.5%).
+- Weak at arithmetic and multi-step reasoning (GSM8K 10% after RL).
 - 2,048-token context, English only, and it forgets details from earlier turns.
 - Not safety-tuned beyond what the public SmolTalk data provides.
 
