@@ -35,3 +35,4 @@ raw_data/
 
 # published training/eval logs for nanochat-d20
 !nanochat-d20/results/logs/*.log
+!nanochat-d20/results/ablation/*.log

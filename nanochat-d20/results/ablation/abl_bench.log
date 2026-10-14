@@ -1,0 +1,11 @@
+Autodetected device type: cuda
+2026-10-14 09:45:20,270 - nanochat.common - [32m[1mINFO[0m - Distributed world size: 1
+2026-10-14 09:45:20,270 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Loading model from /root/.cache/nanochat/base_checkpoints/a_mha with step 1000
+2026-10-14 09:45:20,741 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Building model with config: {'sequence_len': 2048, 'vocab_size': 32768, 'n_layer': 12, 'n_head': 6, 'n_kv_head': 6, 'n_embd': 768, 'window_pattern': 'SSSL', 'attn_type': 'mha', 'mla_kv_dim': 0, 'mla_rope_dim': 32, 'use_value_embeds': False}
+{"tag": "a_mha", "attn_type": "mha", "n_kv_head": 6, "mla_kv_dim": 0, "params_M": 135.27, "kv_bytes_per_token": 36864, "kv_MB_per_seq": 72.0, "seqs_in_budget": 142, "decode_tok_s_b1": 179.9, "decode_tok_s_b32": 5699.1}
+2026-10-14 09:45:22,593 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Loading model from /root/.cache/nanochat/base_checkpoints/a_gqa with step 1000
+2026-10-14 09:45:22,830 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Building model with config: {'sequence_len': 2048, 'vocab_size': 32768, 'n_layer': 12, 'n_head': 6, 'n_kv_head': 2, 'n_embd': 768, 'window_pattern': 'SSSL', 'attn_type': 'mha', 'mla_kv_dim': 0, 'mla_rope_dim': 32, 'use_value_embeds': False}
+{"tag": "a_gqa", "attn_type": "mha", "n_kv_head": 2, "mla_kv_dim": 0, "params_M": 125.83, "kv_bytes_per_token": 12288, "kv_MB_per_seq": 24.0, "seqs_in_budget": 426, "decode_tok_s_b1": 178.2, "decode_tok_s_b32": 5660.7}
+2026-10-14 09:45:24,475 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Loading model from /root/.cache/nanochat/base_checkpoints/a_mla with step 1000
+2026-10-14 09:45:24,736 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Building model with config: {'sequence_len': 2048, 'vocab_size': 32768, 'n_layer': 12, 'n_head': 6, 'n_kv_head': 6, 'n_embd': 768, 'window_pattern': 'SSSL', 'attn_type': 'mla', 'mla_kv_dim': 480, 'mla_rope_dim': 32, 'use_value_embeds': False}
+{"tag": "a_mla", "attn_type": "mla", "n_kv_head": 6, "mla_kv_dim": 480, "params_M": 133.57, "kv_bytes_per_token": 12288, "kv_MB_per_seq": 24.0, "seqs_in_budget": 426, "decode_tok_s_b1": 88.7, "decode_tok_s_b32": 2603.2}

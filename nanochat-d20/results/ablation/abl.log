@@ -1,0 +1,62 @@
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = (unset),
+	LANG = "en_IN.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+debconf: delaying package configuration, since apt-utils is not installed
+downloading uv 0.13.1 x86_64-unknown-linux-gnu
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files:  50%|█████     | 1/2 [00:00<00:00,  1.40it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00,  2.66it/s]
+Downloading 15 shards using 4 workers...
+Target directory: /root/.cache/nanochat/base_data_climbmix
+
+Downloading shard_00000.parquet...
+Downloading shard_00001.parquet...
+Downloading shard_00002.parquet...
+Downloading shard_00003.parquet...
+Successfully downloaded shard_00003.parquet
+Downloading shard_00004.parquet...
+Successfully downloaded shard_00002.parquet
+Downloading shard_00005.parquet...
+Successfully downloaded shard_00001.parquet
+Downloading shard_00006.parquet...
+Successfully downloaded shard_00005.parquet
+Downloading shard_00007.parquet...
+Successfully downloaded shard_00006.parquet
+Downloading shard_00008.parquet...
+Successfully downloaded shard_00000.parquet
+Downloading shard_00009.parquet...
+Successfully downloaded shard_00004.parquet
+Downloading shard_00010.parquet...
+Successfully downloaded shard_00009.parquet
+Downloading shard_00011.parquet...
+Successfully downloaded shard_00010.parquet
+Downloading shard_00012.parquet...
+Successfully downloaded shard_00011.parquet
+Downloading shard_00013.parquet...
+Successfully downloaded shard_00007.parquet
+Downloading shard_06542.parquet...
+Successfully downloaded shard_00012.parquet
+Successfully downloaded shard_06542.parquet
+Successfully downloaded shard_00013.parquet
+Successfully downloaded shard_00008.parquet
+Done! Downloaded: 15/15 shards to /root/.cache/nanochat/base_data_climbmix
+### setup at 08:36:15
+### train a_mha rc=0 at 08:56:15
+### eval a_mha rc=0 at 08:59:25
+### train a_gqa rc=0 at 09:18:12
+### eval a_gqa rc=0 at 09:21:23
+### train a_mla rc=0 at 09:41:44
+### eval a_mla rc=0 at 09:45:16
+### bench rc=0 at 09:45:28
+ABL_DONE
