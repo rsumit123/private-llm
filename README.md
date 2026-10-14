@@ -39,6 +39,11 @@ ARC/MMLU after RL: 55.4% / 43.9% / 35.2% (no regression).
 ¹ 500 examples per CORE task (nanochat's in-training setting) rather than every example, so treat it as an estimate.
 ² First 400 of the 1,319 test problems. Multi-step arithmetic is the weakest area at this size.
 
+**Compared with the original nanochat d20 baseline.** Same depth, trained on ~3× fewer tokens (3.5B vs 11.2B) using the
+current nanochat recipe, it scores higher on every benchmark above except GSM8K before RL, and higher on GSM8K after RL.
+The gains come from nanochat's newer recipe; my work was configuring and budgeting the run, evaluating it against GPT-2
+with the same harness, the RL stage, and the training and serving infrastructure around it.
+
 Per-task CORE scores and the full logs are in [`nanochat-d20/results/`](nanochat-d20/results).
 
 ## What talking to it looks like
