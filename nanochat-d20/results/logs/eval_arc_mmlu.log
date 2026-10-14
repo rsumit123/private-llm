@@ -1,0 +1,10 @@
+Autodetected device type: mps
+Downloading https://huggingface.co/api/datasets/allenai/ai2_arc/parquet/ARC-Easy/test/0.parquet ...
+Final: 1311/2376 (55.18%)
+ARC-Easy accuracy: 55.18%
+Downloading https://huggingface.co/api/datasets/allenai/ai2_arc/parquet/ARC-Challenge/test/0.parquet ...
+Final: 503/1172 (42.92%)
+ARC-Challenge accuracy: 42.92%
+Downloading https://huggingface.co/api/datasets/cais/mmlu/parquet/all/test/0.parquet ...
+Final: 4943/14042 (35.20%)
+MMLU accuracy: 35.20%

@@ -1,0 +1,129 @@
+{
+ "model": "nanochat-d20 (sumitkClasses/nanochat-d20-chat)",
+ "eval_code": "karpathy/nanochat @ 92d63d4 (scripts.base_eval, scripts.chat_eval)",
+ "base_model": {
+  "CORE": 0.2357,
+  "CORE_max_per_task": 500,
+  "tasks": {
+   "hellaswag_zeroshot": {
+    "accuracy": 0.476,
+    "centered": 0.3013
+   },
+   "jeopardy": {
+    "accuracy": 0.064,
+    "centered": 0.064
+   },
+   "bigbench_qa_wikidata": {
+    "accuracy": 0.44,
+    "centered": 0.44
+   },
+   "arc_easy": {
+    "accuracy": 0.696,
+    "centered": 0.5947
+   },
+   "arc_challenge": {
+    "accuracy": 0.378,
+    "centered": 0.1707
+   },
+   "copa": {
+    "accuracy": 0.65,
+    "centered": 0.3
+   },
+   "commonsense_qa": {
+    "accuracy": 0.364,
+    "centered": 0.205
+   },
+   "piqa": {
+    "accuracy": 0.756,
+    "centered": 0.512
+   },
+   "openbook_qa": {
+    "accuracy": 0.374,
+    "centered": 0.1653
+   },
+   "lambada_openai": {
+    "accuracy": 0.4,
+    "centered": 0.4
+   },
+   "hellaswag": {
+    "accuracy": 0.464,
+    "centered": 0.2853
+   },
+   "winograd": {
+    "accuracy": 0.6374,
+    "centered": 0.2747
+   },
+   "winogrande": {
+    "accuracy": 0.548,
+    "centered": 0.096
+   },
+   "bigbench_dyck_languages": {
+    "accuracy": 0.116,
+    "centered": 0.116
+   },
+   "agi_eval_lsat_ar": {
+    "accuracy": 0.2391,
+    "centered": 0.0489
+   },
+   "bigbench_cs_algorithms": {
+    "accuracy": 0.446,
+    "centered": 0.446
+   },
+   "bigbench_operators": {
+    "accuracy": 0.1762,
+    "centered": 0.1762
+   },
+   "bigbench_repeat_copy_logic": {
+    "accuracy": 0.0,
+    "centered": 0.0
+   },
+   "squad": {
+    "accuracy": 0.37,
+    "centered": 0.37
+   },
+   "coqa": {
+    "accuracy": 0.254,
+    "centered": 0.254
+   },
+   "boolq": {
+    "accuracy": 0.54,
+    "centered": -0.2105
+   },
+   "bigbench_language_identification": {
+    "accuracy": 0.25,
+    "centered": 0.1749
+   }
+  }
+ },
+ "chat_model": {
+  "ARC-Easy": {
+   "accuracy": 0.5518,
+   "n": 2376
+  },
+  "ARC-Challenge": {
+   "accuracy": 0.4292,
+   "n": 1172
+  },
+  "MMLU": {
+   "accuracy": 0.352,
+   "n": 14042
+  },
+  "HumanEval": {
+   "pass@1": 0.1098,
+   "n": 164
+  },
+  "GSM8K": {
+   "accuracy": 0.015,
+   "n": 400,
+   "note": "first 400 problems of the test split"
+  }
+ },
+ "reference_nanochat_d20_oct2025": {
+  "CORE": 0.2219,
+  "ARC-Easy": 0.3876,
+  "MMLU": 0.3151,
+  "GSM8K": 0.0455,
+  "HumanEval": 0.0854
+ },
+ "reference_gpt2_1.5B_CORE": 0.2565
+}

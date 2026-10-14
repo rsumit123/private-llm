@@ -1,0 +1,21 @@
+++ date +%s
++ T0=1791946036
++ pip install -q --root-user-action=ignore tiktoken rustbpe filelock jinja2 pyarrow pyyaml psutil huggingface_hub vastai
++ sleep 7200
++ python -
+Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]Fetching 6 files:  17%|█▋        | 1/6 [00:00<00:02,  2.34it/s]Fetching 6 files:  33%|███▎      | 2/6 [00:00<00:01,  3.16it/s]Fetching 6 files:  50%|█████     | 3/6 [00:01<00:02,  1.35it/s]Fetching 6 files:  67%|██████▋   | 4/6 [00:02<00:01,  1.79it/s]Fetching 6 files:  83%|████████▎ | 5/6 [00:13<00:04,  4.60s/it]Fetching 6 files: 100%|██████████| 6/6 [00:26<00:00,  7.17s/it]Fetching 6 files: 100%|██████████| 6/6 [00:26<00:00,  4.35s/it]
+['base_checkpoints', 'chatsft_checkpoints', 'dl', 'tokenizer']
++ mark setup
+++ date +%s
++ echo '### setup at +43s'
+### setup at +43s
++ nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+NVIDIA RTX A4000, 16376 MiB
++ cd /root/nanochat
++ python -m scripts.base_eval --eval core --model-tag d20
+### waiting for CORE pid=487 at 03:31:45
+### start at 04:17:57
+### core500 rc=0 at 04:29:24
+### humaneval rc=0 at 04:45:08
+### gsm8k rc=0 at 05:09:16
+EVAL_DONE

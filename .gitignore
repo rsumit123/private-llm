@@ -28,3 +28,10 @@ raw_data/
 
 # Local tooling
 .claude/
+
+# API keys used by sibling projects
+.vllm-api-key
+*api-key*
+
+# published training/eval logs for nanochat-d20
+!nanochat-d20/results/logs/*.log

@@ -1,0 +1,1276 @@
+++ date +%s
++ T0=1791925135
++ apt-get update -qq
++ sleep 3840
++ apt-get install -y -qq git curl ca-certificates python3.10-dev
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = (unset),
+	LANG = "en_IN.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+debconf: delaying package configuration, since apt-utils is not installed
++ cd /root
++ git clone -q https://github.com/karpathy/nanochat
++ cd nanochat
++ git checkout -q 92d63d4e8b
++ curl -LsSf https://astral.sh/uv/install.sh
++ sh
+downloading uv 0.13.0 x86_64-unknown-linux-gnu
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
++ source /root/.local/bin/env
+++ case ":${PATH}:" in
+++ export PATH=/root/.local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+++ PATH=/root/.local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
++ uv venv -q
++ uv sync -q --extra gpu
++ source .venv/bin/activate
+++ '[' -z '' ']'
+++ '[' -n x ']'
+++ SCRIPT_PATH=.venv/bin/activate
+++ '[' .venv/bin/activate = /root/run_sft.sh ']'
+++ deactivate nondestructive
+++ unset -f pydoc
+++ '[' -z '' ']'
+++ '[' -z '' ']'
+++ hash -r
+++ '[' -z '' ']'
+++ unset VIRTUAL_ENV
+++ unset VIRTUAL_ENV_PROMPT
+++ '[' '!' nondestructive = nondestructive ']'
+++ VIRTUAL_ENV=/root/nanochat/.venv
+++ '[' linux-gnu = cygwin ']'
+++ '[' linux-gnu = msys ']'
+++ export VIRTUAL_ENV
+++ '[' -z '' ']'
+++ unset SCRIPT_PATH
+++ _OLD_VIRTUAL_PATH=/root/.local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+++ PATH=/root/nanochat/.venv/bin:/root/.local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+++ export PATH
+++ '[' xnanochat '!=' x ']'
+++ VIRTUAL_ENV_PROMPT=nanochat
+++ export VIRTUAL_ENV_PROMPT
+++ '[' -z '' ']'
+++ '[' -z '' ']'
+++ _OLD_VIRTUAL_PS1=
+++ PS1='(nanochat) '
+++ export PS1
+++ alias pydoc
+++ true
+++ hash -r
++ uv pip install -q huggingface_hub vastai
++ mark deps
+++ date +%s
++ echo '### deps at +78s'
+### deps at +78s
++ python -
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files:  50%|█████     | 1/2 [00:01<00:01,  1.17s/it]Fetching 2 files: 100%|██████████| 2/2 [00:01<00:00,  1.70it/s]
+Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]Fetching 3 files:  33%|███▎      | 1/3 [00:00<00:00,  2.27it/s]Fetching 3 files:  67%|██████▋   | 2/3 [01:12<00:42, 42.32s/it]Fetching 3 files: 100%|██████████| 3/3 [01:12<00:00, 23.11s/it]Fetching 3 files: 100%|██████████| 3/3 [01:12<00:00, 24.11s/it]
+['meta_003320.json', 'model_003320.pt', 'optim_003320_rank0.pt'] ['tokenizer.pkl', 'token_bytes.pt']
++ mark download
+++ date +%s
++ echo '### download at +152s'
+### download at +152s
++ python -m scripts.chat_sft --model-tag=d20 --chatcore-every=-1 --eval-every=-1
+2026-10-13 21:01:43,036 - nanochat.common - [32m[1mINFO[0m - Distributed world size: 1
+2026-10-13 21:01:43,036 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Loading model from /root/.cache/nanochat/base_checkpoints/d20 with step 3320
+2026-10-13 21:01:44,899 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Building model with config: {'sequence_len': 2048, 'vocab_size': 32768, 'n_layer': 20, 'n_head': 10, 'n_kv_head': 10, 'n_embd': 1280, 'window_pattern': 'SSSL'}
+2026-10-13 21:01:46,635 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Loading optimizer state from /root/.cache/nanochat/base_checkpoints/d20/optim_003320_rank0.pt
+Autodetected device type: cuda
+COMPUTE_DTYPE: torch.bfloat16 (auto-detected: CUDA SM 90 (bf16 supported))
+GPU: NVIDIA H100 80GB HBM3 | Peak FLOPS (BF16): 9.89e+14
+Inherited max_seq_len=2048 from pretrained checkpoint
+Inherited device_batch_size=32 from pretrained checkpoint
+Inherited total_batch_size=1048576 from pretrained checkpoint
+Inherited embedding_lr=0.3 from pretrained checkpoint
+Inherited unembedding_lr=0.008 from pretrained checkpoint
+Inherited matrix_lr=0.02 from pretrained checkpoint
+Tokens / micro-batch / rank: 32 x 2048 = 65,536
+Tokens / micro-batch: 65,536
+Total batch size 1,048,576 => gradient accumulation steps: 16
+Scaling the LR for the AdamW parameters ∝1/√(1280/768) = 0.774597
+Loaded optimizer state from pretrained checkpoint (momentum buffers only, LRs reset)
+Downloading https://huggingface.co/api/datasets/HuggingFaceTB/smol-smoltalk/parquet/default/train/0.parquet ...
+Downloading https://huggingface.co/api/datasets/HuggingFaceTB/smol-smoltalk/parquet/default/train/1.parquet ...
+Downloading https://huggingface.co/api/datasets/HuggingFaceTB/smol-smoltalk/parquet/default/train/2.parquet ...
+Downloading https://huggingface.co/api/datasets/HuggingFaceTB/smol-smoltalk/parquet/default/train/3.parquet ...
+Downloading https://huggingface.co/api/datasets/cais/mmlu/parquet/all/auxiliary_train/0.parquet ...
+Downloading https://huggingface.co/api/datasets/openai/gsm8k/parquet/main/train/0.parquet ...
+Training mixture: 789,759 rows (MMLU x3, GSM8K x4)
+Downloading https://huggingface.co/api/datasets/HuggingFaceTB/smol-smoltalk/parquet/default/test/0.parquet ...
+Downloading https://huggingface.co/api/datasets/cais/mmlu/parquet/all/test/0.parquet ...
+Downloading https://huggingface.co/api/datasets/openai/gsm8k/parquet/main/test/0.parquet ...
+step 00001 (0.22%) | loss: 0.862654 | lrm: 1.00 | dt: 60649.23ms | tok/sec: 17,289 | mfu: 5.05 | epoch: 1 | total time: 0.00m
+step 00002 (0.43%) | loss: 1.161211 | lrm: 1.00 | dt: 6181.87ms | tok/sec: 169,621 | mfu: 49.50 | epoch: 1 | total time: 0.00m
+step 00003 (0.65%) | loss: 1.274005 | lrm: 1.00 | dt: 6206.42ms | tok/sec: 168,950 | mfu: 49.31 | epoch: 1 | total time: 0.00m
+step 00004 (0.87%) | loss: 1.337911 | lrm: 1.00 | dt: 6208.19ms | tok/sec: 168,902 | mfu: 49.29 | epoch: 1 | total time: 0.00m
+step 00005 (1.09%) | loss: 1.362990 | lrm: 1.00 | dt: 6198.77ms | tok/sec: 169,158 | mfu: 49.37 | epoch: 1 | total time: 0.00m
+step 00006 (1.30%) | loss: 1.382081 | lrm: 1.00 | dt: 6209.73ms | tok/sec: 168,860 | mfu: 49.28 | epoch: 1 | total time: 0.00m
+step 00007 (1.51%) | loss: 1.394809 | lrm: 1.00 | dt: 6209.09ms | tok/sec: 168,877 | mfu: 49.28 | epoch: 1 | total time: 0.00m
+step 00008 (1.72%) | loss: 1.399385 | lrm: 1.00 | dt: 6207.11ms | tok/sec: 168,931 | mfu: 49.30 | epoch: 1 | total time: 0.00m
+step 00009 (1.94%) | loss: 1.407956 | lrm: 1.00 | dt: 6198.73ms | tok/sec: 169,159 | mfu: 49.37 | epoch: 1 | total time: 0.00m
+step 00010 (2.15%) | loss: 1.392646 | lrm: 1.00 | dt: 6212.27ms | tok/sec: 168,791 | mfu: 49.26 | epoch: 1 | total time: 0.00m
+step 00011 (2.36%) | loss: 1.387451 | lrm: 1.00 | dt: 6219.52ms | tok/sec: 168,594 | mfu: 49.20 | epoch: 1 | total time: 0.10m
+step 00012 (2.57%) | loss: 1.387858 | lrm: 1.00 | dt: 6205.59ms | tok/sec: 168,972 | mfu: 49.31 | epoch: 1 | total time: 0.21m
+step 00013 (2.79%) | loss: 1.380886 | lrm: 1.00 | dt: 6210.46ms | tok/sec: 168,840 | mfu: 49.27 | epoch: 1 | total time: 0.31m
+step 00014 (3.00%) | loss: 1.378578 | lrm: 1.00 | dt: 6208.27ms | tok/sec: 168,899 | mfu: 49.29 | epoch: 1 | total time: 0.41m
+step 00015 (3.22%) | loss: 1.358213 | lrm: 1.00 | dt: 6207.58ms | tok/sec: 168,918 | mfu: 49.30 | epoch: 1 | total time: 0.52m
+step 00016 (3.43%) | loss: 1.357193 | lrm: 1.00 | dt: 6201.72ms | tok/sec: 169,078 | mfu: 49.34 | epoch: 1 | total time: 0.62m
+step 00017 (3.64%) | loss: 1.355916 | lrm: 1.00 | dt: 6210.64ms | tok/sec: 168,835 | mfu: 49.27 | epoch: 1 | total time: 0.72m
+step 00018 (3.85%) | loss: 1.344788 | lrm: 1.00 | dt: 6211.15ms | tok/sec: 168,821 | mfu: 49.27 | epoch: 1 | total time: 0.83m
+step 00019 (4.07%) | loss: 1.338765 | lrm: 1.00 | dt: 6213.83ms | tok/sec: 168,748 | mfu: 49.25 | epoch: 1 | total time: 0.93m
+step 00020 (4.28%) | loss: 1.332543 | lrm: 1.00 | dt: 6206.02ms | tok/sec: 168,961 | mfu: 49.31 | epoch: 1 | total time: 1.03m
+step 00021 (4.50%) | loss: 1.322968 | lrm: 1.00 | dt: 6208.37ms | tok/sec: 168,897 | mfu: 49.29 | epoch: 1 | total time: 1.14m
+step 00022 (4.71%) | loss: 1.314667 | lrm: 1.00 | dt: 6215.05ms | tok/sec: 168,715 | mfu: 49.24 | epoch: 1 | total time: 1.24m
+step 00023 (4.92%) | loss: 1.299371 | lrm: 1.00 | dt: 6206.25ms | tok/sec: 168,954 | mfu: 49.31 | epoch: 1 | total time: 1.35m
+step 00024 (5.14%) | loss: 1.294869 | lrm: 1.00 | dt: 6210.23ms | tok/sec: 168,846 | mfu: 49.27 | epoch: 1 | total time: 1.45m
+step 00025 (5.36%) | loss: 1.287904 | lrm: 1.00 | dt: 6198.59ms | tok/sec: 169,163 | mfu: 49.37 | epoch: 1 | total time: 1.55m
+step 00026 (5.57%) | loss: 1.274493 | lrm: 1.00 | dt: 6211.09ms | tok/sec: 168,823 | mfu: 49.27 | epoch: 1 | total time: 1.66m
+step 00027 (5.79%) | loss: 1.279972 | lrm: 1.00 | dt: 6220.50ms | tok/sec: 168,567 | mfu: 49.19 | epoch: 1 | total time: 1.76m
+step 00028 (6.00%) | loss: 1.262747 | lrm: 1.00 | dt: 6208.23ms | tok/sec: 168,901 | mfu: 49.29 | epoch: 1 | total time: 1.86m
+step 00029 (6.22%) | loss: 1.258920 | lrm: 1.00 | dt: 6211.48ms | tok/sec: 168,812 | mfu: 49.26 | epoch: 1 | total time: 1.97m
+step 00030 (6.44%) | loss: 1.257634 | lrm: 1.00 | dt: 6214.15ms | tok/sec: 168,740 | mfu: 49.24 | epoch: 1 | total time: 2.07m
+step 00031 (6.66%) | loss: 1.255732 | lrm: 1.00 | dt: 6196.09ms | tok/sec: 169,231 | mfu: 49.39 | epoch: 1 | total time: 2.17m
+step 00032 (6.87%) | loss: 1.254668 | lrm: 1.00 | dt: 6213.26ms | tok/sec: 168,764 | mfu: 49.25 | epoch: 1 | total time: 2.28m
+step 00033 (7.08%) | loss: 1.256321 | lrm: 1.00 | dt: 6210.71ms | tok/sec: 168,833 | mfu: 49.27 | epoch: 1 | total time: 2.38m
+step 00034 (7.30%) | loss: 1.247734 | lrm: 1.00 | dt: 6212.45ms | tok/sec: 168,786 | mfu: 49.26 | epoch: 1 | total time: 2.48m
+step 00035 (7.51%) | loss: 1.244538 | lrm: 1.00 | dt: 6206.28ms | tok/sec: 168,954 | mfu: 49.31 | epoch: 1 | total time: 2.59m
+step 00036 (7.73%) | loss: 1.233672 | lrm: 1.00 | dt: 6205.39ms | tok/sec: 168,978 | mfu: 49.31 | epoch: 1 | total time: 2.69m
+step 00037 (7.94%) | loss: 1.239934 | lrm: 1.00 | dt: 6203.27ms | tok/sec: 169,036 | mfu: 49.33 | epoch: 1 | total time: 2.79m
+step 00038 (8.16%) | loss: 1.245155 | lrm: 1.00 | dt: 6203.50ms | tok/sec: 169,029 | mfu: 49.33 | epoch: 1 | total time: 2.90m
+step 00039 (8.37%) | loss: 1.245317 | lrm: 1.00 | dt: 6206.47ms | tok/sec: 168,948 | mfu: 49.30 | epoch: 1 | total time: 3.00m
+step 00040 (8.58%) | loss: 1.233234 | lrm: 1.00 | dt: 6202.83ms | tok/sec: 169,048 | mfu: 49.33 | epoch: 1 | total time: 3.10m
+step 00041 (8.80%) | loss: 1.238150 | lrm: 1.00 | dt: 6210.85ms | tok/sec: 168,829 | mfu: 49.27 | epoch: 1 | total time: 3.21m
+step 00042 (9.02%) | loss: 1.235459 | lrm: 1.00 | dt: 6211.56ms | tok/sec: 168,810 | mfu: 49.26 | epoch: 1 | total time: 3.31m
+step 00043 (9.23%) | loss: 1.232874 | lrm: 1.00 | dt: 6211.74ms | tok/sec: 168,805 | mfu: 49.26 | epoch: 1 | total time: 3.41m
+step 00044 (9.44%) | loss: 1.226093 | lrm: 1.00 | dt: 6212.49ms | tok/sec: 168,785 | mfu: 49.26 | epoch: 1 | total time: 3.52m
+step 00045 (9.66%) | loss: 1.222668 | lrm: 1.00 | dt: 6208.20ms | tok/sec: 168,901 | mfu: 49.29 | epoch: 1 | total time: 3.62m
+step 00046 (9.88%) | loss: 1.230807 | lrm: 1.00 | dt: 6192.33ms | tok/sec: 169,334 | mfu: 49.42 | epoch: 1 | total time: 3.73m
+step 00047 (10.09%) | loss: 1.227859 | lrm: 1.00 | dt: 6205.31ms | tok/sec: 168,980 | mfu: 49.31 | epoch: 1 | total time: 3.83m
+step 00048 (10.31%) | loss: 1.223080 | lrm: 1.00 | dt: 6213.62ms | tok/sec: 168,754 | mfu: 49.25 | epoch: 1 | total time: 3.93m
+step 00049 (10.52%) | loss: 1.226009 | lrm: 1.00 | dt: 6212.89ms | tok/sec: 168,774 | mfu: 49.25 | epoch: 1 | total time: 4.04m
+step 00050 (10.74%) | loss: 1.223297 | lrm: 1.00 | dt: 6206.50ms | tok/sec: 168,948 | mfu: 49.30 | epoch: 1 | total time: 4.14m
+step 00051 (10.95%) | loss: 1.210894 | lrm: 1.00 | dt: 6203.48ms | tok/sec: 169,030 | mfu: 49.33 | epoch: 1 | total time: 4.24m
+step 00052 (11.17%) | loss: 1.202184 | lrm: 1.00 | dt: 6212.58ms | tok/sec: 168,782 | mfu: 49.26 | epoch: 1 | total time: 4.35m
+step 00053 (11.38%) | loss: 1.201851 | lrm: 1.00 | dt: 6200.13ms | tok/sec: 169,121 | mfu: 49.36 | epoch: 1 | total time: 4.45m
+step 00054 (11.59%) | loss: 1.208622 | lrm: 1.00 | dt: 6206.40ms | tok/sec: 168,950 | mfu: 49.31 | epoch: 1 | total time: 4.55m
+step 00055 (11.81%) | loss: 1.206349 | lrm: 1.00 | dt: 6210.94ms | tok/sec: 168,827 | mfu: 49.27 | epoch: 1 | total time: 4.66m
+step 00056 (12.03%) | loss: 1.199369 | lrm: 1.00 | dt: 6200.47ms | tok/sec: 169,112 | mfu: 49.35 | epoch: 1 | total time: 4.76m
+step 00057 (12.24%) | loss: 1.195689 | lrm: 1.00 | dt: 6202.46ms | tok/sec: 169,058 | mfu: 49.34 | epoch: 1 | total time: 4.86m
+step 00058 (12.46%) | loss: 1.194523 | lrm: 1.00 | dt: 6208.38ms | tok/sec: 168,896 | mfu: 49.29 | epoch: 1 | total time: 4.97m
+step 00059 (12.67%) | loss: 1.187975 | lrm: 1.00 | dt: 6217.56ms | tok/sec: 168,647 | mfu: 49.22 | epoch: 1 | total time: 5.07m
+step 00060 (12.88%) | loss: 1.176220 | lrm: 1.00 | dt: 6207.99ms | tok/sec: 168,907 | mfu: 49.29 | epoch: 1 | total time: 5.17m
+step 00061 (13.11%) | loss: 1.171179 | lrm: 1.00 | dt: 6205.05ms | tok/sec: 168,987 | mfu: 49.32 | epoch: 1 | total time: 5.28m
+step 00062 (13.32%) | loss: 1.161234 | lrm: 1.00 | dt: 6213.25ms | tok/sec: 168,764 | mfu: 49.25 | epoch: 1 | total time: 5.38m
+step 00063 (13.53%) | loss: 1.166169 | lrm: 1.00 | dt: 6210.37ms | tok/sec: 168,842 | mfu: 49.27 | epoch: 1 | total time: 5.48m
+step 00064 (13.74%) | loss: 1.154934 | lrm: 1.00 | dt: 6217.75ms | tok/sec: 168,642 | mfu: 49.22 | epoch: 1 | total time: 5.59m
+step 00065 (13.96%) | loss: 1.157665 | lrm: 1.00 | dt: 6214.44ms | tok/sec: 168,732 | mfu: 49.24 | epoch: 1 | total time: 5.69m
+step 00066 (14.17%) | loss: 1.155177 | lrm: 1.00 | dt: 6197.40ms | tok/sec: 169,196 | mfu: 49.38 | epoch: 1 | total time: 5.79m
+step 00067 (14.38%) | loss: 1.154410 | lrm: 1.00 | dt: 6205.12ms | tok/sec: 168,985 | mfu: 49.32 | epoch: 1 | total time: 5.90m
+step 00068 (14.60%) | loss: 1.162709 | lrm: 1.00 | dt: 6216.14ms | tok/sec: 168,685 | mfu: 49.23 | epoch: 1 | total time: 6.00m
+step 00069 (14.81%) | loss: 1.165987 | lrm: 1.00 | dt: 6204.17ms | tok/sec: 169,011 | mfu: 49.32 | epoch: 1 | total time: 6.10m
+step 00070 (15.03%) | loss: 1.163190 | lrm: 1.00 | dt: 6211.64ms | tok/sec: 168,808 | mfu: 49.26 | epoch: 1 | total time: 6.21m
+step 00071 (15.25%) | loss: 1.166921 | lrm: 1.00 | dt: 6211.19ms | tok/sec: 168,820 | mfu: 49.27 | epoch: 1 | total time: 6.31m
+step 00072 (15.46%) | loss: 1.162232 | lrm: 1.00 | dt: 6205.67ms | tok/sec: 168,970 | mfu: 49.31 | epoch: 1 | total time: 6.42m
+step 00073 (15.68%) | loss: 1.160417 | lrm: 1.00 | dt: 6209.73ms | tok/sec: 168,860 | mfu: 49.28 | epoch: 1 | total time: 6.52m
+step 00074 (15.90%) | loss: 1.170807 | lrm: 1.00 | dt: 6219.11ms | tok/sec: 168,605 | mfu: 49.20 | epoch: 1 | total time: 6.62m
+step 00075 (16.11%) | loss: 1.161822 | lrm: 1.00 | dt: 6217.70ms | tok/sec: 168,643 | mfu: 49.22 | epoch: 1 | total time: 6.73m
+step 00076 (16.32%) | loss: 1.167596 | lrm: 1.00 | dt: 6216.89ms | tok/sec: 168,665 | mfu: 49.22 | epoch: 1 | total time: 6.83m
+step 00077 (16.54%) | loss: 1.162053 | lrm: 1.00 | dt: 6206.21ms | tok/sec: 168,955 | mfu: 49.31 | epoch: 1 | total time: 6.93m
+step 00078 (16.75%) | loss: 1.160198 | lrm: 1.00 | dt: 6216.26ms | tok/sec: 168,682 | mfu: 49.23 | epoch: 1 | total time: 7.04m
+step 00079 (16.97%) | loss: 1.160706 | lrm: 1.00 | dt: 6202.64ms | tok/sec: 169,053 | mfu: 49.34 | epoch: 1 | total time: 7.14m
+step 00080 (17.18%) | loss: 1.157162 | lrm: 1.00 | dt: 6212.77ms | tok/sec: 168,777 | mfu: 49.25 | epoch: 1 | total time: 7.24m
+step 00081 (17.40%) | loss: 1.150992 | lrm: 1.00 | dt: 6206.38ms | tok/sec: 168,951 | mfu: 49.31 | epoch: 1 | total time: 7.35m
+step 00082 (17.61%) | loss: 1.148947 | lrm: 1.00 | dt: 6216.54ms | tok/sec: 168,675 | mfu: 49.22 | epoch: 1 | total time: 7.45m
+step 00083 (17.83%) | loss: 1.139508 | lrm: 1.00 | dt: 6215.21ms | tok/sec: 168,711 | mfu: 49.24 | epoch: 1 | total time: 7.55m
+step 00084 (18.04%) | loss: 1.150980 | lrm: 1.00 | dt: 6208.23ms | tok/sec: 168,900 | mfu: 49.29 | epoch: 1 | total time: 7.66m
+step 00085 (18.25%) | loss: 1.143248 | lrm: 1.00 | dt: 6207.67ms | tok/sec: 168,916 | mfu: 49.30 | epoch: 1 | total time: 7.76m
+step 00086 (18.47%) | loss: 1.139140 | lrm: 1.00 | dt: 6214.32ms | tok/sec: 168,735 | mfu: 49.24 | epoch: 1 | total time: 7.86m
+step 00087 (18.68%) | loss: 1.137771 | lrm: 1.00 | dt: 6207.41ms | tok/sec: 168,923 | mfu: 49.30 | epoch: 1 | total time: 7.97m
+step 00088 (18.89%) | loss: 1.133172 | lrm: 1.00 | dt: 6207.36ms | tok/sec: 168,924 | mfu: 49.30 | epoch: 1 | total time: 8.07m
+step 00089 (19.10%) | loss: 1.132719 | lrm: 1.00 | dt: 6202.94ms | tok/sec: 169,045 | mfu: 49.33 | epoch: 1 | total time: 8.18m
+step 00090 (19.32%) | loss: 1.131537 | lrm: 1.00 | dt: 6204.81ms | tok/sec: 168,994 | mfu: 49.32 | epoch: 1 | total time: 8.28m
+step 00091 (19.54%) | loss: 1.141697 | lrm: 1.00 | dt: 6204.68ms | tok/sec: 168,997 | mfu: 49.32 | epoch: 1 | total time: 8.38m
+step 00092 (19.75%) | loss: 1.140616 | lrm: 1.00 | dt: 6210.99ms | tok/sec: 168,825 | mfu: 49.27 | epoch: 1 | total time: 8.49m
+step 00093 (19.97%) | loss: 1.128448 | lrm: 1.00 | dt: 6210.48ms | tok/sec: 168,839 | mfu: 49.27 | epoch: 1 | total time: 8.59m
+step 00094 (20.19%) | loss: 1.124733 | lrm: 1.00 | dt: 6211.94ms | tok/sec: 168,800 | mfu: 49.26 | epoch: 1 | total time: 8.69m
+step 00095 (20.40%) | loss: 1.113098 | lrm: 1.00 | dt: 6218.37ms | tok/sec: 168,625 | mfu: 49.21 | epoch: 1 | total time: 8.80m
+step 00096 (20.61%) | loss: 1.109200 | lrm: 1.00 | dt: 6208.06ms | tok/sec: 168,905 | mfu: 49.29 | epoch: 1 | total time: 8.90m
+step 00097 (20.83%) | loss: 1.113502 | lrm: 1.00 | dt: 6211.29ms | tok/sec: 168,817 | mfu: 49.27 | epoch: 1 | total time: 9.00m
+step 00098 (21.04%) | loss: 1.112925 | lrm: 1.00 | dt: 6209.48ms | tok/sec: 168,866 | mfu: 49.28 | epoch: 1 | total time: 9.11m
+step 00099 (21.26%) | loss: 1.116194 | lrm: 1.00 | dt: 6205.71ms | tok/sec: 168,969 | mfu: 49.31 | epoch: 1 | total time: 9.21m
+step 00100 (21.47%) | loss: 1.115435 | lrm: 1.00 | dt: 6207.90ms | tok/sec: 168,909 | mfu: 49.29 | epoch: 1 | total time: 9.31m
+step 00101 (21.68%) | loss: 1.117404 | lrm: 1.00 | dt: 6214.68ms | tok/sec: 168,725 | mfu: 49.24 | epoch: 1 | total time: 9.42m
+step 00102 (21.90%) | loss: 1.117755 | lrm: 1.00 | dt: 6213.23ms | tok/sec: 168,765 | mfu: 49.25 | epoch: 1 | total time: 9.52m
+step 00103 (22.12%) | loss: 1.117611 | lrm: 1.00 | dt: 6205.14ms | tok/sec: 168,985 | mfu: 49.32 | epoch: 1 | total time: 9.62m
+step 00104 (22.34%) | loss: 1.116280 | lrm: 1.00 | dt: 6195.10ms | tok/sec: 169,258 | mfu: 49.40 | epoch: 1 | total time: 9.73m
+step 00105 (22.55%) | loss: 1.112873 | lrm: 1.00 | dt: 6206.70ms | tok/sec: 168,942 | mfu: 49.30 | epoch: 1 | total time: 9.83m
+step 00106 (22.77%) | loss: 1.106265 | lrm: 1.00 | dt: 6199.88ms | tok/sec: 169,128 | mfu: 49.36 | epoch: 1 | total time: 9.93m
+step 00107 (22.98%) | loss: 1.110789 | lrm: 1.00 | dt: 6212.89ms | tok/sec: 168,774 | mfu: 49.25 | epoch: 1 | total time: 10.04m
+step 00108 (23.20%) | loss: 1.114031 | lrm: 1.00 | dt: 6210.72ms | tok/sec: 168,833 | mfu: 49.27 | epoch: 1 | total time: 10.14m
+step 00109 (23.41%) | loss: 1.108857 | lrm: 1.00 | dt: 6214.28ms | tok/sec: 168,736 | mfu: 49.24 | epoch: 1 | total time: 10.24m
+step 00110 (23.62%) | loss: 1.105738 | lrm: 1.00 | dt: 6201.95ms | tok/sec: 169,072 | mfu: 49.34 | epoch: 1 | total time: 10.35m
+step 00111 (23.83%) | loss: 1.101935 | lrm: 1.00 | dt: 6216.90ms | tok/sec: 168,665 | mfu: 49.22 | epoch: 1 | total time: 10.45m
+step 00112 (24.05%) | loss: 1.103416 | lrm: 1.00 | dt: 6206.94ms | tok/sec: 168,936 | mfu: 49.30 | epoch: 1 | total time: 10.56m
+step 00113 (24.26%) | loss: 1.096084 | lrm: 1.00 | dt: 6212.67ms | tok/sec: 168,780 | mfu: 49.26 | epoch: 1 | total time: 10.66m
+step 00114 (24.47%) | loss: 1.088450 | lrm: 1.00 | dt: 6219.07ms | tok/sec: 168,606 | mfu: 49.20 | epoch: 1 | total time: 10.76m
+step 00115 (24.68%) | loss: 1.087983 | lrm: 1.00 | dt: 6206.13ms | tok/sec: 168,958 | mfu: 49.31 | epoch: 1 | total time: 10.87m
+step 00116 (24.89%) | loss: 1.094266 | lrm: 1.00 | dt: 6208.48ms | tok/sec: 168,894 | mfu: 49.29 | epoch: 1 | total time: 10.97m
+step 00117 (25.10%) | loss: 1.090021 | lrm: 1.00 | dt: 6205.94ms | tok/sec: 168,963 | mfu: 49.31 | epoch: 1 | total time: 11.07m
+step 00118 (25.31%) | loss: 1.087145 | lrm: 1.00 | dt: 6203.84ms | tok/sec: 169,020 | mfu: 49.33 | epoch: 1 | total time: 11.18m
+step 00119 (25.53%) | loss: 1.084144 | lrm: 1.00 | dt: 6207.99ms | tok/sec: 168,907 | mfu: 49.29 | epoch: 1 | total time: 11.28m
+step 00120 (25.74%) | loss: 1.081262 | lrm: 1.00 | dt: 6207.35ms | tok/sec: 168,924 | mfu: 49.30 | epoch: 1 | total time: 11.38m
+step 00121 (25.95%) | loss: 1.084524 | lrm: 1.00 | dt: 6211.40ms | tok/sec: 168,814 | mfu: 49.27 | epoch: 1 | total time: 11.49m
+step 00122 (26.17%) | loss: 1.095484 | lrm: 1.00 | dt: 6206.31ms | tok/sec: 168,953 | mfu: 49.31 | epoch: 1 | total time: 11.59m
+step 00123 (26.38%) | loss: 1.092653 | lrm: 1.00 | dt: 6208.31ms | tok/sec: 168,898 | mfu: 49.29 | epoch: 1 | total time: 11.69m
+step 00124 (26.60%) | loss: 1.090810 | lrm: 1.00 | dt: 6213.36ms | tok/sec: 168,761 | mfu: 49.25 | epoch: 1 | total time: 11.80m
+step 00125 (26.81%) | loss: 1.087674 | lrm: 1.00 | dt: 6210.97ms | tok/sec: 168,826 | mfu: 49.27 | epoch: 1 | total time: 11.90m
+step 00126 (27.02%) | loss: 1.086510 | lrm: 1.00 | dt: 6212.17ms | tok/sec: 168,793 | mfu: 49.26 | epoch: 1 | total time: 12.00m
+step 00127 (27.23%) | loss: 1.077846 | lrm: 1.00 | dt: 6211.25ms | tok/sec: 168,818 | mfu: 49.27 | epoch: 1 | total time: 12.11m
+step 00128 (27.44%) | loss: 1.083275 | lrm: 1.00 | dt: 6202.69ms | tok/sec: 169,051 | mfu: 49.33 | epoch: 1 | total time: 12.21m
+step 00129 (27.66%) | loss: 1.085350 | lrm: 1.00 | dt: 6221.27ms | tok/sec: 168,547 | mfu: 49.19 | epoch: 1 | total time: 12.31m
+step 00130 (27.88%) | loss: 1.080228 | lrm: 1.00 | dt: 6217.86ms | tok/sec: 168,639 | mfu: 49.21 | epoch: 1 | total time: 12.42m
+step 00131 (28.09%) | loss: 1.083526 | lrm: 1.00 | dt: 6207.84ms | tok/sec: 168,911 | mfu: 49.29 | epoch: 1 | total time: 12.52m
+step 00132 (28.30%) | loss: 1.076309 | lrm: 1.00 | dt: 6215.29ms | tok/sec: 168,709 | mfu: 49.23 | epoch: 1 | total time: 12.63m
+step 00133 (28.51%) | loss: 1.070449 | lrm: 1.00 | dt: 6203.68ms | tok/sec: 169,024 | mfu: 49.33 | epoch: 1 | total time: 12.73m
+step 00134 (28.73%) | loss: 1.075874 | lrm: 1.00 | dt: 6212.09ms | tok/sec: 168,795 | mfu: 49.26 | epoch: 1 | total time: 12.83m
+step 00135 (28.95%) | loss: 1.085286 | lrm: 1.00 | dt: 6214.15ms | tok/sec: 168,740 | mfu: 49.24 | epoch: 1 | total time: 12.94m
+step 00136 (29.16%) | loss: 1.083087 | lrm: 1.00 | dt: 6212.63ms | tok/sec: 168,781 | mfu: 49.26 | epoch: 1 | total time: 13.04m
+step 00137 (29.38%) | loss: 1.081860 | lrm: 1.00 | dt: 6205.05ms | tok/sec: 168,987 | mfu: 49.32 | epoch: 1 | total time: 13.14m
+step 00138 (29.60%) | loss: 1.086858 | lrm: 1.00 | dt: 6211.62ms | tok/sec: 168,808 | mfu: 49.26 | epoch: 1 | total time: 13.25m
+step 00139 (29.81%) | loss: 1.078849 | lrm: 1.00 | dt: 6218.25ms | tok/sec: 168,628 | mfu: 49.21 | epoch: 1 | total time: 13.35m
+step 00140 (30.02%) | loss: 1.074999 | lrm: 1.00 | dt: 6203.47ms | tok/sec: 169,030 | mfu: 49.33 | epoch: 1 | total time: 13.45m
+step 00141 (30.24%) | loss: 1.071692 | lrm: 1.00 | dt: 6207.09ms | tok/sec: 168,932 | mfu: 49.30 | epoch: 1 | total time: 13.56m
+step 00142 (30.46%) | loss: 1.078618 | lrm: 1.00 | dt: 6212.18ms | tok/sec: 168,793 | mfu: 49.26 | epoch: 1 | total time: 13.66m
+step 00143 (30.67%) | loss: 1.077543 | lrm: 1.00 | dt: 6195.96ms | tok/sec: 169,235 | mfu: 49.39 | epoch: 1 | total time: 13.76m
+step 00144 (30.89%) | loss: 1.086853 | lrm: 1.00 | dt: 6205.15ms | tok/sec: 168,984 | mfu: 49.32 | epoch: 1 | total time: 13.87m
+step 00145 (31.10%) | loss: 1.083199 | lrm: 1.00 | dt: 6212.28ms | tok/sec: 168,790 | mfu: 49.26 | epoch: 1 | total time: 13.97m
+step 00146 (31.32%) | loss: 1.077980 | lrm: 1.00 | dt: 6213.67ms | tok/sec: 168,753 | mfu: 49.25 | epoch: 1 | total time: 14.07m
+step 00147 (31.54%) | loss: 1.090114 | lrm: 1.00 | dt: 6199.06ms | tok/sec: 169,150 | mfu: 49.36 | epoch: 1 | total time: 14.18m
+step 00148 (31.75%) | loss: 1.085931 | lrm: 1.00 | dt: 6213.75ms | tok/sec: 168,750 | mfu: 49.25 | epoch: 1 | total time: 14.28m
+step 00149 (31.96%) | loss: 1.080629 | lrm: 1.00 | dt: 6196.08ms | tok/sec: 169,232 | mfu: 49.39 | epoch: 1 | total time: 14.38m
+step 00150 (32.18%) | loss: 1.087605 | lrm: 1.00 | dt: 6204.94ms | tok/sec: 168,990 | mfu: 49.32 | epoch: 1 | total time: 14.49m
+step 00151 (32.39%) | loss: 1.084437 | lrm: 1.00 | dt: 6202.38ms | tok/sec: 169,060 | mfu: 49.34 | epoch: 1 | total time: 14.59m
+step 00152 (32.61%) | loss: 1.086595 | lrm: 1.00 | dt: 6207.03ms | tok/sec: 168,933 | mfu: 49.30 | epoch: 1 | total time: 14.69m
+step 00153 (32.82%) | loss: 1.094448 | lrm: 1.00 | dt: 6210.27ms | tok/sec: 168,845 | mfu: 49.27 | epoch: 1 | total time: 14.80m
+step 00154 (33.04%) | loss: 1.083524 | lrm: 1.00 | dt: 6204.24ms | tok/sec: 169,009 | mfu: 49.32 | epoch: 1 | total time: 14.90m
+step 00155 (33.26%) | loss: 1.093499 | lrm: 1.00 | dt: 6198.05ms | tok/sec: 169,178 | mfu: 49.37 | epoch: 1 | total time: 15.00m
+step 00156 (33.47%) | loss: 1.085690 | lrm: 1.00 | dt: 6215.20ms | tok/sec: 168,711 | mfu: 49.24 | epoch: 1 | total time: 15.11m
+step 00157 (33.69%) | loss: 1.084167 | lrm: 1.00 | dt: 6208.14ms | tok/sec: 168,903 | mfu: 49.29 | epoch: 1 | total time: 15.21m
+step 00158 (33.91%) | loss: 1.077645 | lrm: 1.00 | dt: 6204.75ms | tok/sec: 168,995 | mfu: 49.32 | epoch: 1 | total time: 15.32m
+step 00159 (34.12%) | loss: 1.075845 | lrm: 1.00 | dt: 6217.02ms | tok/sec: 168,662 | mfu: 49.22 | epoch: 1 | total time: 15.42m
+step 00160 (34.34%) | loss: 1.071111 | lrm: 1.00 | dt: 6211.18ms | tok/sec: 168,820 | mfu: 49.27 | epoch: 1 | total time: 15.52m
+step 00161 (34.55%) | loss: 1.065052 | lrm: 1.00 | dt: 6203.06ms | tok/sec: 169,041 | mfu: 49.33 | epoch: 1 | total time: 15.63m
+step 00162 (34.77%) | loss: 1.061603 | lrm: 1.00 | dt: 6212.67ms | tok/sec: 168,780 | mfu: 49.26 | epoch: 1 | total time: 15.73m
+step 00163 (34.98%) | loss: 1.066218 | lrm: 1.00 | dt: 6203.39ms | tok/sec: 169,032 | mfu: 49.33 | epoch: 1 | total time: 15.83m
+step 00164 (35.19%) | loss: 1.073919 | lrm: 1.00 | dt: 6208.90ms | tok/sec: 168,882 | mfu: 49.29 | epoch: 1 | total time: 15.94m
+step 00165 (35.41%) | loss: 1.069991 | lrm: 1.00 | dt: 6213.19ms | tok/sec: 168,766 | mfu: 49.25 | epoch: 1 | total time: 16.04m
+step 00166 (35.62%) | loss: 1.070564 | lrm: 1.00 | dt: 6202.80ms | tok/sec: 169,048 | mfu: 49.33 | epoch: 1 | total time: 16.14m
+step 00167 (35.83%) | loss: 1.073813 | lrm: 1.00 | dt: 6217.20ms | tok/sec: 168,657 | mfu: 49.22 | epoch: 1 | total time: 16.25m
+step 00168 (36.05%) | loss: 1.070904 | lrm: 1.00 | dt: 6203.63ms | tok/sec: 169,026 | mfu: 49.33 | epoch: 1 | total time: 16.35m
+step 00169 (36.27%) | loss: 1.070142 | lrm: 1.00 | dt: 6209.42ms | tok/sec: 168,868 | mfu: 49.28 | epoch: 1 | total time: 16.45m
+step 00170 (36.49%) | loss: 1.066009 | lrm: 1.00 | dt: 6198.55ms | tok/sec: 169,164 | mfu: 49.37 | epoch: 1 | total time: 16.56m
+step 00171 (36.70%) | loss: 1.068578 | lrm: 1.00 | dt: 6206.80ms | tok/sec: 168,939 | mfu: 49.30 | epoch: 1 | total time: 16.66m
+step 00172 (36.92%) | loss: 1.057572 | lrm: 1.00 | dt: 6217.33ms | tok/sec: 168,653 | mfu: 49.22 | epoch: 1 | total time: 16.76m
+step 00173 (37.13%) | loss: 1.056360 | lrm: 1.00 | dt: 6204.65ms | tok/sec: 168,998 | mfu: 49.32 | epoch: 1 | total time: 16.87m
+step 00174 (37.34%) | loss: 1.064098 | lrm: 1.00 | dt: 6206.32ms | tok/sec: 168,952 | mfu: 49.31 | epoch: 1 | total time: 16.97m
+step 00175 (37.56%) | loss: 1.057243 | lrm: 1.00 | dt: 6201.42ms | tok/sec: 169,086 | mfu: 49.34 | epoch: 1 | total time: 17.07m
+step 00176 (37.77%) | loss: 1.063215 | lrm: 1.00 | dt: 6215.78ms | tok/sec: 168,695 | mfu: 49.23 | epoch: 1 | total time: 17.18m
+step 00177 (37.98%) | loss: 1.049692 | lrm: 1.00 | dt: 6201.38ms | tok/sec: 169,087 | mfu: 49.35 | epoch: 1 | total time: 17.28m
+step 00178 (38.20%) | loss: 1.052540 | lrm: 1.00 | dt: 6212.43ms | tok/sec: 168,786 | mfu: 49.26 | epoch: 1 | total time: 17.38m
+step 00179 (38.41%) | loss: 1.039692 | lrm: 1.00 | dt: 6202.70ms | tok/sec: 169,051 | mfu: 49.33 | epoch: 1 | total time: 17.49m
+step 00180 (38.63%) | loss: 1.046138 | lrm: 1.00 | dt: 6206.45ms | tok/sec: 168,949 | mfu: 49.30 | epoch: 1 | total time: 17.59m
+step 00181 (38.84%) | loss: 1.050674 | lrm: 1.00 | dt: 6216.51ms | tok/sec: 168,675 | mfu: 49.22 | epoch: 1 | total time: 17.70m
+step 00182 (39.06%) | loss: 1.045168 | lrm: 1.00 | dt: 6211.21ms | tok/sec: 168,819 | mfu: 49.27 | epoch: 1 | total time: 17.80m
+step 00183 (39.27%) | loss: 1.047131 | lrm: 1.00 | dt: 6206.33ms | tok/sec: 168,952 | mfu: 49.31 | epoch: 1 | total time: 17.90m
+step 00184 (39.48%) | loss: 1.056001 | lrm: 1.00 | dt: 6214.68ms | tok/sec: 168,725 | mfu: 49.24 | epoch: 1 | total time: 18.01m
+step 00185 (39.70%) | loss: 1.055815 | lrm: 1.00 | dt: 6211.43ms | tok/sec: 168,813 | mfu: 49.27 | epoch: 1 | total time: 18.11m
+step 00186 (39.92%) | loss: 1.054899 | lrm: 1.00 | dt: 6213.89ms | tok/sec: 168,747 | mfu: 49.25 | epoch: 1 | total time: 18.21m
+step 00187 (40.13%) | loss: 1.053357 | lrm: 1.00 | dt: 6215.36ms | tok/sec: 168,707 | mfu: 49.23 | epoch: 1 | total time: 18.32m
+step 00188 (40.34%) | loss: 1.050426 | lrm: 1.00 | dt: 6203.55ms | tok/sec: 169,028 | mfu: 49.33 | epoch: 1 | total time: 18.42m
+step 00189 (40.56%) | loss: 1.055692 | lrm: 1.00 | dt: 6208.89ms | tok/sec: 168,882 | mfu: 49.29 | epoch: 1 | total time: 18.52m
+step 00190 (40.77%) | loss: 1.053283 | lrm: 1.00 | dt: 6205.01ms | tok/sec: 168,988 | mfu: 49.32 | epoch: 1 | total time: 18.63m
+step 00191 (40.99%) | loss: 1.054949 | lrm: 1.00 | dt: 6208.67ms | tok/sec: 168,888 | mfu: 49.29 | epoch: 1 | total time: 18.73m
+step 00192 (41.20%) | loss: 1.066057 | lrm: 1.00 | dt: 6212.55ms | tok/sec: 168,783 | mfu: 49.26 | epoch: 1 | total time: 18.83m
+step 00193 (41.42%) | loss: 1.062425 | lrm: 1.00 | dt: 6205.76ms | tok/sec: 168,968 | mfu: 49.31 | epoch: 1 | total time: 18.94m
+step 00194 (41.63%) | loss: 1.053373 | lrm: 1.00 | dt: 6209.56ms | tok/sec: 168,864 | mfu: 49.28 | epoch: 1 | total time: 19.04m
+step 00195 (41.85%) | loss: 1.044958 | lrm: 1.00 | dt: 6205.07ms | tok/sec: 168,987 | mfu: 49.32 | epoch: 1 | total time: 19.14m
+step 00196 (42.06%) | loss: 1.039449 | lrm: 1.00 | dt: 6206.67ms | tok/sec: 168,943 | mfu: 49.30 | epoch: 1 | total time: 19.25m
+step 00197 (42.28%) | loss: 1.039482 | lrm: 1.00 | dt: 6211.91ms | tok/sec: 168,800 | mfu: 49.26 | epoch: 1 | total time: 19.35m
+step 00198 (42.49%) | loss: 1.032252 | lrm: 1.00 | dt: 6208.19ms | tok/sec: 168,902 | mfu: 49.29 | epoch: 1 | total time: 19.45m
+step 00199 (42.70%) | loss: 1.043346 | lrm: 1.00 | dt: 6211.58ms | tok/sec: 168,809 | mfu: 49.26 | epoch: 1 | total time: 19.56m
+step 00200 (42.92%) | loss: 1.044705 | lrm: 1.00 | dt: 6209.47ms | tok/sec: 168,867 | mfu: 49.28 | epoch: 1 | total time: 19.66m
+step 00201 (43.13%) | loss: 1.039742 | lrm: 1.00 | dt: 6209.13ms | tok/sec: 168,876 | mfu: 49.28 | epoch: 1 | total time: 19.76m
+step 00202 (43.34%) | loss: 1.045349 | lrm: 1.00 | dt: 6206.08ms | tok/sec: 168,959 | mfu: 49.31 | epoch: 1 | total time: 19.87m
+step 00203 (43.56%) | loss: 1.035937 | lrm: 1.00 | dt: 6212.20ms | tok/sec: 168,792 | mfu: 49.26 | epoch: 1 | total time: 19.97m
+step 00204 (43.78%) | loss: 1.039506 | lrm: 1.00 | dt: 6193.01ms | tok/sec: 169,315 | mfu: 49.41 | epoch: 1 | total time: 20.08m
+step 00205 (44.00%) | loss: 1.035215 | lrm: 1.00 | dt: 6204.76ms | tok/sec: 168,995 | mfu: 49.32 | epoch: 1 | total time: 20.18m
+step 00206 (44.21%) | loss: 1.035751 | lrm: 1.00 | dt: 6218.94ms | tok/sec: 168,610 | mfu: 49.21 | epoch: 1 | total time: 20.28m
+step 00207 (44.42%) | loss: 1.035444 | lrm: 1.00 | dt: 6196.55ms | tok/sec: 169,219 | mfu: 49.38 | epoch: 1 | total time: 20.39m
+step 00208 (44.64%) | loss: 1.033358 | lrm: 1.00 | dt: 6207.19ms | tok/sec: 168,929 | mfu: 49.30 | epoch: 1 | total time: 20.49m
+step 00209 (44.86%) | loss: 1.037495 | lrm: 1.00 | dt: 6210.21ms | tok/sec: 168,847 | mfu: 49.27 | epoch: 1 | total time: 20.59m
+step 00210 (45.08%) | loss: 1.030001 | lrm: 1.00 | dt: 6209.29ms | tok/sec: 168,872 | mfu: 49.28 | epoch: 1 | total time: 20.70m
+step 00211 (45.29%) | loss: 1.023351 | lrm: 1.00 | dt: 6205.72ms | tok/sec: 168,969 | mfu: 49.31 | epoch: 1 | total time: 20.80m
+step 00212 (45.50%) | loss: 1.023501 | lrm: 1.00 | dt: 6213.46ms | tok/sec: 168,758 | mfu: 49.25 | epoch: 1 | total time: 20.90m
+step 00213 (45.72%) | loss: 1.031527 | lrm: 1.00 | dt: 6213.63ms | tok/sec: 168,754 | mfu: 49.25 | epoch: 1 | total time: 21.01m
+step 00214 (45.93%) | loss: 1.032294 | lrm: 1.00 | dt: 6212.59ms | tok/sec: 168,782 | mfu: 49.26 | epoch: 1 | total time: 21.11m
+step 00215 (46.14%) | loss: 1.041578 | lrm: 1.00 | dt: 6205.44ms | tok/sec: 168,976 | mfu: 49.31 | epoch: 1 | total time: 21.21m
+step 00216 (46.36%) | loss: 1.036384 | lrm: 1.00 | dt: 6204.55ms | tok/sec: 169,001 | mfu: 49.32 | epoch: 1 | total time: 21.32m
+step 00217 (46.58%) | loss: 1.030718 | lrm: 1.00 | dt: 6204.69ms | tok/sec: 168,997 | mfu: 49.32 | epoch: 1 | total time: 21.42m
+step 00218 (46.78%) | loss: 1.037124 | lrm: 1.00 | dt: 6201.09ms | tok/sec: 169,095 | mfu: 49.35 | epoch: 1 | total time: 21.52m
+step 00219 (47.00%) | loss: 1.040858 | lrm: 1.00 | dt: 6201.98ms | tok/sec: 169,071 | mfu: 49.34 | epoch: 1 | total time: 21.63m
+step 00220 (47.22%) | loss: 1.034599 | lrm: 1.00 | dt: 6207.36ms | tok/sec: 168,924 | mfu: 49.30 | epoch: 1 | total time: 21.73m
+step 00221 (47.42%) | loss: 1.044505 | lrm: 1.00 | dt: 6202.76ms | tok/sec: 169,049 | mfu: 49.33 | epoch: 1 | total time: 21.83m
+step 00222 (47.64%) | loss: 1.041239 | lrm: 1.00 | dt: 6203.03ms | tok/sec: 169,042 | mfu: 49.33 | epoch: 1 | total time: 21.94m
+step 00223 (47.85%) | loss: 1.036839 | lrm: 1.00 | dt: 6210.29ms | tok/sec: 168,845 | mfu: 49.27 | epoch: 1 | total time: 22.04m
+step 00224 (48.06%) | loss: 1.041313 | lrm: 1.00 | dt: 6206.35ms | tok/sec: 168,952 | mfu: 49.31 | epoch: 1 | total time: 22.14m
+step 00225 (48.28%) | loss: 1.043148 | lrm: 1.00 | dt: 6208.48ms | tok/sec: 168,894 | mfu: 49.29 | epoch: 1 | total time: 22.25m
+step 00226 (48.49%) | loss: 1.043067 | lrm: 1.00 | dt: 6206.25ms | tok/sec: 168,954 | mfu: 49.31 | epoch: 1 | total time: 22.35m
+step 00227 (48.70%) | loss: 1.043601 | lrm: 1.00 | dt: 6204.61ms | tok/sec: 168,999 | mfu: 49.32 | epoch: 1 | total time: 22.45m
+step 00228 (48.91%) | loss: 1.052231 | lrm: 1.00 | dt: 6210.54ms | tok/sec: 168,838 | mfu: 49.27 | epoch: 1 | total time: 22.56m
+step 00229 (49.13%) | loss: 1.049352 | lrm: 1.00 | dt: 6209.80ms | tok/sec: 168,858 | mfu: 49.28 | epoch: 1 | total time: 22.66m
+step 00230 (49.34%) | loss: 1.056441 | lrm: 1.00 | dt: 6209.97ms | tok/sec: 168,853 | mfu: 49.28 | epoch: 1 | total time: 22.77m
+step 00231 (49.56%) | loss: 1.056079 | lrm: 1.00 | dt: 6210.69ms | tok/sec: 168,834 | mfu: 49.27 | epoch: 1 | total time: 22.87m
+step 00232 (49.77%) | loss: 1.051374 | lrm: 1.00 | dt: 6210.70ms | tok/sec: 168,833 | mfu: 49.27 | epoch: 1 | total time: 22.97m
+step 00233 (49.99%) | loss: 1.054832 | lrm: 1.00 | dt: 6212.64ms | tok/sec: 168,780 | mfu: 49.26 | epoch: 1 | total time: 23.08m
+step 00234 (50.21%) | loss: 1.050140 | lrm: 1.00 | dt: 6208.11ms | tok/sec: 168,904 | mfu: 49.29 | epoch: 1 | total time: 23.18m
+step 00235 (50.43%) | loss: 1.050734 | lrm: 0.99 | dt: 6193.14ms | tok/sec: 169,312 | mfu: 49.41 | epoch: 1 | total time: 23.28m
+step 00236 (50.64%) | loss: 1.050289 | lrm: 0.99 | dt: 6215.06ms | tok/sec: 168,715 | mfu: 49.24 | epoch: 1 | total time: 23.39m
+step 00237 (50.86%) | loss: 1.047089 | lrm: 0.98 | dt: 6206.29ms | tok/sec: 168,953 | mfu: 49.31 | epoch: 1 | total time: 23.49m
+step 00238 (51.07%) | loss: 1.056816 | lrm: 0.98 | dt: 6218.36ms | tok/sec: 168,625 | mfu: 49.21 | epoch: 1 | total time: 23.59m
+step 00239 (51.28%) | loss: 1.057776 | lrm: 0.97 | dt: 6200.08ms | tok/sec: 169,123 | mfu: 49.36 | epoch: 1 | total time: 23.70m
+step 00240 (51.49%) | loss: 1.064181 | lrm: 0.97 | dt: 6215.38ms | tok/sec: 168,706 | mfu: 49.23 | epoch: 1 | total time: 23.80m
+step 00241 (51.71%) | loss: 1.064446 | lrm: 0.97 | dt: 6202.97ms | tok/sec: 169,044 | mfu: 49.33 | epoch: 1 | total time: 23.90m
+step 00242 (51.92%) | loss: 1.064701 | lrm: 0.96 | dt: 6205.93ms | tok/sec: 168,963 | mfu: 49.31 | epoch: 1 | total time: 24.01m
+step 00243 (52.14%) | loss: 1.050471 | lrm: 0.96 | dt: 6201.93ms | tok/sec: 169,072 | mfu: 49.34 | epoch: 1 | total time: 24.11m
+step 00244 (52.36%) | loss: 1.055384 | lrm: 0.95 | dt: 6206.39ms | tok/sec: 168,950 | mfu: 49.31 | epoch: 1 | total time: 24.21m
+step 00245 (52.57%) | loss: 1.048674 | lrm: 0.95 | dt: 6214.36ms | tok/sec: 168,734 | mfu: 49.24 | epoch: 1 | total time: 24.32m
+step 00246 (52.78%) | loss: 1.047634 | lrm: 0.94 | dt: 6211.69ms | tok/sec: 168,806 | mfu: 49.26 | epoch: 1 | total time: 24.42m
+step 00247 (52.99%) | loss: 1.056330 | lrm: 0.94 | dt: 6213.94ms | tok/sec: 168,745 | mfu: 49.25 | epoch: 1 | total time: 24.52m
+step 00248 (53.21%) | loss: 1.060095 | lrm: 0.94 | dt: 6207.32ms | tok/sec: 168,925 | mfu: 49.30 | epoch: 1 | total time: 24.63m
+step 00249 (53.42%) | loss: 1.062208 | lrm: 0.93 | dt: 6204.82ms | tok/sec: 168,993 | mfu: 49.32 | epoch: 1 | total time: 24.73m
+step 00250 (53.63%) | loss: 1.061802 | lrm: 0.93 | dt: 6200.30ms | tok/sec: 169,117 | mfu: 49.35 | epoch: 1 | total time: 24.83m
+step 00251 (53.85%) | loss: 1.058561 | lrm: 0.92 | dt: 6204.53ms | tok/sec: 169,001 | mfu: 49.32 | epoch: 1 | total time: 24.94m
+step 00252 (54.06%) | loss: 1.056264 | lrm: 0.92 | dt: 6214.37ms | tok/sec: 168,734 | mfu: 49.24 | epoch: 1 | total time: 25.04m
+step 00253 (54.27%) | loss: 1.059079 | lrm: 0.91 | dt: 6210.50ms | tok/sec: 168,839 | mfu: 49.27 | epoch: 1 | total time: 25.14m
+step 00254 (54.49%) | loss: 1.054174 | lrm: 0.91 | dt: 6209.42ms | tok/sec: 168,868 | mfu: 49.28 | epoch: 1 | total time: 25.25m
+step 00255 (54.70%) | loss: 1.062014 | lrm: 0.91 | dt: 6201.71ms | tok/sec: 169,078 | mfu: 49.34 | epoch: 1 | total time: 25.35m
+step 00256 (54.92%) | loss: 1.055922 | lrm: 0.90 | dt: 6204.60ms | tok/sec: 168,999 | mfu: 49.32 | epoch: 1 | total time: 25.46m
+step 00257 (55.14%) | loss: 1.060498 | lrm: 0.90 | dt: 6205.27ms | tok/sec: 168,981 | mfu: 49.31 | epoch: 1 | total time: 25.56m
+step 00258 (55.35%) | loss: 1.063612 | lrm: 0.89 | dt: 6208.13ms | tok/sec: 168,903 | mfu: 49.29 | epoch: 1 | total time: 25.66m
+step 00259 (55.57%) | loss: 1.076227 | lrm: 0.89 | dt: 6210.49ms | tok/sec: 168,839 | mfu: 49.27 | epoch: 1 | total time: 25.77m
+step 00260 (55.78%) | loss: 1.073037 | lrm: 0.88 | dt: 6198.83ms | tok/sec: 169,157 | mfu: 49.37 | epoch: 1 | total time: 25.87m
+step 00261 (55.99%) | loss: 1.055888 | lrm: 0.88 | dt: 6208.08ms | tok/sec: 168,905 | mfu: 49.29 | epoch: 1 | total time: 25.97m
+step 00262 (56.21%) | loss: 1.054812 | lrm: 0.88 | dt: 6216.61ms | tok/sec: 168,673 | mfu: 49.22 | epoch: 1 | total time: 26.08m
+step 00263 (56.42%) | loss: 1.036420 | lrm: 0.87 | dt: 6207.91ms | tok/sec: 168,909 | mfu: 49.29 | epoch: 1 | total time: 26.18m
+step 00264 (56.64%) | loss: 1.034334 | lrm: 0.87 | dt: 6211.58ms | tok/sec: 168,809 | mfu: 49.26 | epoch: 1 | total time: 26.28m
+step 00265 (56.85%) | loss: 1.036833 | lrm: 0.86 | dt: 6200.74ms | tok/sec: 169,104 | mfu: 49.35 | epoch: 1 | total time: 26.39m
+step 00266 (57.07%) | loss: 1.034173 | lrm: 0.86 | dt: 6216.65ms | tok/sec: 168,672 | mfu: 49.22 | epoch: 1 | total time: 26.49m
+step 00267 (57.28%) | loss: 1.038464 | lrm: 0.85 | dt: 6208.98ms | tok/sec: 168,880 | mfu: 49.28 | epoch: 1 | total time: 26.59m
+step 00268 (57.50%) | loss: 1.033683 | lrm: 0.85 | dt: 6212.87ms | tok/sec: 168,774 | mfu: 49.25 | epoch: 1 | total time: 26.70m
+step 00269 (57.71%) | loss: 1.034708 | lrm: 0.85 | dt: 6207.90ms | tok/sec: 168,909 | mfu: 49.29 | epoch: 1 | total time: 26.80m
+step 00270 (57.93%) | loss: 1.029877 | lrm: 0.84 | dt: 6211.03ms | tok/sec: 168,824 | mfu: 49.27 | epoch: 1 | total time: 26.90m
+step 00271 (58.14%) | loss: 1.034325 | lrm: 0.84 | dt: 6215.22ms | tok/sec: 168,710 | mfu: 49.24 | epoch: 1 | total time: 27.01m
+step 00272 (58.35%) | loss: 1.036698 | lrm: 0.83 | dt: 6204.67ms | tok/sec: 168,997 | mfu: 49.32 | epoch: 1 | total time: 27.11m
+step 00273 (58.57%) | loss: 1.038183 | lrm: 0.83 | dt: 6198.71ms | tok/sec: 169,160 | mfu: 49.37 | epoch: 1 | total time: 27.21m
+step 00274 (58.77%) | loss: 1.028818 | lrm: 0.82 | dt: 6209.56ms | tok/sec: 168,864 | mfu: 49.28 | epoch: 1 | total time: 27.32m
+step 00275 (58.99%) | loss: 1.031191 | lrm: 0.82 | dt: 6212.50ms | tok/sec: 168,784 | mfu: 49.26 | epoch: 1 | total time: 27.42m
+step 00276 (59.21%) | loss: 1.033445 | lrm: 0.82 | dt: 6201.46ms | tok/sec: 169,085 | mfu: 49.34 | epoch: 1 | total time: 27.52m
+step 00277 (59.42%) | loss: 1.039919 | lrm: 0.81 | dt: 6205.39ms | tok/sec: 168,978 | mfu: 49.31 | epoch: 1 | total time: 27.63m
+step 00278 (59.62%) | loss: 1.035466 | lrm: 0.81 | dt: 6203.60ms | tok/sec: 169,026 | mfu: 49.33 | epoch: 1 | total time: 27.73m
+step 00279 (59.84%) | loss: 1.035098 | lrm: 0.80 | dt: 6198.34ms | tok/sec: 169,170 | mfu: 49.37 | epoch: 1 | total time: 27.83m
+step 00280 (60.05%) | loss: 1.038734 | lrm: 0.80 | dt: 6202.67ms | tok/sec: 169,052 | mfu: 49.33 | epoch: 1 | total time: 27.94m
+step 00281 (60.27%) | loss: 1.032158 | lrm: 0.79 | dt: 6203.98ms | tok/sec: 169,016 | mfu: 49.32 | epoch: 1 | total time: 28.04m
+step 00282 (60.48%) | loss: 1.032652 | lrm: 0.79 | dt: 6202.08ms | tok/sec: 169,068 | mfu: 49.34 | epoch: 1 | total time: 28.14m
+step 00283 (60.69%) | loss: 1.027424 | lrm: 0.79 | dt: 6202.82ms | tok/sec: 169,048 | mfu: 49.33 | epoch: 1 | total time: 28.25m
+step 00284 (60.91%) | loss: 1.029925 | lrm: 0.78 | dt: 6210.64ms | tok/sec: 168,835 | mfu: 49.27 | epoch: 1 | total time: 28.35m
+step 00285 (61.13%) | loss: 1.031571 | lrm: 0.78 | dt: 6211.93ms | tok/sec: 168,800 | mfu: 49.26 | epoch: 1 | total time: 28.46m
+step 00286 (61.34%) | loss: 1.030041 | lrm: 0.77 | dt: 6213.89ms | tok/sec: 168,747 | mfu: 49.25 | epoch: 1 | total time: 28.56m
+step 00287 (61.56%) | loss: 1.022298 | lrm: 0.77 | dt: 6198.96ms | tok/sec: 169,153 | mfu: 49.36 | epoch: 1 | total time: 28.66m
+step 00288 (61.77%) | loss: 1.024275 | lrm: 0.76 | dt: 6206.35ms | tok/sec: 168,952 | mfu: 49.31 | epoch: 1 | total time: 28.77m
+step 00289 (61.99%) | loss: 1.024165 | lrm: 0.76 | dt: 6197.56ms | tok/sec: 169,191 | mfu: 49.38 | epoch: 1 | total time: 28.87m
+step 00290 (62.20%) | loss: 1.027711 | lrm: 0.76 | dt: 6203.42ms | tok/sec: 169,032 | mfu: 49.33 | epoch: 1 | total time: 28.97m
+step 00291 (62.42%) | loss: 1.037302 | lrm: 0.75 | dt: 6205.73ms | tok/sec: 168,969 | mfu: 49.31 | epoch: 1 | total time: 29.08m
+step 00292 (62.64%) | loss: 1.028457 | lrm: 0.75 | dt: 6205.07ms | tok/sec: 168,986 | mfu: 49.32 | epoch: 1 | total time: 29.18m
+step 00293 (62.85%) | loss: 1.028181 | lrm: 0.74 | dt: 6202.61ms | tok/sec: 169,053 | mfu: 49.34 | epoch: 1 | total time: 29.28m
+step 00294 (63.06%) | loss: 1.024715 | lrm: 0.74 | dt: 6206.22ms | tok/sec: 168,955 | mfu: 49.31 | epoch: 1 | total time: 29.39m
+step 00295 (63.28%) | loss: 1.019242 | lrm: 0.73 | dt: 6199.39ms | tok/sec: 169,141 | mfu: 49.36 | epoch: 1 | total time: 29.49m
+step 00296 (63.49%) | loss: 1.014270 | lrm: 0.73 | dt: 6207.20ms | tok/sec: 168,928 | mfu: 49.30 | epoch: 1 | total time: 29.59m
+step 00297 (63.70%) | loss: 1.007196 | lrm: 0.73 | dt: 6201.77ms | tok/sec: 169,076 | mfu: 49.34 | epoch: 1 | total time: 29.70m
+step 00298 (63.92%) | loss: 0.992582 | lrm: 0.72 | dt: 6203.62ms | tok/sec: 169,026 | mfu: 49.33 | epoch: 1 | total time: 29.80m
+step 00299 (64.14%) | loss: 0.991404 | lrm: 0.72 | dt: 6199.17ms | tok/sec: 169,147 | mfu: 49.36 | epoch: 1 | total time: 29.90m
+step 00300 (64.35%) | loss: 0.996123 | lrm: 0.71 | dt: 6201.17ms | tok/sec: 169,093 | mfu: 49.35 | epoch: 1 | total time: 30.01m
+step 00301 (64.56%) | loss: 0.992599 | lrm: 0.71 | dt: 6199.73ms | tok/sec: 169,132 | mfu: 49.36 | epoch: 1 | total time: 30.11m
+step 00302 (64.78%) | loss: 0.995253 | lrm: 0.70 | dt: 6203.61ms | tok/sec: 169,026 | mfu: 49.33 | epoch: 1 | total time: 30.21m
+step 00303 (64.99%) | loss: 0.993063 | lrm: 0.70 | dt: 6208.96ms | tok/sec: 168,881 | mfu: 49.28 | epoch: 1 | total time: 30.32m
+step 00304 (65.20%) | loss: 0.996928 | lrm: 0.70 | dt: 6206.00ms | tok/sec: 168,961 | mfu: 49.31 | epoch: 1 | total time: 30.42m
+step 00305 (65.41%) | loss: 0.988733 | lrm: 0.69 | dt: 6207.37ms | tok/sec: 168,924 | mfu: 49.30 | epoch: 1 | total time: 30.52m
+step 00306 (65.62%) | loss: 0.999922 | lrm: 0.69 | dt: 6206.74ms | tok/sec: 168,941 | mfu: 49.30 | epoch: 1 | total time: 30.63m
+step 00307 (65.83%) | loss: 0.998137 | lrm: 0.68 | dt: 6197.57ms | tok/sec: 169,191 | mfu: 49.38 | epoch: 1 | total time: 30.73m
+step 00308 (66.05%) | loss: 0.998879 | lrm: 0.68 | dt: 6204.49ms | tok/sec: 169,002 | mfu: 49.32 | epoch: 1 | total time: 30.83m
+step 00309 (66.27%) | loss: 0.999451 | lrm: 0.67 | dt: 6207.07ms | tok/sec: 168,932 | mfu: 49.30 | epoch: 1 | total time: 30.94m
+step 00310 (66.48%) | loss: 0.999634 | lrm: 0.67 | dt: 6207.39ms | tok/sec: 168,923 | mfu: 49.30 | epoch: 1 | total time: 31.04m
+step 00311 (66.69%) | loss: 1.000433 | lrm: 0.67 | dt: 6204.06ms | tok/sec: 169,014 | mfu: 49.32 | epoch: 1 | total time: 31.14m
+step 00312 (66.90%) | loss: 0.998564 | lrm: 0.66 | dt: 6211.20ms | tok/sec: 168,820 | mfu: 49.27 | epoch: 1 | total time: 31.25m
+step 00313 (67.12%) | loss: 0.990222 | lrm: 0.66 | dt: 6207.76ms | tok/sec: 168,913 | mfu: 49.29 | epoch: 1 | total time: 31.35m
+step 00314 (67.33%) | loss: 0.995548 | lrm: 0.65 | dt: 6205.13ms | tok/sec: 168,985 | mfu: 49.32 | epoch: 1 | total time: 31.45m
+step 00315 (67.55%) | loss: 0.996511 | lrm: 0.65 | dt: 6194.73ms | tok/sec: 169,268 | mfu: 49.40 | epoch: 1 | total time: 31.56m
+step 00316 (67.76%) | loss: 1.004994 | lrm: 0.64 | dt: 6209.49ms | tok/sec: 168,866 | mfu: 49.28 | epoch: 1 | total time: 31.66m
+step 00317 (67.98%) | loss: 1.002598 | lrm: 0.64 | dt: 6199.19ms | tok/sec: 169,147 | mfu: 49.36 | epoch: 1 | total time: 31.76m
+step 00318 (68.19%) | loss: 1.001969 | lrm: 0.64 | dt: 6211.90ms | tok/sec: 168,801 | mfu: 49.26 | epoch: 1 | total time: 31.87m
+step 00319 (68.40%) | loss: 0.991573 | lrm: 0.63 | dt: 6208.88ms | tok/sec: 168,883 | mfu: 49.29 | epoch: 1 | total time: 31.97m
+step 00320 (68.62%) | loss: 0.997467 | lrm: 0.63 | dt: 6200.15ms | tok/sec: 169,121 | mfu: 49.35 | epoch: 1 | total time: 32.07m
+step 00321 (68.83%) | loss: 0.992360 | lrm: 0.62 | dt: 6202.09ms | tok/sec: 169,068 | mfu: 49.34 | epoch: 1 | total time: 32.18m
+step 00322 (69.05%) | loss: 0.988861 | lrm: 0.62 | dt: 6202.02ms | tok/sec: 169,069 | mfu: 49.34 | epoch: 1 | total time: 32.28m
+step 00323 (69.26%) | loss: 0.991710 | lrm: 0.61 | dt: 6198.25ms | tok/sec: 169,172 | mfu: 49.37 | epoch: 1 | total time: 32.38m
+step 00324 (69.47%) | loss: 0.989418 | lrm: 0.61 | dt: 6210.57ms | tok/sec: 168,837 | mfu: 49.27 | epoch: 1 | total time: 32.49m
+step 00325 (69.69%) | loss: 0.978850 | lrm: 0.61 | dt: 6208.16ms | tok/sec: 168,902 | mfu: 49.29 | epoch: 1 | total time: 32.59m
+step 00326 (69.91%) | loss: 0.975794 | lrm: 0.60 | dt: 6204.57ms | tok/sec: 169,000 | mfu: 49.32 | epoch: 1 | total time: 32.69m
+step 00327 (70.12%) | loss: 0.977772 | lrm: 0.60 | dt: 6193.42ms | tok/sec: 169,304 | mfu: 49.41 | epoch: 1 | total time: 32.80m
+step 00328 (70.33%) | loss: 0.981519 | lrm: 0.59 | dt: 6216.31ms | tok/sec: 168,681 | mfu: 49.23 | epoch: 1 | total time: 32.90m
+step 00329 (70.55%) | loss: 0.978942 | lrm: 0.59 | dt: 6207.59ms | tok/sec: 168,918 | mfu: 49.30 | epoch: 1 | total time: 33.01m
+step 00330 (70.77%) | loss: 0.976420 | lrm: 0.58 | dt: 6200.55ms | tok/sec: 169,110 | mfu: 49.35 | epoch: 1 | total time: 33.11m
+step 00331 (70.99%) | loss: 0.981436 | lrm: 0.58 | dt: 6204.25ms | tok/sec: 169,009 | mfu: 49.32 | epoch: 1 | total time: 33.21m
+step 00332 (71.20%) | loss: 0.981784 | lrm: 0.58 | dt: 6210.39ms | tok/sec: 168,842 | mfu: 49.27 | epoch: 1 | total time: 33.32m
+step 00333 (71.41%) | loss: 0.979595 | lrm: 0.57 | dt: 6205.73ms | tok/sec: 168,968 | mfu: 49.31 | epoch: 1 | total time: 33.42m
+step 00334 (71.62%) | loss: 0.983582 | lrm: 0.57 | dt: 6205.78ms | tok/sec: 168,967 | mfu: 49.31 | epoch: 1 | total time: 33.52m
+step 00335 (71.84%) | loss: 0.978914 | lrm: 0.56 | dt: 6203.25ms | tok/sec: 169,036 | mfu: 49.33 | epoch: 1 | total time: 33.63m
+step 00336 (72.05%) | loss: 0.976614 | lrm: 0.56 | dt: 6201.19ms | tok/sec: 169,092 | mfu: 49.35 | epoch: 1 | total time: 33.73m
+step 00337 (72.26%) | loss: 0.974990 | lrm: 0.55 | dt: 6198.39ms | tok/sec: 169,169 | mfu: 49.37 | epoch: 1 | total time: 33.83m
+step 00338 (72.48%) | loss: 0.980009 | lrm: 0.55 | dt: 6208.23ms | tok/sec: 168,900 | mfu: 49.29 | epoch: 1 | total time: 33.94m
+step 00339 (72.69%) | loss: 0.977262 | lrm: 0.55 | dt: 6206.63ms | tok/sec: 168,944 | mfu: 49.30 | epoch: 1 | total time: 34.04m
+step 00340 (72.90%) | loss: 0.974796 | lrm: 0.54 | dt: 6210.07ms | tok/sec: 168,850 | mfu: 49.28 | epoch: 1 | total time: 34.14m
+step 00341 (73.12%) | loss: 0.973751 | lrm: 0.54 | dt: 6202.48ms | tok/sec: 169,057 | mfu: 49.34 | epoch: 1 | total time: 34.25m
+step 00342 (73.33%) | loss: 0.980272 | lrm: 0.53 | dt: 6202.47ms | tok/sec: 169,057 | mfu: 49.34 | epoch: 1 | total time: 34.35m
+step 00343 (73.54%) | loss: 0.996874 | lrm: 0.53 | dt: 6197.91ms | tok/sec: 169,182 | mfu: 49.37 | epoch: 1 | total time: 34.45m
+step 00344 (73.75%) | loss: 0.999950 | lrm: 0.52 | dt: 6197.94ms | tok/sec: 169,181 | mfu: 49.37 | epoch: 1 | total time: 34.56m
+step 00345 (73.96%) | loss: 1.001009 | lrm: 0.52 | dt: 6203.92ms | tok/sec: 169,018 | mfu: 49.32 | epoch: 1 | total time: 34.66m
+step 00346 (74.18%) | loss: 1.003057 | lrm: 0.52 | dt: 6209.82ms | tok/sec: 168,857 | mfu: 49.28 | epoch: 1 | total time: 34.76m
+step 00347 (74.39%) | loss: 0.995096 | lrm: 0.51 | dt: 6199.54ms | tok/sec: 169,137 | mfu: 49.36 | epoch: 1 | total time: 34.87m
+step 00348 (74.60%) | loss: 0.989645 | lrm: 0.51 | dt: 6214.49ms | tok/sec: 168,730 | mfu: 49.24 | epoch: 1 | total time: 34.97m
+step 00349 (74.81%) | loss: 0.985517 | lrm: 0.50 | dt: 6199.84ms | tok/sec: 169,129 | mfu: 49.36 | epoch: 1 | total time: 35.07m
+step 00350 (75.03%) | loss: 0.994334 | lrm: 0.50 | dt: 6194.85ms | tok/sec: 169,265 | mfu: 49.40 | epoch: 1 | total time: 35.18m
+step 00351 (75.24%) | loss: 0.997227 | lrm: 0.50 | dt: 6211.03ms | tok/sec: 168,824 | mfu: 49.27 | epoch: 1 | total time: 35.28m
+step 00352 (75.46%) | loss: 0.990340 | lrm: 0.49 | dt: 6209.11ms | tok/sec: 168,877 | mfu: 49.28 | epoch: 1 | total time: 35.38m
+step 00353 (75.67%) | loss: 0.982731 | lrm: 0.49 | dt: 6205.28ms | tok/sec: 168,981 | mfu: 49.31 | epoch: 1 | total time: 35.49m
+step 00354 (75.89%) | loss: 0.992657 | lrm: 0.48 | dt: 6214.24ms | tok/sec: 168,737 | mfu: 49.24 | epoch: 1 | total time: 35.59m
+step 00355 (76.10%) | loss: 0.996404 | lrm: 0.48 | dt: 6211.33ms | tok/sec: 168,816 | mfu: 49.27 | epoch: 1 | total time: 35.69m
+step 00356 (76.32%) | loss: 0.989130 | lrm: 0.47 | dt: 6206.18ms | tok/sec: 168,956 | mfu: 49.31 | epoch: 1 | total time: 35.80m
+step 00357 (76.53%) | loss: 0.986928 | lrm: 0.47 | dt: 6200.83ms | tok/sec: 169,102 | mfu: 49.35 | epoch: 1 | total time: 35.90m
+step 00358 (76.75%) | loss: 0.993399 | lrm: 0.47 | dt: 6205.54ms | tok/sec: 168,974 | mfu: 49.31 | epoch: 1 | total time: 36.00m
+step 00359 (76.95%) | loss: 0.990817 | lrm: 0.46 | dt: 6213.84ms | tok/sec: 168,748 | mfu: 49.25 | epoch: 1 | total time: 36.11m
+step 00360 (77.17%) | loss: 0.980848 | lrm: 0.46 | dt: 6202.47ms | tok/sec: 169,057 | mfu: 49.34 | epoch: 1 | total time: 36.21m
+step 00361 (77.38%) | loss: 0.985436 | lrm: 0.45 | dt: 6201.12ms | tok/sec: 169,094 | mfu: 49.35 | epoch: 1 | total time: 36.31m
+step 00362 (77.60%) | loss: 0.983313 | lrm: 0.45 | dt: 6199.69ms | tok/sec: 169,133 | mfu: 49.36 | epoch: 1 | total time: 36.42m
+step 00363 (77.81%) | loss: 0.996413 | lrm: 0.44 | dt: 6200.77ms | tok/sec: 169,104 | mfu: 49.35 | epoch: 1 | total time: 36.52m
+step 00364 (78.02%) | loss: 0.983588 | lrm: 0.44 | dt: 6205.77ms | tok/sec: 168,967 | mfu: 49.31 | epoch: 1 | total time: 36.62m
+step 00365 (78.24%) | loss: 0.978667 | lrm: 0.44 | dt: 6200.57ms | tok/sec: 169,109 | mfu: 49.35 | epoch: 1 | total time: 36.73m
+step 00366 (78.46%) | loss: 0.969924 | lrm: 0.43 | dt: 6205.39ms | tok/sec: 168,978 | mfu: 49.31 | epoch: 1 | total time: 36.83m
+step 00367 (78.67%) | loss: 0.969557 | lrm: 0.43 | dt: 6203.85ms | tok/sec: 169,020 | mfu: 49.33 | epoch: 1 | total time: 36.93m
+step 00368 (78.88%) | loss: 0.958638 | lrm: 0.42 | dt: 6199.07ms | tok/sec: 169,150 | mfu: 49.36 | epoch: 1 | total time: 37.04m
+step 00369 (79.09%) | loss: 0.972382 | lrm: 0.42 | dt: 6210.81ms | tok/sec: 168,830 | mfu: 49.27 | epoch: 1 | total time: 37.14m
+step 00370 (79.30%) | loss: 0.974686 | lrm: 0.41 | dt: 6208.37ms | tok/sec: 168,897 | mfu: 49.29 | epoch: 1 | total time: 37.25m
+step 00371 (79.51%) | loss: 0.968997 | lrm: 0.41 | dt: 6191.02ms | tok/sec: 169,370 | mfu: 49.43 | epoch: 1 | total time: 37.35m
+step 00372 (79.72%) | loss: 0.963203 | lrm: 0.41 | dt: 6205.96ms | tok/sec: 168,962 | mfu: 49.31 | epoch: 1 | total time: 37.45m
+step 00373 (79.93%) | loss: 0.964793 | lrm: 0.40 | dt: 6199.55ms | tok/sec: 169,137 | mfu: 49.36 | epoch: 1 | total time: 37.56m
+step 00374 (80.14%) | loss: 0.964302 | lrm: 0.40 | dt: 6195.92ms | tok/sec: 169,236 | mfu: 49.39 | epoch: 1 | total time: 37.66m
+step 00375 (80.35%) | loss: 0.967072 | lrm: 0.39 | dt: 6199.41ms | tok/sec: 169,141 | mfu: 49.36 | epoch: 1 | total time: 37.76m
+step 00376 (80.57%) | loss: 0.960210 | lrm: 0.39 | dt: 6204.29ms | tok/sec: 169,008 | mfu: 49.32 | epoch: 1 | total time: 37.86m
+step 00377 (80.78%) | loss: 0.960274 | lrm: 0.38 | dt: 6205.86ms | tok/sec: 168,965 | mfu: 49.31 | epoch: 1 | total time: 37.97m
+step 00378 (80.99%) | loss: 0.957624 | lrm: 0.38 | dt: 6200.95ms | tok/sec: 169,099 | mfu: 49.35 | epoch: 1 | total time: 38.07m
+step 00379 (81.20%) | loss: 0.961396 | lrm: 0.38 | dt: 6206.54ms | tok/sec: 168,947 | mfu: 49.30 | epoch: 1 | total time: 38.18m
+step 00380 (81.42%) | loss: 0.962648 | lrm: 0.37 | dt: 6201.26ms | tok/sec: 169,090 | mfu: 49.35 | epoch: 1 | total time: 38.28m
+step 00381 (81.64%) | loss: 0.957790 | lrm: 0.37 | dt: 6205.19ms | tok/sec: 168,983 | mfu: 49.31 | epoch: 1 | total time: 38.38m
+step 00382 (81.85%) | loss: 0.959589 | lrm: 0.36 | dt: 6201.82ms | tok/sec: 169,075 | mfu: 49.34 | epoch: 1 | total time: 38.49m
+step 00383 (82.06%) | loss: 0.952286 | lrm: 0.36 | dt: 6201.33ms | tok/sec: 169,088 | mfu: 49.35 | epoch: 1 | total time: 38.59m
+step 00384 (82.28%) | loss: 0.945929 | lrm: 0.35 | dt: 6207.43ms | tok/sec: 168,922 | mfu: 49.30 | epoch: 1 | total time: 38.69m
+step 00385 (82.49%) | loss: 0.951523 | lrm: 0.35 | dt: 6210.79ms | tok/sec: 168,831 | mfu: 49.27 | epoch: 1 | total time: 38.80m
+step 00386 (82.70%) | loss: 0.953698 | lrm: 0.35 | dt: 6195.22ms | tok/sec: 169,255 | mfu: 49.39 | epoch: 1 | total time: 38.90m
+step 00387 (82.92%) | loss: 0.946311 | lrm: 0.34 | dt: 6198.51ms | tok/sec: 169,165 | mfu: 49.37 | epoch: 1 | total time: 39.00m
+step 00388 (83.14%) | loss: 0.940652 | lrm: 0.34 | dt: 6203.08ms | tok/sec: 169,041 | mfu: 49.33 | epoch: 1 | total time: 39.11m
+step 00389 (83.35%) | loss: 0.949814 | lrm: 0.33 | dt: 6202.50ms | tok/sec: 169,056 | mfu: 49.34 | epoch: 1 | total time: 39.21m
+step 00390 (83.56%) | loss: 0.953809 | lrm: 0.33 | dt: 6201.61ms | tok/sec: 169,081 | mfu: 49.34 | epoch: 1 | total time: 39.31m
+step 00391 (83.78%) | loss: 0.955619 | lrm: 0.32 | dt: 6208.03ms | tok/sec: 168,906 | mfu: 49.29 | epoch: 1 | total time: 39.42m
+step 00392 (84.00%) | loss: 0.961339 | lrm: 0.32 | dt: 6199.47ms | tok/sec: 169,139 | mfu: 49.36 | epoch: 1 | total time: 39.52m
+step 00393 (84.21%) | loss: 0.967117 | lrm: 0.32 | dt: 6217.59ms | tok/sec: 168,646 | mfu: 49.22 | epoch: 1 | total time: 39.62m
+step 00394 (84.43%) | loss: 0.968178 | lrm: 0.31 | dt: 6204.29ms | tok/sec: 169,008 | mfu: 49.32 | epoch: 1 | total time: 39.73m
+step 00395 (84.63%) | loss: 0.953213 | lrm: 0.31 | dt: 6210.54ms | tok/sec: 168,838 | mfu: 49.27 | epoch: 1 | total time: 39.83m
+step 00396 (84.84%) | loss: 0.952738 | lrm: 0.30 | dt: 6206.94ms | tok/sec: 168,936 | mfu: 49.30 | epoch: 1 | total time: 39.93m
+step 00397 (85.06%) | loss: 0.948566 | lrm: 0.30 | dt: 6205.99ms | tok/sec: 168,961 | mfu: 49.31 | epoch: 1 | total time: 40.04m
+step 00398 (85.27%) | loss: 0.946985 | lrm: 0.29 | dt: 6209.50ms | tok/sec: 168,866 | mfu: 49.28 | epoch: 1 | total time: 40.14m
+step 00399 (85.49%) | loss: 0.948782 | lrm: 0.29 | dt: 6210.53ms | tok/sec: 168,838 | mfu: 49.27 | epoch: 1 | total time: 40.24m
+step 00400 (85.71%) | loss: 0.951159 | lrm: 0.29 | dt: 6204.56ms | tok/sec: 169,000 | mfu: 49.32 | epoch: 1 | total time: 40.35m
+step 00401 (85.92%) | loss: 0.954020 | lrm: 0.28 | dt: 6205.34ms | tok/sec: 168,979 | mfu: 49.31 | epoch: 1 | total time: 40.45m
+step 00402 (86.14%) | loss: 0.957058 | lrm: 0.28 | dt: 6198.75ms | tok/sec: 169,159 | mfu: 49.37 | epoch: 1 | total time: 40.55m
+step 00403 (86.36%) | loss: 0.965320 | lrm: 0.27 | dt: 6213.82ms | tok/sec: 168,749 | mfu: 49.25 | epoch: 1 | total time: 40.66m
+step 00404 (86.57%) | loss: 0.967849 | lrm: 0.27 | dt: 6213.09ms | tok/sec: 168,768 | mfu: 49.25 | epoch: 1 | total time: 40.76m
+step 00405 (86.79%) | loss: 0.972655 | lrm: 0.26 | dt: 6208.63ms | tok/sec: 168,890 | mfu: 49.29 | epoch: 1 | total time: 40.86m
+step 00406 (87.00%) | loss: 0.970090 | lrm: 0.26 | dt: 6208.28ms | tok/sec: 168,899 | mfu: 49.29 | epoch: 1 | total time: 40.97m
+step 00407 (87.21%) | loss: 0.959616 | lrm: 0.26 | dt: 6197.67ms | tok/sec: 169,188 | mfu: 49.37 | epoch: 1 | total time: 41.07m
+step 00408 (87.42%) | loss: 0.966418 | lrm: 0.25 | dt: 6208.46ms | tok/sec: 168,894 | mfu: 49.29 | epoch: 1 | total time: 41.17m
+step 00409 (87.64%) | loss: 0.974111 | lrm: 0.25 | dt: 6202.89ms | tok/sec: 169,046 | mfu: 49.33 | epoch: 1 | total time: 41.28m
+step 00410 (87.85%) | loss: 0.962499 | lrm: 0.24 | dt: 6213.63ms | tok/sec: 168,754 | mfu: 49.25 | epoch: 1 | total time: 41.38m
+step 00411 (88.06%) | loss: 0.971734 | lrm: 0.24 | dt: 6218.00ms | tok/sec: 168,635 | mfu: 49.21 | epoch: 1 | total time: 41.49m
+step 00412 (88.27%) | loss: 0.978833 | lrm: 0.23 | dt: 6203.82ms | tok/sec: 169,020 | mfu: 49.33 | epoch: 1 | total time: 41.59m
+step 00413 (88.50%) | loss: 0.974550 | lrm: 0.23 | dt: 6201.86ms | tok/sec: 169,074 | mfu: 49.34 | epoch: 1 | total time: 41.69m
+step 00414 (88.72%) | loss: 0.973875 | lrm: 0.23 | dt: 6209.64ms | tok/sec: 168,862 | mfu: 49.28 | epoch: 1 | total time: 41.80m
+step 00415 (88.93%) | loss: 0.979622 | lrm: 0.22 | dt: 6200.36ms | tok/sec: 169,115 | mfu: 49.35 | epoch: 1 | total time: 41.90m
+step 00416 (89.14%) | loss: 0.986918 | lrm: 0.22 | dt: 6203.71ms | tok/sec: 169,024 | mfu: 49.33 | epoch: 1 | total time: 42.00m
+step 00417 (89.36%) | loss: 0.974416 | lrm: 0.21 | dt: 6214.80ms | tok/sec: 168,722 | mfu: 49.24 | epoch: 1 | total time: 42.11m
+step 00418 (89.57%) | loss: 0.976643 | lrm: 0.21 | dt: 6205.97ms | tok/sec: 168,962 | mfu: 49.31 | epoch: 1 | total time: 42.21m
+step 00419 (89.78%) | loss: 0.975280 | lrm: 0.20 | dt: 6204.53ms | tok/sec: 169,001 | mfu: 49.32 | epoch: 1 | total time: 42.31m
+step 00420 (90.00%) | loss: 0.976233 | lrm: 0.20 | dt: 6204.81ms | tok/sec: 168,994 | mfu: 49.32 | epoch: 1 | total time: 42.42m
+step 00421 (90.21%) | loss: 0.983053 | lrm: 0.20 | dt: 6207.70ms | tok/sec: 168,915 | mfu: 49.29 | epoch: 1 | total time: 42.52m
+step 00422 (90.42%) | loss: 0.977464 | lrm: 0.19 | dt: 6199.63ms | tok/sec: 169,135 | mfu: 49.36 | epoch: 1 | total time: 42.62m
+step 00423 (90.64%) | loss: 0.973672 | lrm: 0.19 | dt: 6207.42ms | tok/sec: 168,923 | mfu: 49.30 | epoch: 1 | total time: 42.73m
+step 00424 (90.86%) | loss: 0.968037 | lrm: 0.18 | dt: 6196.72ms | tok/sec: 169,214 | mfu: 49.38 | epoch: 1 | total time: 42.83m
+step 00425 (91.07%) | loss: 0.972995 | lrm: 0.18 | dt: 6196.82ms | tok/sec: 169,211 | mfu: 49.38 | epoch: 1 | total time: 42.93m
+step 00426 (91.28%) | loss: 0.960647 | lrm: 0.17 | dt: 6207.73ms | tok/sec: 168,914 | mfu: 49.29 | epoch: 1 | total time: 43.04m
+step 00427 (91.50%) | loss: 0.966407 | lrm: 0.17 | dt: 6208.53ms | tok/sec: 168,892 | mfu: 49.29 | epoch: 1 | total time: 43.14m
+step 00428 (91.71%) | loss: 0.966471 | lrm: 0.17 | dt: 6200.62ms | tok/sec: 169,108 | mfu: 49.35 | epoch: 1 | total time: 43.24m
+2026-10-13 21:52:51,792 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Saved model parameters to: /root/.cache/nanochat/chatsft_checkpoints/d20/model_000467.pt
+2026-10-13 21:52:51,792 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Saved metadata to: /root/.cache/nanochat/chatsft_checkpoints/d20/meta_000467.json
+2026-10-13 21:52:55,021 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Saved optimizer state to: /root/.cache/nanochat/chatsft_checkpoints/d20/optim_000467_rank0.pt
+step 00429 (91.93%) | loss: 0.965078 | lrm: 0.16 | dt: 6199.47ms | tok/sec: 169,139 | mfu: 49.36 | epoch: 1 | total time: 43.35m
+step 00430 (92.14%) | loss: 0.960055 | lrm: 0.16 | dt: 6202.87ms | tok/sec: 169,046 | mfu: 49.33 | epoch: 1 | total time: 43.45m
+step 00431 (92.36%) | loss: 0.952078 | lrm: 0.15 | dt: 6217.81ms | tok/sec: 168,640 | mfu: 49.21 | epoch: 1 | total time: 43.55m
+step 00432 (92.57%) | loss: 0.946903 | lrm: 0.15 | dt: 6206.03ms | tok/sec: 168,960 | mfu: 49.31 | epoch: 1 | total time: 43.66m
+step 00433 (92.79%) | loss: 0.949777 | lrm: 0.14 | dt: 6206.11ms | tok/sec: 168,958 | mfu: 49.31 | epoch: 1 | total time: 43.76m
+step 00434 (93.00%) | loss: 0.944247 | lrm: 0.14 | dt: 6209.07ms | tok/sec: 168,878 | mfu: 49.28 | epoch: 1 | total time: 43.86m
+step 00435 (93.22%) | loss: 0.955099 | lrm: 0.14 | dt: 6205.34ms | tok/sec: 168,979 | mfu: 49.31 | epoch: 1 | total time: 43.97m
+step 00436 (93.44%) | loss: 0.958983 | lrm: 0.13 | dt: 6195.61ms | tok/sec: 169,244 | mfu: 49.39 | epoch: 1 | total time: 44.07m
+step 00437 (93.65%) | loss: 0.955564 | lrm: 0.13 | dt: 6208.88ms | tok/sec: 168,883 | mfu: 49.29 | epoch: 1 | total time: 44.17m
+step 00438 (93.86%) | loss: 0.960269 | lrm: 0.12 | dt: 6212.08ms | tok/sec: 168,796 | mfu: 49.26 | epoch: 1 | total time: 44.28m
+step 00439 (94.08%) | loss: 0.959539 | lrm: 0.12 | dt: 6201.39ms | tok/sec: 169,087 | mfu: 49.34 | epoch: 1 | total time: 44.38m
+step 00440 (94.29%) | loss: 0.952523 | lrm: 0.11 | dt: 6206.34ms | tok/sec: 168,952 | mfu: 49.31 | epoch: 1 | total time: 44.48m
+step 00441 (94.51%) | loss: 0.943319 | lrm: 0.11 | dt: 6204.99ms | tok/sec: 168,989 | mfu: 49.32 | epoch: 1 | total time: 44.59m
+step 00442 (94.73%) | loss: 0.950758 | lrm: 0.11 | dt: 6214.31ms | tok/sec: 168,735 | mfu: 49.24 | epoch: 1 | total time: 44.69m
+step 00443 (94.95%) | loss: 0.950186 | lrm: 0.10 | dt: 6209.43ms | tok/sec: 168,868 | mfu: 49.28 | epoch: 1 | total time: 44.79m
+step 00444 (95.16%) | loss: 0.955020 | lrm: 0.10 | dt: 6217.54ms | tok/sec: 168,647 | mfu: 49.22 | epoch: 1 | total time: 44.90m
+step 00445 (95.38%) | loss: 0.958052 | lrm: 0.09 | dt: 6192.23ms | tok/sec: 169,337 | mfu: 49.42 | epoch: 1 | total time: 45.00m
+step 00446 (95.59%) | loss: 0.954541 | lrm: 0.09 | dt: 6210.00ms | tok/sec: 168,852 | mfu: 49.28 | epoch: 1 | total time: 45.11m
+step 00447 (95.80%) | loss: 0.955316 | lrm: 0.08 | dt: 6209.02ms | tok/sec: 168,879 | mfu: 49.28 | epoch: 1 | total time: 45.21m
+step 00448 (96.02%) | loss: 0.948660 | lrm: 0.08 | dt: 6202.47ms | tok/sec: 169,057 | mfu: 49.34 | epoch: 1 | total time: 45.31m
+step 00449 (96.23%) | loss: 0.949375 | lrm: 0.08 | dt: 6207.71ms | tok/sec: 168,915 | mfu: 49.29 | epoch: 1 | total time: 45.42m
+step 00450 (96.43%) | loss: 0.955000 | lrm: 0.07 | dt: 6205.94ms | tok/sec: 168,963 | mfu: 49.31 | epoch: 1 | total time: 45.52m
+step 00451 (96.64%) | loss: 0.955748 | lrm: 0.07 | dt: 6193.13ms | tok/sec: 169,312 | mfu: 49.41 | epoch: 1 | total time: 45.62m
+step 00452 (96.85%) | loss: 0.958431 | lrm: 0.06 | dt: 6214.09ms | tok/sec: 168,741 | mfu: 49.24 | epoch: 1 | total time: 45.73m
+step 00453 (97.07%) | loss: 0.952617 | lrm: 0.06 | dt: 6210.68ms | tok/sec: 168,834 | mfu: 49.27 | epoch: 1 | total time: 45.83m
+step 00454 (97.29%) | loss: 0.944744 | lrm: 0.05 | dt: 6212.95ms | tok/sec: 168,772 | mfu: 49.25 | epoch: 1 | total time: 45.93m
+step 00455 (97.50%) | loss: 0.946499 | lrm: 0.05 | dt: 6214.66ms | tok/sec: 168,726 | mfu: 49.24 | epoch: 1 | total time: 46.04m
+step 00456 (97.72%) | loss: 0.943708 | lrm: 0.05 | dt: 6204.78ms | tok/sec: 168,994 | mfu: 49.32 | epoch: 1 | total time: 46.14m
+step 00457 (97.94%) | loss: 0.946873 | lrm: 0.04 | dt: 6198.01ms | tok/sec: 169,179 | mfu: 49.37 | epoch: 1 | total time: 46.24m
+step 00458 (98.15%) | loss: 0.950864 | lrm: 0.04 | dt: 6214.06ms | tok/sec: 168,742 | mfu: 49.24 | epoch: 1 | total time: 46.35m
+step 00459 (98.36%) | loss: 0.946801 | lrm: 0.03 | dt: 6196.80ms | tok/sec: 169,212 | mfu: 49.38 | epoch: 1 | total time: 46.45m
+step 00460 (98.57%) | loss: 0.940057 | lrm: 0.03 | dt: 6205.11ms | tok/sec: 168,985 | mfu: 49.32 | epoch: 1 | total time: 46.55m
+step 00461 (98.78%) | loss: 0.939335 | lrm: 0.02 | dt: 6213.03ms | tok/sec: 168,770 | mfu: 49.25 | epoch: 1 | total time: 46.66m
+step 00462 (99.00%) | loss: 0.934790 | lrm: 0.02 | dt: 6206.20ms | tok/sec: 168,956 | mfu: 49.31 | epoch: 1 | total time: 46.76m
+step 00463 (99.21%) | loss: 0.933139 | lrm: 0.02 | dt: 6199.13ms | tok/sec: 169,149 | mfu: 49.36 | epoch: 1 | total time: 46.86m
+step 00464 (99.43%) | loss: 0.931013 | lrm: 0.01 | dt: 6209.23ms | tok/sec: 168,873 | mfu: 49.28 | epoch: 1 | total time: 46.97m
+step 00465 (99.64%) | loss: 0.931220 | lrm: 0.01 | dt: 6203.47ms | tok/sec: 169,030 | mfu: 49.33 | epoch: 1 | total time: 47.07m
+step 00466 (99.86%) | loss: 0.928482 | lrm: 0.00 | dt: 6205.96ms | tok/sec: 168,962 | mfu: 49.31 | epoch: 1 | total time: 47.17m
+step 00467 (100.07%) | loss: 0.918364 | lrm: -0.00 | dt: 6204.61ms | tok/sec: 168,999 | mfu: 49.32 | epoch: 2 | total time: 47.28m
+Step 00467 | Validation bpb: 0.2961
+Peak memory usage: 73673.77MiB
+Total training time: 47.28m
+Minimum validation bpb: 0.2961
++ SFT_RC=0
++ mark 'sft rc=0'
+++ date +%s
++ echo '### sft rc=0 at +3243s'
+### sft rc=0 at +3243s
++ python -
+local: [('meta_000467.json', 846), ('model_000467.pt', 2663446486)]
+Processing Files (0 / 0)                : |          |  0.00B /  0.00B            
+New Data Upload                         : |          |  0.00B /  0.00B            [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   0%|          |  601kB / 2.66GB            [A[A
+
+  ...sft_checkpoints/d20/model_000467.pt:   0%|          |  601kB / 2.66GB            [A[AProcessing Files (0 / 1)                :   0%|          |  601kB / 2.66GB,  750kB/s  
+New Data Upload                         :   0%|          |  601kB /  134MB,  750kB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   0%|          | 2.97MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   0%|          | 2.97MB / 2.66GB, 2.96MB/s  
+New Data Upload                         :   2%|▏         | 2.97MB /  134MB, 2.96MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   0%|          | 6.53MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   0%|          | 6.53MB / 2.66GB, 5.44MB/s  
+New Data Upload                         :   3%|▎         | 6.53MB /  201MB, 5.44MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   1%|          | 20.0MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   1%|          | 20.0MB / 2.66GB, 14.3MB/s  
+New Data Upload                         :  10%|▉         | 20.0MB /  201MB, 14.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   1%|          | 28.9MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   1%|          | 28.9MB / 2.66GB, 18.1MB/s  
+New Data Upload                         :  11%|█         | 28.9MB /  268MB, 18.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   2%|▏         | 48.4MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   2%|▏         | 48.4MB / 2.66GB, 26.9MB/s  
+New Data Upload                         :  14%|█▍        | 48.4MB /  335MB, 26.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   2%|▏         | 65.7MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   2%|▏         | 65.7MB / 2.66GB, 32.8MB/s  
+New Data Upload                         :  20%|█▉        | 65.7MB /  335MB, 32.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   3%|▎         | 85.9MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   3%|▎         | 85.9MB / 2.66GB, 39.0MB/s  
+New Data Upload                         :  21%|██▏       | 85.9MB /  402MB, 39.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   4%|▍         |  105MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   4%|▍         |  105MB / 2.66GB, 43.6MB/s  
+New Data Upload                         :  22%|██▏       |  105MB /  469MB, 43.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   5%|▍         |  123MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   5%|▍         |  123MB / 2.66GB, 47.3MB/s  
+New Data Upload                         :  26%|██▌       |  123MB /  469MB, 47.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   5%|▌         |  142MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   5%|▌         |  142MB / 2.66GB, 50.6MB/s  
+New Data Upload                         :  26%|██▋       |  142MB /  537MB, 50.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   6%|▌         |  155MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   6%|▌         |  155MB / 2.66GB, 51.7MB/s  
+New Data Upload                         :  29%|██▉       |  155MB /  537MB, 51.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   6%|▋         |  172MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   6%|▋         |  172MB / 2.66GB, 53.8MB/s  
+New Data Upload                         :  32%|███▏      |  172MB /  537MB, 53.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   7%|▋         |  192MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   7%|▋         |  192MB / 2.66GB, 56.4MB/s  
+New Data Upload                         :  36%|███▌      |  192MB /  537MB, 56.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   8%|▊         |  203MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   8%|▊         |  203MB / 2.66GB, 56.5MB/s  
+New Data Upload                         :  38%|███▊      |  203MB /  537MB, 56.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   8%|▊         |  218MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   8%|▊         |  218MB / 2.66GB, 57.4MB/s  
+New Data Upload                         :  41%|████      |  218MB /  537MB, 57.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   9%|▊         |  231MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   9%|▊         |  231MB / 2.66GB, 57.8MB/s  
+New Data Upload                         :  43%|████▎     |  231MB /  537MB, 57.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:   9%|▉         |  245MB / 2.66GB            [A[AProcessing Files (0 / 1)                :   9%|▉         |  245MB / 2.66GB, 58.4MB/s  
+New Data Upload                         :  41%|████      |  245MB /  604MB, 58.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  10%|▉         |  265MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  10%|▉         |  265MB / 2.66GB, 60.3MB/s  
+New Data Upload                         :  40%|███▉      |  265MB /  671MB, 60.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  11%|█         |  283MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  11%|█         |  283MB / 2.66GB, 61.6MB/s  
+New Data Upload                         :  42%|████▏     |  283MB /  671MB, 61.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  11%|█▏        |  303MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  11%|█▏        |  303MB / 2.66GB, 63.1MB/s  
+New Data Upload                         :  41%|████      |  303MB /  738MB, 63.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  12%|█▏        |  318MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  12%|█▏        |  318MB / 2.66GB, 63.5MB/s  
+New Data Upload                         :  43%|████▎     |  318MB /  738MB, 63.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  13%|█▎        |  337MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  13%|█▎        |  337MB / 2.66GB, 64.8MB/s  
+New Data Upload                         :  46%|████▌     |  337MB /  738MB, 64.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  13%|█▎        |  355MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  13%|█▎        |  355MB / 2.66GB, 65.7MB/s  
+New Data Upload                         :  48%|████▊     |  355MB /  738MB, 65.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  14%|█▍        |  378MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  14%|█▍        |  378MB / 2.66GB, 67.5MB/s  
+New Data Upload                         :  51%|█████▏    |  378MB /  738MB, 67.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  15%|█▌        |  402MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  15%|█▌        |  402MB / 2.66GB, 69.3MB/s  
+New Data Upload                         :  54%|█████▍    |  402MB /  738MB, 69.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  16%|█▌        |  419MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  16%|█▌        |  419MB / 2.66GB, 69.8MB/s  
+New Data Upload                         :  57%|█████▋    |  419MB /  738MB, 69.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  16%|█▋        |  435MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  16%|█▋        |  435MB / 2.66GB, 70.2MB/s  
+New Data Upload                         :  59%|█████▉    |  435MB /  738MB, 70.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  17%|█▋        |  452MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  17%|█▋        |  452MB / 2.66GB, 70.6MB/s  
+New Data Upload                         :  56%|█████▌    |  452MB /  805MB, 70.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  17%|█▋        |  465MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  17%|█▋        |  465MB / 2.66GB, 70.5MB/s  
+New Data Upload                         :  58%|█████▊    |  465MB /  805MB, 70.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  18%|█▊        |  480MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  18%|█▊        |  480MB / 2.66GB, 70.6MB/s  
+New Data Upload                         :  60%|█████▉    |  480MB /  805MB, 70.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  18%|█▊        |  486MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  18%|█▊        |  486MB / 2.66GB, 69.4MB/s  
+New Data Upload                         :  56%|█████▌    |  486MB /  872MB, 69.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  19%|█▉        |  502MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  19%|█▉        |  502MB / 2.66GB, 69.7MB/s  
+New Data Upload                         :  58%|█████▊    |  502MB /  872MB, 69.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  19%|█▉        |  517MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  19%|█▉        |  517MB / 2.66GB, 69.9MB/s  
+New Data Upload                         :  55%|█████▌    |  517MB /  939MB, 69.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  20%|██        |  539MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  20%|██        |  539MB / 2.66GB, 71.0MB/s  
+New Data Upload                         :  57%|█████▋    |  539MB /  939MB, 71.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  21%|██        |  559MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  21%|██        |  559MB / 2.66GB, 71.7MB/s  
+New Data Upload                         :  56%|█████▌    |  559MB / 1.01GB, 71.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  22%|██▏       |  578MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  22%|██▏       |  578MB / 2.66GB, 72.3MB/s  
+New Data Upload                         :  57%|█████▋    |  578MB / 1.01GB, 72.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  22%|██▏       |  596MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  22%|██▏       |  596MB / 2.66GB, 72.7MB/s  
+New Data Upload                         :  59%|█████▉    |  596MB / 1.01GB, 72.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  23%|██▎       |  616MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  23%|██▎       |  616MB / 2.66GB, 73.3MB/s  
+New Data Upload                         :  61%|██████    |  616MB / 1.01GB, 73.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  24%|██▍       |  636MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  24%|██▍       |  636MB / 2.66GB, 74.0MB/s  
+New Data Upload                         :  63%|██████▎   |  636MB / 1.01GB, 74.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  25%|██▍       |  653MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  25%|██▍       |  653MB / 2.66GB, 74.2MB/s  
+New Data Upload                         :  65%|██████▍   |  653MB / 1.01GB, 74.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  25%|██▍       |  658MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  25%|██▍       |  658MB / 2.66GB, 73.1MB/s  
+New Data Upload                         :  65%|██████▌   |  658MB / 1.01GB, 73.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  25%|██▌       |  675MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  25%|██▌       |  675MB / 2.66GB, 73.4MB/s  
+New Data Upload                         :  67%|██████▋   |  675MB / 1.01GB, 73.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  26%|██▌       |  686MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  26%|██▌       |  686MB / 2.66GB, 73.0MB/s  
+New Data Upload                         :  68%|██████▊   |  686MB / 1.01GB, 73.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  26%|██▋       |  700MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  26%|██▋       |  700MB / 2.66GB, 72.9MB/s  
+New Data Upload                         :  70%|██████▉   |  700MB / 1.01GB, 72.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  27%|██▋       |  707MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  27%|██▋       |  707MB / 2.66GB, 72.2MB/s  
+New Data Upload                         :  70%|███████   |  707MB / 1.01GB, 72.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  27%|██▋       |  716MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  27%|██▋       |  716MB / 2.66GB, 71.6MB/s  
+New Data Upload                         :  71%|███████   |  716MB / 1.01GB, 71.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  27%|██▋       |  726MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  27%|██▋       |  726MB / 2.66GB, 71.2MB/s  
+New Data Upload                         :  72%|███████▏  |  726MB / 1.01GB, 71.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  28%|██▊       |  737MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  28%|██▊       |  737MB / 2.66GB, 72.3MB/s  
+New Data Upload                         :  73%|███████▎  |  737MB / 1.01GB, 72.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  28%|██▊       |  751MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  28%|██▊       |  751MB / 2.66GB, 73.6MB/s  
+New Data Upload                         :  70%|██████▉   |  751MB / 1.07GB, 73.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  29%|██▊       |  765MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  29%|██▊       |  765MB / 2.66GB, 74.9MB/s  
+New Data Upload                         :  71%|███████▏  |  765MB / 1.07GB, 74.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  29%|██▉       |  774MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  29%|██▉       |  774MB / 2.66GB, 75.9MB/s  
+New Data Upload                         :  72%|███████▏  |  774MB / 1.07GB, 75.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  29%|██▉       |  786MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  29%|██▉       |  786MB / 2.66GB, 76.7MB/s  
+New Data Upload                         :  73%|███████▎  |  786MB / 1.07GB, 76.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  30%|██▉       |  795MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  30%|██▉       |  795MB / 2.66GB, 77.3MB/s  
+New Data Upload                         :  74%|███████▍  |  795MB / 1.07GB, 77.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  30%|███       |  809MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  30%|███       |  809MB / 2.66GB, 77.3MB/s  
+New Data Upload                         :  75%|███████▌  |  809MB / 1.07GB, 77.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  31%|███       |  818MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  31%|███       |  818MB / 2.66GB, 77.4MB/s  
+New Data Upload                         :  76%|███████▋  |  818MB / 1.07GB, 77.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  31%|███       |  831MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  31%|███       |  831MB / 2.66GB, 76.7MB/s  
+New Data Upload                         :  73%|███████▎  |  831MB / 1.14GB, 76.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  32%|███▏      |  842MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  32%|███▏      |  842MB / 2.66GB, 76.1MB/s  
+New Data Upload                         :  70%|██████▉   |  842MB / 1.21GB, 76.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  32%|███▏      |  849MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  32%|███▏      |  849MB / 2.66GB, 74.9MB/s  
+New Data Upload                         :  70%|███████   |  849MB / 1.21GB, 74.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  32%|███▏      |  859MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  32%|███▏      |  859MB / 2.66GB, 73.9MB/s  
+New Data Upload                         :  71%|███████   |  859MB / 1.21GB, 73.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  33%|███▎      |  870MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  33%|███▎      |  870MB / 2.66GB, 73.2MB/s  
+New Data Upload                         :  72%|███████▏  |  870MB / 1.21GB, 73.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  33%|███▎      |  878MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  33%|███▎      |  878MB / 2.66GB, 72.2MB/s  
+New Data Upload                         :  73%|███████▎  |  878MB / 1.21GB, 72.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  33%|███▎      |  885MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  33%|███▎      |  885MB / 2.66GB, 71.6MB/s  
+New Data Upload                         :  69%|██████▉   |  885MB / 1.27GB, 71.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  34%|███▎      |  893MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  34%|███▎      |  893MB / 2.66GB, 70.6MB/s  
+New Data Upload                         :  70%|███████   |  893MB / 1.27GB, 70.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  34%|███▍      |  906MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  34%|███▍      |  906MB / 2.66GB, 70.0MB/s  
+New Data Upload                         :  71%|███████   |  906MB / 1.27GB, 70.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  35%|███▍      |  919MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  35%|███▍      |  919MB / 2.66GB, 70.2MB/s  
+New Data Upload                         :  69%|██████▊   |  919MB / 1.34GB, 70.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  35%|███▍      |  932MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  35%|███▍      |  932MB / 2.66GB, 69.9MB/s  
+New Data Upload                         :  69%|██████▉   |  932MB / 1.34GB, 69.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  36%|███▌      |  948MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  36%|███▌      |  948MB / 2.66GB, 70.3MB/s  
+New Data Upload                         :  71%|███████   |  948MB / 1.34GB, 70.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  36%|███▌      |  964MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  36%|███▌      |  964MB / 2.66GB, 70.5MB/s  
+New Data Upload                         :  72%|███████▏  |  964MB / 1.34GB, 70.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  37%|███▋      |  977MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  37%|███▋      |  977MB / 2.66GB, 69.8MB/s  
+New Data Upload                         :  73%|███████▎  |  977MB / 1.34GB, 69.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  37%|███▋      |  993MB / 2.66GB            [A[AProcessing Files (0 / 1)                :  37%|███▋      |  993MB / 2.66GB, 69.6MB/s  
+New Data Upload                         :  74%|███████▍  |  993MB / 1.34GB, 69.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  38%|███▊      | 1.01GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  38%|███▊      | 1.01GB / 2.66GB, 69.3MB/s  
+New Data Upload                         :  75%|███████▌  | 1.01GB / 1.34GB, 69.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  38%|███▊      | 1.02GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  38%|███▊      | 1.02GB / 2.66GB, 69.3MB/s  
+New Data Upload                         :  76%|███████▋  | 1.02GB / 1.34GB, 69.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  39%|███▉      | 1.04GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  39%|███▉      | 1.04GB / 2.66GB, 68.5MB/s  
+New Data Upload                         :  77%|███████▋  | 1.04GB / 1.34GB, 68.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  40%|███▉      | 1.05GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  40%|███▉      | 1.05GB / 2.66GB, 68.4MB/s  
+New Data Upload                         :  78%|███████▊  | 1.05GB / 1.34GB, 68.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  40%|███▉      | 1.06GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  40%|███▉      | 1.06GB / 2.66GB, 67.3MB/s  
+New Data Upload                         :  79%|███████▉  | 1.06GB / 1.34GB, 67.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  40%|████      | 1.08GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  40%|████      | 1.08GB / 2.66GB, 66.2MB/s  
+New Data Upload                         :  80%|████████  | 1.08GB / 1.34GB, 66.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  41%|████      | 1.09GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  41%|████      | 1.09GB / 2.66GB, 65.8MB/s  
+New Data Upload                         :  81%|████████  | 1.09GB / 1.34GB, 65.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  41%|████▏     | 1.10GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  41%|████▏     | 1.10GB / 2.66GB, 65.3MB/s  
+New Data Upload                         :  82%|████████▏ | 1.10GB / 1.34GB, 65.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  42%|████▏     | 1.12GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  42%|████▏     | 1.12GB / 2.66GB, 65.2MB/s  
+New Data Upload                         :  83%|████████▎ | 1.12GB / 1.34GB, 65.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  43%|████▎     | 1.13GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  43%|████▎     | 1.13GB / 2.66GB, 65.5MB/s  
+New Data Upload                         :  85%|████████▍ | 1.13GB / 1.34GB, 65.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  43%|████▎     | 1.14GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  43%|████▎     | 1.14GB / 2.66GB, 65.0MB/s  
+New Data Upload                         :  85%|████████▌ | 1.14GB / 1.34GB, 65.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  43%|████▎     | 1.16GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  43%|████▎     | 1.16GB / 2.66GB, 65.6MB/s  
+New Data Upload                         :  82%|████████▏ | 1.16GB / 1.41GB, 65.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  44%|████▍     | 1.17GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  44%|████▍     | 1.17GB / 2.66GB, 65.2MB/s  
+New Data Upload                         :  83%|████████▎ | 1.17GB / 1.41GB, 65.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  44%|████▍     | 1.18GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  44%|████▍     | 1.18GB / 2.66GB, 65.3MB/s  
+New Data Upload                         :  84%|████████▍ | 1.18GB / 1.41GB, 65.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  45%|████▍     | 1.20GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  45%|████▍     | 1.20GB / 2.66GB, 64.3MB/s  
+New Data Upload                         :  81%|████████  | 1.20GB / 1.48GB, 64.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  46%|████▌     | 1.22GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  46%|████▌     | 1.22GB / 2.66GB, 64.4MB/s  
+New Data Upload                         :  82%|████████▏ | 1.22GB / 1.48GB, 64.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  46%|████▋     | 1.23GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  46%|████▋     | 1.23GB / 2.66GB, 64.1MB/s  
+New Data Upload                         :  84%|████████▎ | 1.23GB / 1.48GB, 64.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  47%|████▋     | 1.25GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  47%|████▋     | 1.25GB / 2.66GB, 63.9MB/s  
+New Data Upload                         :  85%|████████▍ | 1.25GB / 1.48GB, 63.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  47%|████▋     | 1.26GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  47%|████▋     | 1.26GB / 2.66GB, 63.3MB/s  
+New Data Upload                         :  85%|████████▌ | 1.26GB / 1.48GB, 63.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  48%|████▊     | 1.28GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  48%|████▊     | 1.28GB / 2.66GB, 63.0MB/s  
+New Data Upload                         :  87%|████████▋ | 1.28GB / 1.48GB, 63.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  48%|████▊     | 1.29GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  48%|████▊     | 1.29GB / 2.66GB, 62.6MB/s  
+New Data Upload                         :  88%|████████▊ | 1.29GB / 1.48GB, 62.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  49%|████▉     | 1.31GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  49%|████▉     | 1.31GB / 2.66GB, 63.7MB/s  
+New Data Upload                         :  89%|████████▊ | 1.31GB / 1.48GB, 63.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  50%|████▉     | 1.32GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  50%|████▉     | 1.32GB / 2.66GB, 63.4MB/s  
+New Data Upload                         :  90%|████████▉ | 1.32GB / 1.48GB, 63.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  50%|█████     | 1.34GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  50%|█████     | 1.34GB / 2.66GB, 64.4MB/s  
+New Data Upload                         :  87%|████████▋ | 1.34GB / 1.54GB, 64.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  51%|█████     | 1.36GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  51%|█████     | 1.36GB / 2.66GB, 64.4MB/s  
+New Data Upload                         :  88%|████████▊ | 1.36GB / 1.54GB, 64.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  51%|█████▏    | 1.37GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  51%|█████▏    | 1.37GB / 2.66GB, 64.9MB/s  
+New Data Upload                         :  89%|████████▉ | 1.37GB / 1.54GB, 64.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  52%|█████▏    | 1.38GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  52%|█████▏    | 1.38GB / 2.66GB, 65.2MB/s  
+New Data Upload                         :  90%|████████▉ | 1.38GB / 1.54GB, 65.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  52%|█████▏    | 1.38GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  52%|█████▏    | 1.38GB / 2.66GB, 64.6MB/s  
+New Data Upload                         :  90%|████████▉ | 1.38GB / 1.54GB, 64.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  52%|█████▏    | 1.39GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  52%|█████▏    | 1.39GB / 2.66GB, 64.0MB/s  
+New Data Upload                         :  90%|█████████ | 1.39GB / 1.54GB, 64.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  53%|█████▎    | 1.40GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  53%|█████▎    | 1.40GB / 2.66GB, 63.6MB/s  
+New Data Upload                         :  91%|█████████ | 1.40GB / 1.54GB, 63.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  53%|█████▎    | 1.41GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  53%|█████▎    | 1.41GB / 2.66GB, 63.5MB/s  
+New Data Upload                         :  88%|████████▊ | 1.41GB / 1.61GB, 63.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  53%|█████▎    | 1.42GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  53%|█████▎    | 1.42GB / 2.66GB, 63.6MB/s  
+New Data Upload                         :  88%|████████▊ | 1.42GB / 1.61GB, 63.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  54%|█████▍    | 1.44GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  54%|█████▍    | 1.44GB / 2.66GB, 64.3MB/s  
+New Data Upload                         :  86%|████████▌ | 1.44GB / 1.68GB, 64.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  55%|█████▍    | 1.45GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  55%|█████▍    | 1.45GB / 2.66GB, 64.7MB/s  
+New Data Upload                         :  87%|████████▋ | 1.45GB / 1.68GB, 64.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  55%|█████▌    | 1.47GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  55%|█████▌    | 1.47GB / 2.66GB, 65.2MB/s  
+New Data Upload                         :  85%|████████▍ | 1.47GB / 1.74GB, 65.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  56%|█████▌    | 1.49GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  56%|█████▌    | 1.49GB / 2.66GB, 65.4MB/s  
+New Data Upload                         :  82%|████████▏ | 1.49GB / 1.81GB, 65.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  57%|█████▋    | 1.51GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  57%|█████▋    | 1.51GB / 2.66GB, 66.4MB/s  
+New Data Upload                         :  83%|████████▎ | 1.51GB / 1.81GB, 66.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  57%|█████▋    | 1.52GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  57%|█████▋    | 1.52GB / 2.66GB, 66.8MB/s  
+New Data Upload                         :  81%|████████  | 1.52GB / 1.88GB, 66.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  58%|█████▊    | 1.54GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  58%|█████▊    | 1.54GB / 2.66GB, 67.8MB/s  
+New Data Upload                         :  82%|████████▏ | 1.54GB / 1.88GB, 67.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  58%|█████▊    | 1.56GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  58%|█████▊    | 1.56GB / 2.66GB, 68.5MB/s  
+New Data Upload                         :  83%|████████▎ | 1.56GB / 1.88GB, 68.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  59%|█████▉    | 1.57GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  59%|█████▉    | 1.57GB / 2.66GB, 68.8MB/s  
+New Data Upload                         :  84%|████████▎ | 1.57GB / 1.88GB, 68.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  59%|█████▉    | 1.58GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  59%|█████▉    | 1.58GB / 2.66GB, 69.1MB/s  
+New Data Upload                         :  84%|████████▍ | 1.58GB / 1.88GB, 69.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  60%|█████▉    | 1.60GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  60%|█████▉    | 1.60GB / 2.66GB, 69.8MB/s  
+New Data Upload                         :  85%|████████▌ | 1.60GB / 1.88GB, 69.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  60%|██████    | 1.61GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  60%|██████    | 1.61GB / 2.66GB, 70.3MB/s  
+New Data Upload                         :  86%|████████▌ | 1.61GB / 1.88GB, 70.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  61%|██████    | 1.63GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  61%|██████    | 1.63GB / 2.66GB, 70.7MB/s  
+New Data Upload                         :  87%|████████▋ | 1.63GB / 1.88GB, 70.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  62%|██████▏   | 1.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  62%|██████▏   | 1.64GB / 2.66GB, 70.9MB/s  
+New Data Upload                         :  84%|████████▍ | 1.64GB / 1.95GB, 70.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  62%|██████▏   | 1.66GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  62%|██████▏   | 1.66GB / 2.66GB, 71.5MB/s  
+New Data Upload                         :  85%|████████▌ | 1.66GB / 1.95GB, 71.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  63%|██████▎   | 1.68GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  63%|██████▎   | 1.68GB / 2.66GB, 72.0MB/s  
+New Data Upload                         :  87%|████████▋ | 1.68GB / 1.95GB, 72.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  64%|██████▍   | 1.70GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  64%|██████▍   | 1.70GB / 2.66GB, 72.2MB/s  
+New Data Upload                         :  85%|████████▍ | 1.70GB / 2.01GB, 72.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  64%|██████▍   | 1.71GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  64%|██████▍   | 1.71GB / 2.66GB, 72.3MB/s  
+New Data Upload                         :  85%|████████▌ | 1.71GB / 2.01GB, 72.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  65%|██████▌   | 1.73GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  65%|██████▌   | 1.73GB / 2.66GB, 72.5MB/s  
+New Data Upload                         :  86%|████████▌ | 1.73GB / 2.01GB, 72.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  66%|██████▌   | 1.75GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  66%|██████▌   | 1.75GB / 2.66GB, 72.2MB/s  
+New Data Upload                         :  87%|████████▋ | 1.75GB / 2.01GB, 72.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  66%|██████▌   | 1.76GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  66%|██████▌   | 1.76GB / 2.66GB, 72.5MB/s  
+New Data Upload                         :  88%|████████▊ | 1.76GB / 2.01GB, 72.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  67%|██████▋   | 1.77GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  67%|██████▋   | 1.77GB / 2.66GB, 72.4MB/s  
+New Data Upload                         :  88%|████████▊ | 1.77GB / 2.01GB, 72.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  67%|██████▋   | 1.79GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  67%|██████▋   | 1.79GB / 2.66GB, 72.1MB/s  
+New Data Upload                         :  89%|████████▉ | 1.79GB / 2.01GB, 72.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  68%|██████▊   | 1.80GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  68%|██████▊   | 1.80GB / 2.66GB, 71.9MB/s  
+New Data Upload                         :  89%|████████▉ | 1.80GB / 2.01GB, 71.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  68%|██████▊   | 1.81GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  68%|██████▊   | 1.81GB / 2.66GB, 72.2MB/s  
+New Data Upload                         :  90%|█████████ | 1.81GB / 2.01GB, 72.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  69%|██████▊   | 1.83GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  69%|██████▊   | 1.83GB / 2.66GB, 72.2MB/s  
+New Data Upload                         :  88%|████████▊ | 1.83GB / 2.08GB, 72.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  69%|██████▉   | 1.84GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  69%|██████▉   | 1.84GB / 2.66GB, 72.5MB/s  
+New Data Upload                         :  89%|████████▊ | 1.84GB / 2.08GB, 72.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  70%|██████▉   | 1.86GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  70%|██████▉   | 1.86GB / 2.66GB, 72.5MB/s  
+New Data Upload                         :  86%|████████▋ | 1.86GB / 2.15GB, 72.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  70%|███████   | 1.87GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  70%|███████   | 1.87GB / 2.66GB, 72.2MB/s  
+New Data Upload                         :  87%|████████▋ | 1.87GB / 2.15GB, 72.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  71%|███████   | 1.89GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  71%|███████   | 1.89GB / 2.66GB, 73.2MB/s  
+New Data Upload                         :  85%|████████▌ | 1.89GB / 2.21GB, 73.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  72%|███████▏  | 1.91GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  72%|███████▏  | 1.91GB / 2.66GB, 74.3MB/s  
+New Data Upload                         :  84%|████████▍ | 1.91GB / 2.28GB, 74.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  72%|███████▏  | 1.93GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  72%|███████▏  | 1.93GB / 2.66GB, 74.5MB/s  
+New Data Upload                         :  84%|████████▍ | 1.93GB / 2.28GB, 74.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  73%|███████▎  | 1.94GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  73%|███████▎  | 1.94GB / 2.66GB, 74.2MB/s  
+New Data Upload                         :  85%|████████▌ | 1.94GB / 2.28GB, 74.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  73%|███████▎  | 1.95GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  73%|███████▎  | 1.95GB / 2.66GB, 74.4MB/s  
+New Data Upload                         :  86%|████████▌ | 1.95GB / 2.28GB, 74.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  74%|███████▍  | 1.97GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  74%|███████▍  | 1.97GB / 2.66GB, 73.6MB/s  
+New Data Upload                         :  86%|████████▋ | 1.97GB / 2.28GB, 73.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  75%|███████▍  | 1.99GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  75%|███████▍  | 1.99GB / 2.66GB, 73.9MB/s  
+New Data Upload                         :  85%|████████▍ | 1.99GB / 2.35GB, 73.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  75%|███████▌  | 2.01GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  75%|███████▌  | 2.01GB / 2.66GB, 74.5MB/s  
+New Data Upload                         :  86%|████████▌ | 2.01GB / 2.35GB, 74.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  76%|███████▌  | 2.03GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  76%|███████▌  | 2.03GB / 2.66GB, 75.0MB/s  
+New Data Upload                         :  86%|████████▋ | 2.03GB / 2.35GB, 75.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  77%|███████▋  | 2.04GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  77%|███████▋  | 2.04GB / 2.66GB, 75.1MB/s  
+New Data Upload                         :  85%|████████▍ | 2.04GB / 2.41GB, 75.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  78%|███████▊  | 2.07GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  78%|███████▊  | 2.07GB / 2.66GB, 75.9MB/s  
+New Data Upload                         :  86%|████████▌ | 2.07GB / 2.41GB, 75.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  78%|███████▊  | 2.08GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  78%|███████▊  | 2.08GB / 2.66GB, 76.2MB/s  
+New Data Upload                         :  86%|████████▋ | 2.08GB / 2.41GB, 76.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  79%|███████▉  | 2.11GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  79%|███████▉  | 2.11GB / 2.66GB, 76.8MB/s  
+New Data Upload                         :  87%|████████▋ | 2.11GB / 2.41GB, 76.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  80%|███████▉  | 2.12GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  80%|███████▉  | 2.12GB / 2.66GB, 76.3MB/s  
+New Data Upload                         :  88%|████████▊ | 2.12GB / 2.41GB, 76.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  80%|████████  | 2.14GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  80%|████████  | 2.14GB / 2.66GB, 76.8MB/s  
+New Data Upload                         :  89%|████████▊ | 2.14GB / 2.41GB, 76.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  81%|████████  | 2.15GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  81%|████████  | 2.15GB / 2.66GB, 76.9MB/s  
+New Data Upload                         :  89%|████████▉ | 2.15GB / 2.41GB, 76.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  82%|████████▏ | 2.17GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  82%|████████▏ | 2.17GB / 2.66GB, 77.6MB/s  
+New Data Upload                         :  90%|████████▉ | 2.17GB / 2.41GB, 77.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  82%|████████▏ | 2.19GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  82%|████████▏ | 2.19GB / 2.66GB, 78.5MB/s  
+New Data Upload                         :  91%|█████████ | 2.19GB / 2.41GB, 78.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  83%|████████▎ | 2.21GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  83%|████████▎ | 2.21GB / 2.66GB, 80.1MB/s  
+New Data Upload                         :  89%|████████▉ | 2.21GB / 2.48GB, 80.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  84%|████████▎ | 2.23GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  84%|████████▎ | 2.23GB / 2.66GB, 81.5MB/s  
+New Data Upload                         :  88%|████████▊ | 2.23GB / 2.55GB, 81.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  85%|████████▍ | 2.25GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  85%|████████▍ | 2.25GB / 2.66GB, 82.3MB/s  
+New Data Upload                         :  88%|████████▊ | 2.25GB / 2.55GB, 82.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  85%|████████▌ | 2.26GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  85%|████████▌ | 2.26GB / 2.66GB, 82.5MB/s  
+New Data Upload                         :  89%|████████▉ | 2.26GB / 2.55GB, 82.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  86%|████████▌ | 2.29GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  86%|████████▌ | 2.29GB / 2.66GB, 82.8MB/s  
+New Data Upload                         :  90%|████████▉ | 2.29GB / 2.55GB, 82.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  86%|████████▋ | 2.30GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  86%|████████▋ | 2.30GB / 2.66GB, 82.9MB/s  
+New Data Upload                         :  90%|█████████ | 2.30GB / 2.55GB, 82.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  87%|████████▋ | 2.32GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  87%|████████▋ | 2.32GB / 2.66GB, 82.9MB/s  
+New Data Upload                         :  91%|█████████ | 2.32GB / 2.55GB, 82.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  88%|████████▊ | 2.33GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  88%|████████▊ | 2.33GB / 2.66GB, 83.0MB/s  
+New Data Upload                         :  92%|█████████▏| 2.33GB / 2.55GB, 83.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  88%|████████▊ | 2.35GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  88%|████████▊ | 2.35GB / 2.66GB, 82.7MB/s  
+New Data Upload                         :  90%|████████▉ | 2.35GB / 2.62GB, 82.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  89%|████████▉ | 2.37GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  89%|████████▉ | 2.37GB / 2.66GB, 83.5MB/s  
+New Data Upload                         :  91%|█████████ | 2.37GB / 2.62GB, 83.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  90%|████████▉ | 2.40GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  90%|████████▉ | 2.40GB / 2.66GB, 83.7MB/s  
+New Data Upload                         :  90%|████████▉ | 2.40GB / 2.66GB, 83.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  90%|█████████ | 2.41GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  90%|█████████ | 2.41GB / 2.66GB, 83.4MB/s  
+New Data Upload                         :  90%|█████████ | 2.41GB / 2.66GB, 83.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  91%|█████████ | 2.43GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  91%|█████████ | 2.43GB / 2.66GB, 83.7MB/s  
+New Data Upload                         :  91%|█████████ | 2.43GB / 2.66GB, 83.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  92%|█████████▏| 2.44GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  92%|█████████▏| 2.44GB / 2.66GB, 84.1MB/s  
+New Data Upload                         :  92%|█████████▏| 2.44GB / 2.66GB, 84.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  92%|█████████▏| 2.46GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  92%|█████████▏| 2.46GB / 2.66GB, 84.4MB/s  
+New Data Upload                         :  92%|█████████▏| 2.46GB / 2.66GB, 84.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  93%|█████████▎| 2.47GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  93%|█████████▎| 2.47GB / 2.66GB, 84.8MB/s  
+New Data Upload                         :  93%|█████████▎| 2.47GB / 2.66GB, 84.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  94%|█████████▎| 2.49GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  94%|█████████▎| 2.49GB / 2.66GB, 84.8MB/s  
+New Data Upload                         :  94%|█████████▎| 2.49GB / 2.66GB, 84.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  94%|█████████▍| 2.51GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  94%|█████████▍| 2.51GB / 2.66GB, 84.9MB/s  
+New Data Upload                         :  94%|█████████▍| 2.51GB / 2.66GB, 84.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  95%|█████████▍| 2.52GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  95%|█████████▍| 2.52GB / 2.66GB, 84.6MB/s  
+New Data Upload                         :  95%|█████████▍| 2.52GB / 2.66GB, 84.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  95%|█████████▌| 2.54GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  95%|█████████▌| 2.54GB / 2.66GB, 83.9MB/s  
+New Data Upload                         :  95%|█████████▌| 2.54GB / 2.66GB, 83.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  96%|█████████▌| 2.55GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  96%|█████████▌| 2.55GB / 2.66GB, 83.5MB/s  
+New Data Upload                         :  96%|█████████▌| 2.55GB / 2.66GB, 83.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  96%|█████████▋| 2.57GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  96%|█████████▋| 2.57GB / 2.66GB, 83.4MB/s  
+New Data Upload                         :  96%|█████████▋| 2.57GB / 2.66GB, 83.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  97%|█████████▋| 2.58GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  97%|█████████▋| 2.58GB / 2.66GB, 82.8MB/s  
+New Data Upload                         :  97%|█████████▋| 2.58GB / 2.66GB, 82.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  97%|█████████▋| 2.58GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  97%|█████████▋| 2.58GB / 2.66GB, 82.0MB/s  
+New Data Upload                         :  97%|█████████▋| 2.58GB / 2.66GB, 82.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  97%|█████████▋| 2.58GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  97%|█████████▋| 2.58GB / 2.66GB, 80.3MB/s  
+New Data Upload                         :  97%|█████████▋| 2.58GB / 2.66GB, 80.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  97%|█████████▋| 2.59GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  97%|█████████▋| 2.59GB / 2.66GB, 79.6MB/s  
+New Data Upload                         :  97%|█████████▋| 2.59GB / 2.66GB, 79.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  97%|█████████▋| 2.59GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  97%|█████████▋| 2.59GB / 2.66GB, 78.8MB/s  
+New Data Upload                         :  97%|█████████▋| 2.59GB / 2.66GB, 78.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  97%|█████████▋| 2.59GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  97%|█████████▋| 2.59GB / 2.66GB, 78.0MB/s  
+New Data Upload                         :  97%|█████████▋| 2.59GB / 2.66GB, 78.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  97%|█████████▋| 2.60GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  97%|█████████▋| 2.60GB / 2.66GB, 76.8MB/s  
+New Data Upload                         :  97%|█████████▋| 2.60GB / 2.66GB, 76.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.60GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.60GB / 2.66GB, 75.6MB/s  
+New Data Upload                         :  98%|█████████▊| 2.60GB / 2.66GB, 75.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.60GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.60GB / 2.66GB, 74.6MB/s  
+New Data Upload                         :  98%|█████████▊| 2.60GB / 2.66GB, 74.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.60GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.60GB / 2.66GB, 73.4MB/s  
+New Data Upload                         :  98%|█████████▊| 2.60GB / 2.66GB, 73.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.61GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.61GB / 2.66GB, 72.1MB/s  
+New Data Upload                         :  98%|█████████▊| 2.61GB / 2.66GB, 72.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.61GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.61GB / 2.66GB, 70.4MB/s  
+New Data Upload                         :  98%|█████████▊| 2.61GB / 2.66GB, 70.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.61GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.61GB / 2.66GB, 68.3MB/s  
+New Data Upload                         :  98%|█████████▊| 2.61GB / 2.66GB, 68.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.61GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.61GB / 2.66GB, 67.4MB/s  
+New Data Upload                         :  98%|█████████▊| 2.61GB / 2.66GB, 67.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.62GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.62GB / 2.66GB, 66.4MB/s  
+New Data Upload                         :  98%|█████████▊| 2.62GB / 2.66GB, 66.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.62GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.62GB / 2.66GB, 65.2MB/s  
+New Data Upload                         :  98%|█████████▊| 2.62GB / 2.66GB, 65.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.62GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.62GB / 2.66GB, 64.2MB/s  
+New Data Upload                         :  98%|█████████▊| 2.62GB / 2.66GB, 64.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  98%|█████████▊| 2.62GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  98%|█████████▊| 2.62GB / 2.66GB, 62.5MB/s  
+New Data Upload                         :  98%|█████████▊| 2.62GB / 2.66GB, 62.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▊| 2.63GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▊| 2.63GB / 2.66GB, 60.7MB/s  
+New Data Upload                         :  99%|█████████▊| 2.63GB / 2.66GB, 60.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▊| 2.63GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▊| 2.63GB / 2.66GB, 59.2MB/s  
+New Data Upload                         :  99%|█████████▊| 2.63GB / 2.66GB, 59.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.63GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.63GB / 2.66GB, 57.4MB/s  
+New Data Upload                         :  99%|█████████▉| 2.63GB / 2.66GB, 57.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.63GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.63GB / 2.66GB, 55.4MB/s  
+New Data Upload                         :  99%|█████████▉| 2.63GB / 2.66GB, 55.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.63GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.63GB / 2.66GB, 53.7MB/s  
+New Data Upload                         :  99%|█████████▉| 2.63GB / 2.66GB, 53.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.63GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.63GB / 2.66GB, 51.8MB/s  
+New Data Upload                         :  99%|█████████▉| 2.63GB / 2.66GB, 51.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.63GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.63GB / 2.66GB, 50.4MB/s  
+New Data Upload                         :  99%|█████████▉| 2.63GB / 2.66GB, 50.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB, 48.5MB/s  
+New Data Upload                         :  99%|█████████▉| 2.64GB / 2.66GB, 48.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB, 47.2MB/s  
+New Data Upload                         :  99%|█████████▉| 2.64GB / 2.66GB, 47.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB, 45.6MB/s  
+New Data Upload                         :  99%|█████████▉| 2.64GB / 2.66GB, 45.6MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB, 44.3MB/s  
+New Data Upload                         :  99%|█████████▉| 2.64GB / 2.66GB, 44.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB, 42.4MB/s  
+New Data Upload                         :  99%|█████████▉| 2.64GB / 2.66GB, 42.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB, 40.1MB/s  
+New Data Upload                         :  99%|█████████▉| 2.64GB / 2.66GB, 40.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB, 38.3MB/s  
+New Data Upload                         :  99%|█████████▉| 2.64GB / 2.66GB, 38.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB, 37.0MB/s  
+New Data Upload                         :  99%|█████████▉| 2.64GB / 2.66GB, 37.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB, 35.1MB/s  
+New Data Upload                         :  99%|█████████▉| 2.64GB / 2.66GB, 35.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.64GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.64GB / 2.66GB, 33.7MB/s  
+New Data Upload                         :  99%|█████████▉| 2.64GB / 2.66GB, 33.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.65GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.65GB / 2.66GB, 32.1MB/s  
+New Data Upload                         :  99%|█████████▉| 2.65GB / 2.66GB, 32.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.65GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.65GB / 2.66GB, 31.0MB/s  
+New Data Upload                         :  99%|█████████▉| 2.65GB / 2.66GB, 31.0MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt:  99%|█████████▉| 2.65GB / 2.66GB            [A[AProcessing Files (0 / 1)                :  99%|█████████▉| 2.65GB / 2.66GB, 29.2MB/s  
+New Data Upload                         :  99%|█████████▉| 2.65GB / 2.66GB, 29.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.65GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.65GB / 2.66GB, 27.1MB/s  
+New Data Upload                         : 100%|█████████▉| 2.65GB / 2.66GB, 27.1MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.65GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.65GB / 2.66GB, 25.4MB/s  
+New Data Upload                         : 100%|█████████▉| 2.65GB / 2.66GB, 25.4MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.65GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.65GB / 2.66GB, 24.2MB/s  
+New Data Upload                         : 100%|█████████▉| 2.65GB / 2.66GB, 24.2MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.66GB / 2.66GB, 22.7MB/s  
+New Data Upload                         : 100%|█████████▉| 2.66GB / 2.66GB, 22.7MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.66GB / 2.66GB, 21.3MB/s  
+New Data Upload                         : 100%|█████████▉| 2.66GB / 2.66GB, 21.3MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.66GB / 2.66GB, 19.8MB/s  
+New Data Upload                         : 100%|█████████▉| 2.66GB / 2.66GB, 19.8MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[AProcessing Files (0 / 1)                : 100%|█████████▉| 2.66GB / 2.66GB, 18.5MB/s  
+New Data Upload                         : 100%|█████████▉| 2.66GB / 2.66GB, 18.5MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|█████████▉| 2.66GB / 2.66GB            [A[A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|██████████| 2.66GB / 2.66GB            [A[AProcessing Files (1 / 1)                : 100%|██████████| 2.66GB / 2.66GB, 10.9MB/s  
+New Data Upload                         : 100%|██████████| 2.66GB / 2.66GB, 10.9MB/s  [A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|██████████| 2.66GB / 2.66GB            [A[A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|██████████| 2.66GB / 2.66GB            [A[A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|██████████| 2.66GB / 2.66GB            [A[A
+
+  ...sft_checkpoints/d20/model_000467.pt: 100%|██████████| 2.66GB / 2.66GB            [A[AProcessing Files (1 / 1)                : 100%|██████████| 2.66GB / 2.66GB, 7.95MB/s  
+New Data Upload                         : 100%|██████████| 2.66GB / 2.66GB, 7.95MB/s  
+  ...sft_checkpoints/d20/model_000467.pt: 100%|██████████| 2.66GB / 2.66GB            
+SFT_UPLOAD_VERIFIED
++ mark uploaded
+++ date +%s
++ echo '### uploaded at +3291s'
+### uploaded at +3291s
++ python -c '
+import os; from huggingface_hub import HfApi
+HfApi(token=os.environ['\''HF_TOKEN'\'']).upload_file(path_or_fileobj='\''/root/sft.log'\'', path_in_repo='\''logs/sft_rerun.log'\'', repo_id=os.environ['\''HF_REPO'\''])'

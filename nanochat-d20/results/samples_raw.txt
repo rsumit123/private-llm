@@ -1,0 +1,78 @@
+=== PROMPT: Hi! Who are you?
+2026-10-13 20:46:43,466 - nanochat.common - [32m[1mINFO[0m - Distributed world size: 1
+2026-10-13 20:46:43,466 - nanochat.checkpoint_manager - [32m[1mINFO[0m - No model tag provided, guessing model tag: d20
+2026-10-13 20:46:43,466 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Loading model from /root/.cache/nanochat/chatsft_checkpoints/d20 with step 467
+2026-10-13 20:46:45,618 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Building model with config: {'sequence_len': 2048, 'vocab_size': 32768, 'n_layer': 20, 'n_head': 10, 'n_kv_head': 10, 'n_embd': 1280, 'window_pattern': 'SSSL'}
+Autodetected device type: cuda
+
+NanoChat Interactive Mode
+--------------------------------------------------
+Type 'quit' or 'exit' to end the conversation
+Type 'clear' to start a new conversation
+--------------------------------------------------
+
+Assistant: I'm an AI assistant specialized in data analysis and interpretation. I'm here to help you understand and derive insights from data sets, statistics, and analytical tasks. Whether you need help with data interpretation, statistical calculations, or guidance on data visualization and presentation, I'm here to provide clear and concise explanations.
+
+What kind of data or analytical challenge would you like to discuss? Do you have a specific question or area of interest in mind?<|assistant_end|>
+=== PROMPT: Why is the sky blue?
+2026-10-13 20:46:50,586 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Loading model from /root/.cache/nanochat/chatsft_checkpoints/d20 with step 467
+2026-10-13 20:46:52,243 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Building model with config: {'sequence_len': 2048, 'vocab_size': 32768, 'n_layer': 20, 'n_head': 10, 'n_kv_head': 10, 'n_embd': 1280, 'window_pattern': 'SSSL'}
+Autodetected device type: cuda
+
+NanoChat Interactive Mode
+--------------------------------------------------
+Type 'quit' or 'exit' to end the conversation
+Type 'clear' to start a new conversation
+--------------------------------------------------
+
+Assistant: The sky appears blue due to the way our eyes perceive the colors we see. When sunlight enters our eyes, it passes through the cornea and pupil, which are the transparent parts of the eye. Blue light has a shorter wavelength and is reflected back by the cornea, while red light has a longer wavelength and is absorbed by the retina.
+
+The brain interprets the color blue because it is perceived as more intense than other colors, particularly red. This is because the brain uses the blue light to make sense of the world around us, and the blue light has a greater intensity than the red light. As a result, the brain interprets the color blue as a more vivid and intense color than other colors.
+
+This phenomenon is known as color vision deficiency, also referred to as color blindness. People with color vision deficiency have difficulty seeing certain colors, such as red and green, because the blue light is blocked or distorted by the shape of the eye. This makes it more difficult for them to distinguish between these colors, which is why they often struggle to see blue.<|assistant_end|>
+=== PROMPT: Write a short poem about the monsoon in India.
+A reminder that this natural force is always at work,
+A symphony of life, in all its splendor.
+
+In this land of beauty and wonder, where the monsoon's might,
+A world of life and color, a symphony of life,
+A reminder of the delicate balance, and the importance of care,
+A reminder of the beauty and wonder that lies in this land.
+
+In this land of beauty and wonder, where the monsoon's might,
+A world of life and color, a symphony of life,
+A reminder of the delicate balance, and the importance of care,
+A reminder of the beauty and wonder that lies in this land.
+
+In this land of beauty and wonder, where the monsoon's might,
+A world of life
+=== PROMPT: What is the capital of France, and what is it famous for?
+2026-10-13 20:47:07,304 - nanochat.common - [32m[1mINFO[0m - Distributed world size: 1
+2026-10-13 20:47:07,305 - nanochat.checkpoint_manager - [32m[1mINFO[0m - No model tag provided, guessing model tag: d20
+2026-10-13 20:47:07,305 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Loading model from /root/.cache/nanochat/chatsft_checkpoints/d20 with step 467
+2026-10-13 20:47:09,170 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Building model with config: {'sequence_len': 2048, 'vocab_size': 32768, 'n_layer': 20, 'n_head': 10, 'n_kv_head': 10, 'n_embd': 1280, 'window_pattern': 'SSSL'}
+Autodetected device type: cuda
+
+NanoChat Interactive Mode
+--------------------------------------------------
+Type 'quit' or 'exit' to end the conversation
+Type 'clear' to start a new conversation
+--------------------------------------------------
+
+Assistant: The capital of France is Paris. Paris is renowned for its rich history, culture, and iconic landmarks such as the Eiffel Tower, Louvre Museum, Notre-Dame Cathedral, and Arc de Triomphe. Located in the heart of the city, Paris is home to famous attractions like the Louvre Museum, which houses the Mona Lisa, and the Palace of Versailles, a former royal residence with opulent interiors and stunning gardens. Paris is also known for its charming cafes, restaurants, and fashion scene, making it a popular destination for tourists and locals alike.<|assistant_end|>
+=== PROMPT: Explain photosynthesis to a 10 year old.
+2026-10-13 20:47:14,827 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Loading model from /root/.cache/nanochat/chatsft_checkpoints/d20 with step 467
+2026-10-13 20:47:16,355 - nanochat.checkpoint_manager - [32m[1mINFO[0m - Building model with config: {'sequence_len': 2048, 'vocab_size': 32768, 'n_layer': 20, 'n_head': 10, 'n_kv_head': 10, 'n_embd': 1280, 'window_pattern': 'SSSL'}
+Autodetected device type: cuda
+
+NanoChat Interactive Mode
+--------------------------------------------------
+Type 'quit' or 'exit' to end the conversation
+Type 'clear' to start a new conversation
+--------------------------------------------------
+
+Assistant: Photosynthesis is like when plants, animals, and even humans use sunlight to make their food. It's like a magic process that helps plants make their own food. During photosynthesis, plants take in sunlight and use it to make a special liquid called sugar. This sugar is like a super-important plant food that helps plants grow and thrive.
+
+The sugar produced during photosynthesis is like a super-sterile substance that can help plants stay healthy and strong. It's like a super-long-term supply of energy that helps plants grow and grow faster. Plus, the sugar is like a yummy energy source for animals and even humans, so plants are super important in their ecosystems.
+
+But photosynthesis isn't just about plants. It's also happening in other living things like animals, like birds, fish, and even insects. And even humans! We use plants to make medicines, like a special blend of plants that helps us feel better. So, photosynthesis is like a powerful magic that helps plants and all living things thrive!<|assistant_end|>

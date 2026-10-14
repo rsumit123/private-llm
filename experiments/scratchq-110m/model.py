@@ -49,17 +49,24 @@ class Attention(nn.Module):
         self.v_proj = nn.Linear(cfg.hidden_size, self.n_kv * self.head_dim, bias=False)
         self.o_proj = nn.Linear(cfg.hidden_size, cfg.hidden_size, bias=False)
 
-    def forward(self, x, cos, sin):
+    def forward(self, x, cos, sin, cache=None):
         B, T, _ = x.shape
         q = self.q_proj(x).view(B, T, self.n_heads, self.head_dim).transpose(1, 2)
         k = self.k_proj(x).view(B, T, self.n_kv, self.head_dim).transpose(1, 2)
         v = self.v_proj(x).view(B, T, self.n_kv, self.head_dim).transpose(1, 2)
         q, k = apply_rope(q, cos, sin), apply_rope(k, cos, sin)
+        has_past = cache is not None and "k" in cache
+        if has_past:
+            assert T == 1, "cached decoding feeds one token at a time"
+            k = torch.cat([cache["k"], k], dim=2)
+            v = torch.cat([cache["v"], v], dim=2)
+        if cache is not None:
+            cache["k"], cache["v"] = k, v
         if self.n_kv != self.n_heads:
             rep = self.n_heads // self.n_kv
             k = k.repeat_interleave(rep, dim=1)
             v = v.repeat_interleave(rep, dim=1)
-        out = F.scaled_dot_product_attention(q, k, v, is_causal=True)
+        out = F.scaled_dot_product_attention(q, k, v, is_causal=not has_past)
         out = out.transpose(1, 2).contiguous().view(B, T, -1)
         return self.o_proj(out)
 
@@ -83,8 +90,8 @@ class Block(nn.Module):
         self.ffn_norm = RMSNorm(cfg.hidden_size, cfg.rms_norm_eps)
         self.ffn = SwiGLU(cfg)
 
-    def forward(self, x, cos, sin):
-        x = x + self.attn(self.attn_norm(x), cos, sin)
+    def forward(self, x, cos, sin, cache=None):
+        x = x + self.attn(self.attn_norm(x), cos, sin, cache)
         x = x + self.ffn(self.ffn_norm(x))
         return x
 
@@ -110,28 +117,32 @@ class LLM(nn.Module):
         elif isinstance(m, nn.Embedding):
             nn.init.normal_(m.weight, mean=0.0, std=0.02)
 
-    def _rope(self, T, device, dtype):
-        if self._rope_cache is None or self._rope_cache[0].size(0) < T:
+    def _rope(self, T, device, dtype, start=0):
+        if self._rope_cache is None or self._rope_cache[0].size(0) < start + T:
             cos, sin = precompute_rope(self._head_dim, self.cfg.max_seq_len, self.cfg.rope_theta, device, dtype)
             self._rope_cache = (cos, sin)
         cos, sin = self._rope_cache
-        return cos[:T], sin[:T]
+        return cos[start:start + T], sin[start:start + T]
 
-    def forward(self, idx, targets=None, grad_checkpoint=False):
+    def forward(self, idx, targets=None, grad_checkpoint=False, kv_cache=None, start_pos=0):
+        """kv_cache: list with one dict per layer (see new_kv_cache), filled in place."""
         B, T = idx.shape
         x = self.tok_emb(idx)
-        cos, sin = self._rope(T, x.device, x.dtype)
-        for blk in self.blocks:
+        cos, sin = self._rope(T, x.device, x.dtype, start_pos)
+        for i, blk in enumerate(self.blocks):
             if grad_checkpoint and self.training:
                 x = torch.utils.checkpoint.checkpoint(blk, x, cos, sin, use_reentrant=False)
             else:
-                x = blk(x, cos, sin)
+                x = blk(x, cos, sin, kv_cache[i] if kv_cache is not None else None)
         x = self.norm(x)
         logits = self.lm_head(x)
         loss = None
         if targets is not None:
             loss = F.cross_entropy(logits.reshape(-1, logits.size(-1)), targets.reshape(-1), ignore_index=-100)
         return logits, loss
+
+    def new_kv_cache(self):
+        return [{} for _ in self.blocks]
 
     def num_params(self):
         return sum(p.numel() for p in self.parameters()) - self.tok_emb.weight.numel()  # tied, count once
